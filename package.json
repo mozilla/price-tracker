@@ -1,0 +1,15 @@
+{
+  "name": "moz-commerce",
+  "version": "0.1.0",
+  "description": "",
+  "private": "true",
+  "author": "Mozilla Foundation",
+  "license": "MPL-2.0",
+  "scripts": {
+    "build": "web-ext build",
+    "lint": "web-ext lint --self-hosted"
+  },
+  "devDependencies": {
+    "web-ext": "2.7.0"
+  }
+}
