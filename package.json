@@ -6,8 +6,8 @@
   "author": "Mozilla Foundation",
   "license": "MPL-2.0",
   "scripts": {
-    "build": "web-ext build",
-    "lint": "web-ext lint --self-hosted"
+    "build": "web-ext build --source-dir src",
+    "lint": "web-ext lint --self-hosted --source-dir src"
   },
   "devDependencies": {
     "web-ext": "2.7.0"
