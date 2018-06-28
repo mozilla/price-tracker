@@ -24,6 +24,7 @@ Prerequisites:
 
 | Command | Description |
 | --- | --- |
+| `npm start` | Launch Firefox with the extension temporarily installed |
 | `npm run build` | Build the extension into an XPI file |
 | `npm run lint` | Run linting checks |
 

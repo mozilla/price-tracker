@@ -1,0 +1,14 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "webextensions": true,
+    "browser": true
+  },
+  "rules": {
+    "object-curly-newline": ["error", {"consistent": true}],
+    "object-curly-spacing": ["off"],
+    "no-plusplus": ["off"],
+    "prefer-destructuring": ["off"],
+    "no-use-before-define": ["error", {"functions": false}]
+  }
+}

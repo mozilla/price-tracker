@@ -6,10 +6,16 @@
   "author": "Mozilla Foundation",
   "license": "MPL-2.0",
   "scripts": {
-    "build": "web-ext build --source-dir src",
-    "lint": "web-ext lint --self-hosted --source-dir src"
+    "build": "web-ext build --source-dir src --overwrite-dest",
+    "start": "web-ext run --source-dir src",
+    "lint": "bin/run_lints.sh"
   },
   "devDependencies": {
+    "eslint": "4.19.1",
+    "eslint-config-airbnb": "17.0.0",
+    "eslint-plugin-import": "2.13.0",
+    "eslint-plugin-jsx-a11y": "6.0.3",
+    "eslint-plugin-react": "7.10.0",
     "web-ext": "2.7.0"
   }
 }
