@@ -5,3 +5,7 @@
 browser.browserAction.onClicked.addListener(() => {
   browser.sidebarAction.open();
 });
+
+browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+
+});

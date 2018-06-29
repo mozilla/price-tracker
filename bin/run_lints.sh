@@ -12,4 +12,4 @@ echo ">>> eslint"
 eslint .
 
 echo ">>> web-ext lints"
-web-ext lint --self-hosted --source-dir src
+web-ext lint --self-hosted --source-dir build
