@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
+      - checkout
+      - npm install
+      - npm run build
+      - web-ext lint --self-hosted
+      - mv web-ext-artifacts $CIRCLE_ARTIFACTS
