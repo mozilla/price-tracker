@@ -3,9 +3,5 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 browser.browserAction.onClicked.addListener(() => {
-  if (browser.sidebarAction.isOpen()) {
-    browser.sidebarAction.close();
-  } else {
-    browser.sidebarAction.open();
-  }
+  browser.sidebarAction.open();
 });
