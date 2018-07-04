@@ -1,32 +1,34 @@
-"use strict";
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 
-class ProductInfo {
-  constructor() {
-    this.OpenGraphPropertyValues = {
-      title: "og:title",
-      image: "og:image",
-      price: "og:price:amount",
-    }
-    this.getProductData();
-  }
+const OpenGraphPropertyValues = {
+  title: "og:title",
+  image: "og:image",
+  price: "og:price:amount",
+};
 
-  getProductData() {
-    let productData = {};
-    for (let key in this.OpenGraphPropertyValues) {
-      const metaEle = document.querySelector(`meta[property="${this.OpenGraphPropertyValues[key]}"]`);
-      if (metaEle) {
-        productData[key] = metaEle.getAttribute("content");
-      } else {
-        console.log(`No info found for the product ${ key }.`);
-        productData[key] = null;
-      }
+function getProductData() {
+  const data = {};
+  for (const [key, value] of Object.entries(OpenGraphPropertyValues)) {
+    const metaEle = document.querySelector(`meta[property="${ value }"]`);
+    if (metaEle) {
+      data[key] = metaEle.getAttribute("content");
     }
-    // Note: Can't send HTML elements to background.js; they are not stringify-able
-    browser.runtime.sendMessage({
-                                  type: "product-data",
-                                  data: productData,
-                                });
   }
+  // Note: HTML elements are not stringify-able, so can't be sent.
+  browser.runtime.sendMessage({
+    type: "product-data",
+    data,
+  });
 }
 
-const productInfo = new ProductInfo();
+// Make sure page has finished loading, as JS could alter the DOM.
+if (document.readyState === "complete") {
+  getProductData();
+} else {
+  window.addEventListener("load", () => {
+    getProductData();
+  });
+}

@@ -6,10 +6,8 @@ browser.browserAction.onClicked.addListener(() => {
   browser.sidebarAction.open();
 });
 
-browser.runtime.onMessage.addListener(receiveMessage);
-
-function receiveMessage(message, sender, sendResponse) {
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "product-data") {
     console.log(message.data);
   }
-}
+});
