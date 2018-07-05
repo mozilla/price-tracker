@@ -31,9 +31,10 @@ Prerequisites:
 | Command | Description |
 | --- | --- |
 | `npm start` | Launch Firefox with the extension temporarily installed |
-| `npm run build` | Build the extension into an XPI file |
-| `npm run watch` | Watch for changes and rebuild |
 | `npm run lint` | Run linting checks |
+| `npm run build` | Compile source files with Webpack |
+| `npm run watch` | Watch for changes and rebuild |
+| `npm run package` | Package the extension into an XPI file |
 
 ## License
 

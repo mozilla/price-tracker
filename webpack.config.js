@@ -1,6 +1,5 @@
 /* eslint-env node */
 const path = require('path');
-const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const BUILD_DIR = path.resolve(__dirname, 'build');
@@ -20,10 +19,10 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      {from: 'src/icon.svg', to: BUILD_DIR},
-      {from: 'src/sidebar.html', to: BUILD_DIR},
-      {from: 'src/background.js', to: BUILD_DIR},
-      {from: 'src/manifest.json', to: BUILD_DIR},
-    ]),
+      // Static files
+      {from: '**/*.svg'},
+      {from: '**/*.html'},
+      {from: '**/*.json'},
+    ], {context: 'src/'}),
   ],
 };

@@ -9,7 +9,7 @@
     "start": "web-ext run --source-dir build",
     "build": "webpack --mode=development",
     "watch": "webpack --watch --mode=development",
-    "package": "web-ext build --source-dir build",
+    "package": "web-ext build --source-dir build --overwrite-dest",
     "lint": "bin/run_lints.sh"
   },
   "devDependencies": {
@@ -21,9 +21,6 @@
     "eslint-plugin-react": "7.10.0",
     "web-ext": "2.7.0",
     "webpack": "^4.13.0",
-    "webpack-command": "^0.3.1"
-  },
-  "dependencies": {
-    "fathom-web": "^2.3.0"
+    "webpack-command": "0.3.1"
   }
 }
