@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            npm install
+      - run:
+          name: Build extension
+          command: |
+            npm run build
+      - run:
+          name: Run linting checks
+          command: |
+            npm run lint
+      - store_artifacts:
+          path: web-ext-artifacts
