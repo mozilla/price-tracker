@@ -5,7 +5,16 @@ jobs:
       - image: circleci/node:10-browsers
     steps:
       - checkout
-      - npm install
-      - npm run build
-      - web-ext lint --self-hosted
-      - mv web-ext-artifacts $CIRCLE_ARTIFACTS
+      - run:
+          name: Install dependencies
+          command: |
+            npm install
+      - run:
+          name: Build extension
+          command: |
+            npm run build
+            mv web-ext-artifacts $CIRCLE_ARTIFACTS
+      - run:
+          name: Run linting checks
+          command: |
+            web-ext lint --self-hosted
