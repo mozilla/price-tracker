@@ -5,3 +5,9 @@
 browser.browserAction.onClicked.addListener(() => {
   browser.sidebarAction.open();
 });
+
+browser.runtime.onMessage.addListener((message) => {
+  if (message.type === 'product-data') {
+    console.log(message.data);
+  }
+});
