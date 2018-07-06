@@ -9,6 +9,7 @@
     "object-curly-spacing": ["off"],
     "no-plusplus": ["off"],
     "prefer-destructuring": ["off"],
+    "no-restricted-syntax": ["off"],
     "no-use-before-define": ["error", {"functions": false}]
   }
 }

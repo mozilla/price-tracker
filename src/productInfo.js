@@ -4,31 +4,31 @@
  */
 
 const OpenGraphPropertyValues = {
-  title: "og:title",
-  image: "og:image",
-  price: "og:price:amount",
+  title: 'og:title',
+  image: 'og:image',
+  price: 'og:price:amount',
 };
 
 function getProductData() {
   const data = {};
   for (const [key, value] of Object.entries(OpenGraphPropertyValues)) {
-    const metaEle = document.querySelector(`meta[property="${ value }"]`);
+    const metaEle = document.querySelector(`meta[property="${value}"]`);
     if (metaEle) {
-      data[key] = metaEle.getAttribute("content");
+      data[key] = metaEle.getAttribute('content');
     }
   }
   // Note: HTML elements are not stringify-able, so can't be sent.
   browser.runtime.sendMessage({
-    type: "product-data",
+    type: 'product-data',
     data,
   });
 }
 
 // Make sure page has finished loading, as JS could alter the DOM.
-if (document.readyState === "complete") {
+if (document.readyState === 'complete') {
   getProductData();
 } else {
-  window.addEventListener("load", () => {
+  window.addEventListener('load', () => {
     getProductData();
   });
 }
