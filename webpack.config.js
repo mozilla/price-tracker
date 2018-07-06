@@ -19,6 +19,8 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
+      {from: 'product_info.js'},
+
       // Static files
       {from: '**/*.svg'},
       {from: '**/*.html'},
