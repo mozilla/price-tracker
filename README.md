@@ -19,14 +19,22 @@ Prerequisites:
    ```sh
    npm install
    ```
+3. Build the extension:
+
+   ```sh
+   npm run build
+   ```
+4. Open `about:debugging`, click "Load Temporary add-on", and select `build/manifest.json` as the file to open. Do not use the manifest from the `src` directory.
 
 ## NPM Scripts
 
 | Command | Description |
 | --- | --- |
 | `npm start` | Launch Firefox with the extension temporarily installed |
-| `npm run build` | Build the extension into an XPI file |
 | `npm run lint` | Run linting checks |
+| `npm run build` | Compile source files with Webpack |
+| `npm run watch` | Watch for changes and rebuild |
+| `npm run package` | Package the extension into an XPI file |
 
 ## License
 
