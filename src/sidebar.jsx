@@ -17,5 +17,3 @@ ReactDOM.render(
   <Sidebar />,
   document.getElementById('sidebar'),
 );
-
-export default Sidebar;

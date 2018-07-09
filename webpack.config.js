@@ -3,7 +3,6 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const BUILD_DIR = path.resolve(__dirname, 'build');
-const SOURCE_DIR = path.resolve(__dirname, 'src');
 
 // FIXME(osmose): This file is optimized for development. At some point we
 // should add optimizations for production-ready code bundling.
@@ -23,7 +22,7 @@ module.exports = {
     rules: [
       {
         test: /\.jsx$/,
-        include: SOURCE_DIR,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
         },
