@@ -4,6 +4,7 @@
     "webextensions": true,
     "browser": true
   },
+  "plugins": ["react"],
   "rules": {
     "object-curly-newline": ["error", {"consistent": true}],
     "object-curly-spacing": ["off"],
