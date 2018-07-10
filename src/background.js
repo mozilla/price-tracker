@@ -4,20 +4,25 @@
 
 const PRODUCT_KEYS = ['title', 'image', 'price'];
 
-browser.browserAction.onClicked.addListener(() => {
-  browser.sidebarAction.open();
+browser.runtime.onConnect.addListener((port) => {
+  port.onMessage.addListener((message) => {
+    if (message.type === 'product-data') {
+      const isProductPage = hasKeys(message.data, PRODUCT_KEYS);
+      if (isProductPage) {
+        browser.sidebarAction.setPanel({
+          panel: getPanelURL(message.data),
+          tabId: port.sender.tab.id,
+        });
+      }
+    }
+  });
+  port.postMessage({
+    type: 'background-ready',
+  });
 });
 
-browser.runtime.onMessage.addListener((message, sender) => {
-  if (message.type === 'product-data') {
-    const isProductPage = hasKeys(message.data, PRODUCT_KEYS);
-    if (isProductPage) {
-      browser.sidebarAction.setPanel({
-        panel: getPanelURL(message.data),
-        tabId: sender.tab.id,
-      });
-    }
-  }
+browser.browserAction.onClicked.addListener(() => {
+  browser.sidebarAction.open();
 });
 
 /**

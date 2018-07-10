@@ -8,26 +8,44 @@ const OpenGraphPropertyValues = {
   price: 'og:price:amount',
 };
 
-function getProductData() {
-  const data = {};
-  for (const [key, value] of Object.entries(OpenGraphPropertyValues)) {
-    const metaEle = document.querySelector(`meta[property="${value}"]`);
-    if (metaEle) {
-      data[key] = metaEle.getAttribute('content');
+let port;
+// Recursively connect to the background script until it's available.
+// See Issue #17 and bug 1474727.
+function connectToBackground() {
+  port = browser.runtime.connect();
+  function getProductData() {
+    const data = {};
+    for (const [key, value] of Object.entries(OpenGraphPropertyValues)) {
+      const metaEle = document.querySelector(`meta[property="${value}"]`);
+      if (metaEle) {
+        data[key] = metaEle.getAttribute('content');
+      }
     }
+    port.postMessage({
+      type: 'product-data',
+      data,
+    });
   }
-  // Note: HTML elements are not stringify-able, so can't be sent.
-  browser.runtime.sendMessage({
-    type: 'product-data',
-    data,
+
+  port.onMessage.addListener((message) => {
+    if (message.type === 'background-ready') {
+      // Make sure page has finished loading, as JS could alter the DOM.
+      if (document.readyState === 'complete') {
+        getProductData();
+      } else {
+        window.addEventListener('load', () => {
+          getProductData();
+        });
+      }
+    }
+  });
+  port.onDisconnect.addListener((p) => {
+    if (p.error) {
+      window.setTimeout(() => {
+        connectToBackground();
+      }, 500);
+    }
   });
 }
 
-// Make sure page has finished loading, as JS could alter the DOM.
-if (document.readyState === 'complete') {
-  getProductData();
-} else {
-  window.addEventListener('load', () => {
-    getProductData();
-  });
-}
+connectToBackground();
