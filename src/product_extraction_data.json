@@ -1,0 +1,45 @@
+{
+  "aliexpress": {
+    "title": [".product-name"],
+    "price": [
+      "#j-sku-discount-price",
+      "#j-sku-price"
+    ],
+    "image": [".ui-image-viewer-thumb-frame > img"]
+  },
+  "amazon": {
+    "title": [
+      "#productTitle",
+      ".product-title"
+    ],
+    "price": [
+      "#priceblock_ourprice",
+      ".display-price",
+      ".offer-price"
+    ],
+    "image": [
+      "#landingImage",
+      "#imgBlkFront"
+    ]
+  },
+  "ebay": {
+    "title": [
+      "#itemTitle",
+      ".product-title"
+    ],
+    "price": [
+      ".display-price",
+      "#prcIsum",
+      "#orgPrc"
+    ],
+    "image": [
+      "#icImg",
+      ".vi-image-gallery__image.vi-image-gallery__image--absolute-center"
+    ]
+  },
+  "walmart": {
+    "title": [".prod-ProductTitle"],
+    "price": [".price-group"],
+    "image": [".prod-hero-image-image"]
+  }
+}

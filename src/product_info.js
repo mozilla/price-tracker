@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import {retry} from 'commerce/utils';
+import extractionData from './product_extraction_data.json';
 
 const OPEN_GRAPH_PROPERTY_VALUES = {
   title: 'og:title',
@@ -29,24 +30,6 @@ async function openBackgroundPort() {
   });
 }
 
-/**
- * Extract any product information available on the page using Open Graph
- * <meta> tags, and send it to the given port.
- */
-function getProductData(port) {
-  const data = {};
-  for (const [key, value] of Object.entries(OPEN_GRAPH_PROPERTY_VALUES)) {
-    const metaEle = document.querySelector(`meta[property="${value}"]`);
-    if (metaEle) {
-      data[key] = metaEle.getAttribute('content');
-    }
-  }
-  port.postMessage({
-    type: 'product-data',
-    data,
-  });
-}
-
 (async function main() {
   let port = null;
   try {
@@ -55,13 +38,83 @@ function getProductData(port) {
     console.error('Could not establish connection to background script.');
   }
   if (port) {
-    // Make sure page has finished loading, as JS could alter the DOM.
+    // Make sure the page has finished loading, as JS could alter the DOM.
     if (document.readyState === 'complete') {
-      getProductData(port);
+      getProductInfo(port);
     } else {
       window.addEventListener('load', () => {
-        getProductData(port);
+        getProductInfo(port);
       });
     }
   }
 }());
+
+
+/**
+ * Checks to see if any product information for the page was found,
+ * and if so, sends it to the background script via the port.
+ */
+async function getProductInfo(port) {
+  const cssSelectors = getCssSelectors();
+  const productInfo = extractData(cssSelectors);
+  if (productInfo) {
+    port.postMessage({
+      type: 'product-data',
+      data: productInfo,
+    });
+  }
+}
+
+/**
+ * Returns any extraction data found for the vendor based on the URL
+ * for the page.
+ */
+function getCssSelectors() {
+  const hostname = new URL(window.location.href).host;
+  for (const [vendor, selectors] of Object.entries(extractionData)) {
+    if (hostname.includes(vendor)) {
+      const {title, price, image} = selectors || null;
+      return {
+        title,
+        price,
+        image,
+      };
+    }
+  }
+  return null;
+}
+
+/**
+ * Returns any product information available on the page from CSS
+ * selectors if they exist, otherwise from Open Graph <meta> tags.
+ */
+function extractData(selectors) {
+  const data = {};
+  if (selectors) {
+    for (const selector in selectors) {
+      // Avoid iterating over properties inherited through the prototype chain
+      if (Object.prototype.hasOwnProperty.call(selectors, selector)) {
+        const valueArr = selectors[selector];
+        let element = null;
+        for (let i = 0; i < valueArr.length; i++) {
+          const value = valueArr[i];
+          element = document.querySelector(value);
+          if (element) {
+            data[selector] = element.getAttribute('content')
+              || element.innerText
+              || element.src;
+            break;
+          }
+        }
+      }
+    }
+  } else {
+    for (const [key, value] of Object.entries(OPEN_GRAPH_PROPERTY_VALUES)) {
+      const metaEle = document.querySelector(`meta[property='${value}']`);
+      if (metaEle) {
+        data[key] = metaEle.getAttribute('content');
+      }
+    }
+  }
+  return data;
+}
