@@ -1,0 +1,30 @@
+{
+  "aliexpress": {
+    "title": [".product-name"],
+    "price": [
+      "#j-sku-discount-price > span",
+      "#j-sku-price"
+    ],
+    "image": [".ui-image-viewer-thumb-frame > img"]
+  },
+  "amazon": {
+    "title": "",
+    "price": "",
+    "image": ""
+  },
+  "ebay": {
+    "title": "",
+    "price": "",
+    "image": ""
+  },
+  "google": {
+    "title": "",
+    "price": "",
+    "image": ""
+  },
+  "walmart": {
+    "title": "",
+    "price": "",
+    "image": ""
+  }
+}
