@@ -8,44 +8,59 @@ const OpenGraphPropertyValues = {
   price: 'og:price:amount',
 };
 
-let port;
-// Recursively connect to the background script until it's available.
-// See Issue #17 and bug 1474727.
-function connectToBackground() {
-  port = browser.runtime.connect();
-  function getProductData() {
-    const data = {};
-    for (const [key, value] of Object.entries(OpenGraphPropertyValues)) {
-      const metaEle = document.querySelector(`meta[property="${value}"]`);
-      if (metaEle) {
-        data[key] = metaEle.getAttribute('content');
+function openBackgroundPort() {
+  return new Promise((resolve, reject) => {
+    const port = browser.runtime.connect();
+    port.onMessage.addListener((message) => {
+      if (message.type === 'background-ready') {
+        resolve(port);
       }
-    }
-    port.postMessage({
-      type: 'product-data',
-      data,
     });
-  }
-
-  port.onMessage.addListener((message) => {
-    if (message.type === 'background-ready') {
-      // Make sure page has finished loading, as JS could alter the DOM.
-      if (document.readyState === 'complete') {
-        getProductData();
-      } else {
-        window.addEventListener('load', () => {
-          getProductData();
-        });
-      }
-    }
-  });
-  port.onDisconnect.addListener((p) => {
-    if (p.error) {
-      window.setTimeout(() => {
-        connectToBackground();
-      }, 500);
-    }
+    port.onDisconnect.addListener(() => {
+      reject();
+    });
   });
 }
 
-connectToBackground();
+function getProductData(port) {
+  const data = {};
+  for (const [key, value] of Object.entries(OpenGraphPropertyValues)) {
+    const metaEle = document.querySelector(`meta[property="${value}"]`);
+    if (metaEle) {
+      data[key] = metaEle.getAttribute('content');
+    }
+  }
+  port.postMessage({
+    type: 'product-data',
+    data,
+  });
+}
+
+function portSuccess(port) {
+  // Make sure page has finished loading, as JS could alter the DOM.
+  if (document.readyState === 'complete') {
+    getProductData(port);
+  } else {
+    window.addEventListener('load', () => {
+      getProductData(port);
+    });
+  }
+}
+
+let delay = 2; // seconds
+const DELAY_MULTIPLIER = 2;
+const NUM_ATTEMPTS = 5;
+const DELAY_MAX = delay ** NUM_ATTEMPTS;
+// Connect to the background script until it's available. See Issue #17 and bug 1474727.
+function portFail() {
+  if (delay > DELAY_MAX) {
+    console.error(`Could not establish a connection after ${NUM_ATTEMPTS} attempts.`);
+    return;
+  }
+  setTimeout(() => {
+    openBackgroundPort().then(portSuccess, portFail);
+    delay *= DELAY_MULTIPLIER;
+  }, delay * 1000); // ms
+}
+
+openBackgroundPort().then(portSuccess, portFail);
