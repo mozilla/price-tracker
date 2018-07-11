@@ -8,7 +8,7 @@ const BUILD_DIR = path.resolve(__dirname, 'build');
 // should add optimizations for production-ready code bundling.
 module.exports = {
   mode: 'development',
-  devtool: 'cheap-module-source-map',
+  devtool: 'inline-source-map',
   target: 'web',
   entry: {
     background: './src/background.js',
