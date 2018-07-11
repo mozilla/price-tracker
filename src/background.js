@@ -8,6 +8,7 @@ browser.browserAction.onClicked.addListener(() => {
 
 browser.runtime.onMessage.addListener((message) => {
   if (message.type === 'product-data') {
+    // TODO: Send this data to the sidebar to be displayed
     console.log(message.data);
   }
 });
