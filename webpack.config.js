@@ -13,6 +13,7 @@ module.exports = {
   entry: {
     background: './src/background.js',
     sidebar: './src/sidebar.jsx',
+    product_info: './src/product_info.js',
   },
   output: {
     path: BUILD_DIR,
@@ -31,8 +32,6 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      {from: 'product_info.js'},
-
       // Static files
       {from: '**/*.svg'},
       {from: '**/*.html'},

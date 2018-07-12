@@ -23,7 +23,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["product_info.js"]
+      "js": ["product_info.bundle.js"]
     }
   ],
   "sidebar_action": {
