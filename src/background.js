@@ -4,25 +4,29 @@
 
 const PRODUCT_KEYS = ['title', 'image', 'price'];
 
+// Open the sidebar when the page action is clicked.
+browser.pageAction.onClicked.addListener(() => {
+  browser.sidebarAction.open();
+});
+
 browser.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message) => {
     if (message.type === 'product-data') {
+      // If this page contains a product, prep the sidebar and show the
+      // page action icon for opening the sidebar.
       const isProductPage = hasKeys(message.data, PRODUCT_KEYS);
       if (isProductPage) {
         browser.sidebarAction.setPanel({
           panel: getPanelURL(message.data),
           tabId: port.sender.tab.id,
         });
+        browser.pageAction.show(port.sender.tab.id);
       }
     }
   });
   port.postMessage({
     type: 'background-ready',
   });
-});
-
-browser.browserAction.onClicked.addListener(() => {
-  browser.sidebarAction.open();
 });
 
 /**
