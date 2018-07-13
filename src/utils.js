@@ -3,17 +3,24 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const utils = {
-  /* Turns setTimeout, a callback-based method, into a promise-based method,
-  * so that it can be awaited in the 'retry' method. */
+  /*
+   * Resolves when the amount of time specified by delay has elapsed.
+   */
   async wait(delay) {
     return new Promise((resolve) => {
       window.setTimeout(resolve, delay);
     });
   },
 
-  /* Attempts a promise-based callback a fixed number of times, with increasing
-  * delays between attempts. Throws an error if the final attempt fails. */
-  async retry(callback, maxRetries = 5, delayFactor = 2, initialDelay = 2) {
+  /*
+   * Calls a callback after a delay a certain number of times until it resolves or rejects.
+   *
+   * @param {function} callback The function to call.
+   * @param {number} maxRetries The number of times to attempt calling before giving up.
+   * @param {number} delayFactor The multiplier to increase the delay by for each attempt.
+   * @param {number} initialDelay The initial delay in ms.
+   */
+  async retry(callback, maxRetries = 5, delayFactor = 2, initialDelay = 1000) {
     /* eslint-disable no-await-in-loop */
     let delay = initialDelay;
     let lastError = null;

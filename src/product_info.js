@@ -10,10 +10,11 @@ const OPEN_GRAPH_PROPERTY_VALUES = {
   price: 'og:price:amount',
 };
 
-/* Open a port to the background script to solve Issue #17. Due to bug
- * 1474727, when the webext installs, we cannot guarantee the background
- * script will connect on the first attempt. If the connect attempt fails,
- * an 'onDisconnect' event fires. */
+/**
+ * Resolves to a Port object for communicating with the background script
+ * once the background script is ready, or rejects if we cannot connect
+ * to the background script, or it is not ready. See bug 1474727.
+ */
 async function openBackgroundPort() {
   return new Promise((resolve, reject) => {
     const port = browser.runtime.connect();
@@ -28,8 +29,10 @@ async function openBackgroundPort() {
   });
 }
 
-/* Extract any product information available on the page using Open Graph
-* <meta> tags, and send it to the background script */
+/*
+ * Extract any product information available on the page using Open Graph
+ * <meta> tags, and sends it to the port as an argument.
+ */
 function getProductData(port) {
   const data = {};
   for (const [key, value] of Object.entries(OPEN_GRAPH_PROPERTY_VALUES)) {
