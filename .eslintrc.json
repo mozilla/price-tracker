@@ -11,6 +11,8 @@
     "no-plusplus": ["off"],
     "prefer-destructuring": ["off"],
     "no-restricted-syntax": ["off"],
-    "no-use-before-define": ["error", {"functions": false}]
+    "no-use-before-define": ["error", {"functions": false}],
+    "react/jsx-one-expression-per-line": ["off"],
+    "react/prefer-stateless-function": ["off"]
   }
 }
