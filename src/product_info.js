@@ -1,8 +1,8 @@
-import utils from './utils';
-
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import utils from './utils';
 
 const OPEN_GRAPH_PROPERTY_VALUES = {
   title: 'og:title',
@@ -11,9 +11,9 @@ const OPEN_GRAPH_PROPERTY_VALUES = {
 };
 
 /**
- * Resolves to a Port object for communicating with the background script
- * once the background script is ready, or rejects if we cannot connect
- * to the background script, or it is not ready. See bug 1474727.
+ * Open a Port to the background script and wait for the background script to
+ * be ready. Rejects if we cannot connect or if the background script is not
+ * ready (see also bug 1474727).
  */
 async function openBackgroundPort() {
   return new Promise((resolve, reject) => {
@@ -29,9 +29,9 @@ async function openBackgroundPort() {
   });
 }
 
-/*
+/**
  * Extract any product information available on the page using Open Graph
- * <meta> tags, and sends it to the port as an argument.
+ * <meta> tags, and send it to the given port.
  */
 function getProductData(port) {
   const data = {};

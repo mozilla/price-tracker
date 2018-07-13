@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const utils = {
-  /*
+  /**
    * Resolves when the amount of time specified by delay has elapsed.
    */
   async wait(delay) {
@@ -12,13 +12,14 @@ const utils = {
     });
   },
 
-  /*
-   * Calls a callback after a delay a certain number of times until it resolves or rejects.
+  /**
+   * Calls the given callback, retrying if it rejects or throws an error.
+   * The delay between attempts increases per-try.
    *
-   * @param {function} callback The function to call.
-   * @param {number} maxRetries The number of times to attempt calling before giving up.
-   * @param {number} delayFactor The multiplier to increase the delay by for each attempt.
-   * @param {number} initialDelay The initial delay in ms.
+   * @param {function} callback Function to call
+   * @param {number} maxRetries Number of times to try calling
+   * @param {number} delayFactor Multiplier for delay increase per-try
+   * @param {number} initialDelay Initial delay in milliseconds
    */
   async retry(callback, maxRetries = 5, delayFactor = 2, initialDelay = 1000) {
     /* eslint-disable no-await-in-loop */
