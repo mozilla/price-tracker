@@ -1,17 +1,19 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const utils = {
-  /* eslint-disable arrow-body-style */
-  wait: async (delay) => {
+  /* Turns setTimeout, a callback-based method, into a promise-based method,
+  * so that it can be awaited in the 'retry' method. */
+  async wait(delay) {
     return new Promise((resolve) => {
       window.setTimeout(resolve, delay);
     });
   },
 
-  retry: async (callback, maxRetries = 5, delayFactor = 2, initialDelay = 2) => {
+  /* Attempts a promise-based callback a fixed number of times, with increasing
+  * delays between attempts. Throws an error if the final attempt fails. */
+  async retry(callback, maxRetries = 5, delayFactor = 2, initialDelay = 2) {
     /* eslint-disable no-await-in-loop */
     let delay = initialDelay;
     let lastError = null;
