@@ -14,5 +14,8 @@
     "no-use-before-define": ["error", {"functions": false}],
     "react/jsx-one-expression-per-line": ["off"],
     "react/prefer-stateless-function": ["off"]
+  },
+  "settings": {
+    "import/resolver": "webpack"
   }
 }

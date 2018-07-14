@@ -11,9 +11,9 @@ module.exports = {
   devtool: 'inline-source-map',
   target: 'web',
   entry: {
-    background: './src/background.js',
-    sidebar: './src/sidebar.jsx',
-    product_info: './src/product_info.js',
+    background: './src/background',
+    sidebar: './src/sidebar/index',
+    product_info: './src/product_info',
   },
   output: {
     path: BUILD_DIR,
@@ -38,4 +38,10 @@ module.exports = {
       {from: '**/*.json'},
     ], {context: 'src/'}),
   ],
+  resolve: {
+    extensions: ['.js', '.jsx'],
+    alias: {
+      commerce: path.resolve(__dirname, 'src'),
+    },
+  },
 };

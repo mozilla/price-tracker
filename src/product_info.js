@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import utils from './utils';
+import {retry} from './utils';
 
 const OPEN_GRAPH_PROPERTY_VALUES = {
   title: 'og:title',
@@ -50,7 +50,7 @@ function getProductData(port) {
 (async function main() {
   let port = null;
   try {
-    port = await utils.retry(openBackgroundPort);
+    port = await retry(openBackgroundPort);
   } catch (err) {
     console.error('Could not establish connection to background script.');
   }

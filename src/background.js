@@ -2,6 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import {hasKeys} from 'commerce/utils';
+
 const PRODUCT_KEYS = ['title', 'image', 'price'];
 
 // Open the sidebar when the page action is clicked.
@@ -28,13 +30,6 @@ browser.runtime.onConnect.addListener((port) => {
     type: 'background-ready',
   });
 });
-
-/**
- * Check if an object contains all the specified keys.
- */
-function hasKeys(object, keys) {
-  return keys.map(key => key in object).every(val => val);
-}
 
 /**
  * Generate the sidebar panel URL for a specific product.
