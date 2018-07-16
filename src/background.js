@@ -17,11 +17,11 @@ browser.runtime.onConnect.addListener((port) => {
       // If this page contains a product, prep the sidebar and show the
       // page action icon for opening the sidebar.
       const isProductPage = hasKeys(message.data, PRODUCT_KEYS);
+      browser.sidebarAction.setPanel({
+        panel: getPanelURL(message.data, isProductPage),
+        tabId: port.sender.tab.id,
+      });
       if (isProductPage) {
-        browser.sidebarAction.setPanel({
-          panel: getPanelURL(message.data),
-          tabId: port.sender.tab.id,
-        });
         browser.pageAction.show(port.sender.tab.id);
       }
     }
@@ -34,10 +34,12 @@ browser.runtime.onConnect.addListener((port) => {
 /**
  * Generate the sidebar panel URL for a specific product.
  */
-function getPanelURL(productData) {
+function getPanelURL(productData, isProductPage) {
   const url = new URL(browser.extension.getURL('/sidebar.html'));
-  for (const key of PRODUCT_KEYS) {
-    url.searchParams.set(key, productData[key]);
+  if (isProductPage) {
+    for (const key of PRODUCT_KEYS) {
+      url.searchParams.set(key, productData[key]);
+    }
   }
   return url.href;
 }
