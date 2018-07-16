@@ -5,6 +5,7 @@
     "browser": true
   },
   "plugins": ["react"],
+  "parser": "babel-eslint",
   "rules": {
     "object-curly-newline": ["error", {"consistent": true}],
     "object-curly-spacing": ["off"],
@@ -12,8 +13,14 @@
     "prefer-destructuring": ["off"],
     "no-restricted-syntax": ["off"],
     "no-use-before-define": ["error", {"functions": false}],
+
     "react/jsx-one-expression-per-line": ["off"],
-    "react/prefer-stateless-function": ["off"]
+    "react/prefer-stateless-function": ["off"],
+    "react/no-multi-comp": ["off"],
+    "react/destructuring-assignment": ["off"],
+
+    "jsx-a11y/click-events-have-key-events": ["off"],
+    "jsx-a11y/no-static-element-interactions": ["off"]
   },
   "settings": {
     "import/resolver": "webpack"
