@@ -8,6 +8,8 @@ import pt from 'prop-types';
 
 import Accordion from 'commerce/sidebar/components/Accordion';
 
+import 'commerce/sidebar/index.css';
+
 const PRODUCT_KEYS = ['title', 'image', 'price'];
 
 class Sidebar extends React.Component {

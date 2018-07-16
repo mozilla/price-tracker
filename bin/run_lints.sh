@@ -11,5 +11,8 @@ set -e
 echo ">>> eslint"
 eslint .
 
+echo ">>> stylelint"
+stylelint src/**/*.css
+
 echo ">>> web-ext lints"
 web-ext lint --self-hosted --source-dir build

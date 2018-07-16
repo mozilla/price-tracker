@@ -6,6 +6,8 @@ import autobind from 'autobind-decorator';
 import pt from 'prop-types';
 import React from 'react';
 
+import 'commerce/sidebar/components/Accordion.css';
+
 /**
  * An expandable section in an Accordion container. Must be used as a
  * direct child of an Accordion.
@@ -22,7 +24,7 @@ class AccordionSection extends React.Component {
     /** Contents that will be displayed when this section is active. */
     children: pt.node.isRequired,
 
-    // All reamaining props are provided by Accordion automatically.
+    // All remaining props are provided by Accordion automatically.
     active: pt.bool,
     index: pt.number,
     onClick: pt.func,
@@ -54,7 +56,7 @@ class AccordionSection extends React.Component {
 }
 
 /**
- * Displays collapsable content panels in a vertical stack. Only one section can
+ * Displays collapsible content panels in a vertical stack. Only one section can
  * be expanded at a time.
  *
  * @example
