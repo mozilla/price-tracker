@@ -11,17 +11,27 @@ browser.pageAction.onClicked.addListener(() => {
   browser.sidebarAction.open();
 });
 
+// Prep initial sidebar on location change for a given tab.
+browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url) {
+    browser.sidebarAction.setPanel({
+      panel: getPanelURL(),
+      tabId,
+    });
+  }
+});
+
 browser.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message) => {
     if (message.type === 'product-data') {
-      // If this page contains a product, prep the sidebar and show the
+      // If this page contains a product, update prepped sidebar and show the
       // page action icon for opening the sidebar.
       const isProductPage = hasKeys(message.data, PRODUCT_KEYS);
-      browser.sidebarAction.setPanel({
-        panel: getPanelURL(message.data, isProductPage),
-        tabId: port.sender.tab.id,
-      });
       if (isProductPage) {
+        browser.sidebarAction.setPanel({
+          panel: getPanelURL(message.data),
+          tabId: port.sender.tab.id,
+        });
         browser.pageAction.show(port.sender.tab.id);
       }
     }
@@ -34,9 +44,9 @@ browser.runtime.onConnect.addListener((port) => {
 /**
  * Generate the sidebar panel URL for a specific product.
  */
-function getPanelURL(productData, isProductPage) {
+function getPanelURL(productData = null) {
   const url = new URL(browser.extension.getURL('/sidebar.html'));
-  if (isProductPage) {
+  if (productData) {
     for (const key of PRODUCT_KEYS) {
       url.searchParams.set(key, productData[key]);
     }
