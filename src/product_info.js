@@ -55,8 +55,7 @@ async function openBackgroundPort() {
  * and if so, sends it to the background script via the port.
  */
 async function getProductInfo(port) {
-  const cssSelectors = getCssSelectors();
-  const productInfo = extractData(cssSelectors);
+  const productInfo = extractData();
   if (productInfo) {
     port.postMessage({
       type: 'product-data',
@@ -68,16 +67,17 @@ async function getProductInfo(port) {
 /**
  * Returns any extraction data found for the vendor based on the URL
  * for the page.
+ *
+ * @param {string} property The property name to read from
  */
-function getCssSelectors() {
+function getProductAttributeInfo(property) {
   const hostname = new URL(window.location.href).host;
-  for (const [vendor, selectors] of Object.entries(extractionData)) {
+  for (const [vendor, attributeInfo] of Object.entries(extractionData)) {
     if (hostname.includes(vendor)) {
-      const {title, price, image} = selectors || null;
       return {
-        title,
-        price,
-        image,
+        title: attributeInfo.title[property],
+        price: attributeInfo.price[property],
+        image: attributeInfo.image[property],
       };
     }
   }
@@ -88,22 +88,29 @@ function getCssSelectors() {
  * Returns any product information available on the page from CSS
  * selectors if they exist, otherwise from Open Graph <meta> tags.
  */
-function extractData(selectors) {
+function extractData() {
   const data = {};
+  const selectors = getProductAttributeInfo('selectors');
   if (selectors) {
-    for (const selector in selectors) {
-      // Avoid iterating over properties inherited through the prototype chain
-      if (Object.prototype.hasOwnProperty.call(selectors, selector)) {
-        const valueArr = selectors[selector];
-        let element = null;
-        for (let i = 0; i < valueArr.length; i++) {
-          const value = valueArr[i];
-          element = document.querySelector(value);
-          if (element) {
-            data[selector] = element.getAttribute('content')
-              || element.innerText
-              || element.src;
-            break;
+    for (const [productAttribute, selectorArr] of Object.entries(selectors)) {
+      for (const selector of selectorArr) {
+        const element = document.querySelector(selector);
+        if (element) {
+          const extractUsing = getProductAttributeInfo('extractUsing');
+          const extractionValue = extractUsing[productAttribute];
+          switch (extractionValue) {
+            case 'content':
+              data[productAttribute] = element.getAttribute('content');
+              break;
+            case 'innerText':
+              data[productAttribute] = element.innerText;
+              break;
+            case 'src':
+              data[productAttribute] = element.src;
+              break;
+            default:
+              console.error(`Unrecognized extraction value '${extractionValue}'.`);
+              break;
           }
         }
       }
