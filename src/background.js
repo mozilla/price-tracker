@@ -5,17 +5,22 @@
 import {hasKeys} from 'commerce/utils';
 
 const PRODUCT_KEYS = ['title', 'image', 'price'];
+const SIDEBAR_URL = browser.extension.getURL('/sidebar.html');
 
-// Open the sidebar when the page action is clicked.
+/**
+ * Open the sidebar when the page action is clicked.
+ */
 browser.pageAction.onClicked.addListener(() => {
   browser.sidebarAction.open();
 });
 
-// Prep initial sidebar on location change for a given tab.
-browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
-  if (changeInfo.url) {
+/**
+ * Prep initial sidebar on location change for a given tab.
+ */
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url && tab.status === 'loading') {
     browser.sidebarAction.setPanel({
-      panel: getPanelURL(),
+      panel: SIDEBAR_URL,
       tabId,
     });
   }
@@ -24,7 +29,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
 browser.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message) => {
     if (message.type === 'product-data') {
-      // If this page contains a product, update prepped sidebar and show the
+      // If this page contains a product, prep the sidebar and show the
       // page action icon for opening the sidebar.
       const isProductPage = hasKeys(message.data, PRODUCT_KEYS);
       if (isProductPage) {
@@ -44,12 +49,10 @@ browser.runtime.onConnect.addListener((port) => {
 /**
  * Generate the sidebar panel URL for a specific product.
  */
-function getPanelURL(productData = null) {
-  const url = new URL(browser.extension.getURL('/sidebar.html'));
-  if (productData) {
-    for (const key of PRODUCT_KEYS) {
-      url.searchParams.set(key, productData[key]);
-    }
+function getPanelURL(productData) {
+  const url = new URL(SIDEBAR_URL);
+  for (const key of PRODUCT_KEYS) {
+    url.searchParams.set(key, productData[key]);
   }
   return url.href;
 }
