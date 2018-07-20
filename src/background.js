@@ -5,10 +5,25 @@
 import {hasKeys} from 'commerce/utils';
 
 const PRODUCT_KEYS = ['title', 'image', 'price'];
+const SIDEBAR_URL = browser.extension.getURL('/sidebar.html');
 
-// Open the sidebar when the page action is clicked.
+/**
+ * Open the sidebar when the page action is clicked.
+ */
 browser.pageAction.onClicked.addListener(() => {
   browser.sidebarAction.open();
+});
+
+/**
+ * Prep initial sidebar on location change for a given tab.
+ */
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url && tab.status === 'loading') {
+    browser.sidebarAction.setPanel({
+      panel: SIDEBAR_URL,
+      tabId,
+    });
+  }
 });
 
 browser.runtime.onConnect.addListener((port) => {
@@ -35,7 +50,7 @@ browser.runtime.onConnect.addListener((port) => {
  * Generate the sidebar panel URL for a specific product.
  */
 function getPanelURL(productData) {
-  const url = new URL(browser.extension.getURL('/sidebar.html'));
+  const url = new URL(SIDEBAR_URL);
   for (const key of PRODUCT_KEYS) {
     url.searchParams.set(key, productData[key]);
   }

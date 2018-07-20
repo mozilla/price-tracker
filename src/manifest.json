@@ -32,5 +32,8 @@
     "default_title": "Commerce",
     "default_panel": "sidebar.html"
   },
-  "permissions": ["<all_urls>"]
+  "permissions": [
+    "<all_urls>",
+    "tabs"
+  ]
 }
