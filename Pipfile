@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+
+[packages]
+click = "*"
+marionette-client = "*"
+
+[requires]
+python_version = "2.7"
+
+[scripts]
+test = "npm test"

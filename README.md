@@ -30,7 +30,35 @@ Prerequisites:
    npm start
    ```
 
-## NPM Scripts
+## Running Tests
+
+Automated tests are run in a Firefox browser instance using [Marionette][]. We use the Python client for Marionette since there is no up-to-date JavaScript client.
+
+To set up your environment for running the tests, you must have:
+
+- A Firefox binary. On MacOS, this can be found within the `.app` folder at  `Firefox.app/Contents/MacOS/firefox`.
+- Python 2.7
+- [Pipenv][]
+
+With these installed, you can set up the test suite:
+
+1. Install Python dependencies:
+
+   ```sh
+   pipenv install
+   ```
+2. Save the path to your Firefox binary with `npm`:
+
+   ```sh
+   npm config set webext-commerce:firefox_bin <PATH_TO_FIREFOX_BINARY>
+   ```
+
+After this, you can run `pipenv run test` to run the automated test suite.
+
+[Marionette]: https://firefox-source-docs.mozilla.org/testing/marionette/marionette/index.html
+[Pipenv]: https://docs.pipenv.org/
+
+## Scripts
 
 | Command | Description |
 | --- | --- |
@@ -39,6 +67,7 @@ Prerequisites:
 | `npm run build` | Compile source files with Webpack |
 | `npm run watch` | Watch for changes and rebuild |
 | `npm run package` | Package the extension into an XPI file |
+| `pipenv run test` | Run test suite (See "Running Tests" for setup) |
 
 ## License
 
