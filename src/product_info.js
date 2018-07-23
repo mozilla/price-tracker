@@ -35,7 +35,7 @@ async function openBackgroundPort() {
   try {
     port = await retry(openBackgroundPort);
   } catch (err) {
-    console.error('Could not establish connection to background script.');
+    throw new Error('Could not establish connection to background script.');
   }
   if (port) {
     // Make sure the page has finished loading, as JS could alter the DOM.
@@ -48,7 +48,6 @@ async function openBackgroundPort() {
     }
   }
 }());
-
 
 /**
  * Checks to see if any product information for the page was found,
@@ -67,21 +66,34 @@ async function getProductInfo(port) {
 /**
  * Returns any extraction data found for the vendor based on the URL
  * for the page.
- *
- * @param {string} property The property name to read from
  */
-function getProductAttributeInfo(property) {
+function getProductAttributeInfo() {
   const hostname = new URL(window.location.href).host;
   for (const [vendor, attributeInfo] of Object.entries(extractionData)) {
     if (hostname.includes(vendor)) {
-      return {
-        title: attributeInfo.title[property],
-        price: attributeInfo.price[property],
-        image: attributeInfo.image[property],
-      };
+      return attributeInfo;
     }
   }
   return null;
+}
+
+/**
+ * Extracts and returns the string value for a given element property or attribute.
+ *
+ * @param {HTMLElement} element
+ * @param {string} extractionProperty
+ */
+function extractValueFromElement(element, extractionProperty) {
+  switch (extractionProperty) {
+    case 'content':
+      return element.getAttribute('content');
+    case 'innerText':
+      return element.innerText;
+    case 'src':
+      return element.src;
+    default:
+      throw new Error(`Unrecognized extraction property or attribute '${extractionProperty}'.`);
+  }
 }
 
 /**
@@ -90,28 +102,22 @@ function getProductAttributeInfo(property) {
  */
 function extractData() {
   const data = {};
-  const selectors = getProductAttributeInfo('selectors');
-  if (selectors) {
-    for (const [productAttribute, selectorArr] of Object.entries(selectors)) {
-      for (const selector of selectorArr) {
+  const attributeInfo = getProductAttributeInfo();
+  if (attributeInfo) {
+    for (const [productAttribute, extractor] of Object.entries(attributeInfo)) {
+      const {selectors, extractUsing} = extractor;
+      for (const selector of selectors) {
         const element = document.querySelector(selector);
         if (element) {
-          const extractUsing = getProductAttributeInfo('extractUsing');
-          const extractionValue = extractUsing[productAttribute];
-          switch (extractionValue) {
-            case 'content':
-              data[productAttribute] = element.getAttribute('content');
-              break;
-            case 'innerText':
-              data[productAttribute] = element.innerText;
-              break;
-            case 'src':
-              data[productAttribute] = element.src;
-              break;
-            default:
-              console.error(`Unrecognized extraction value '${extractionValue}'.`);
-              break;
+          data[productAttribute] = extractValueFromElement(element, extractUsing);
+          if (data[productAttribute]) {
+            break;
+          } else {
+            throw new Error(`Element found did not return a valid product ${productAttribute}.`);
           }
+        } else if (selector === selectors[selectors.length - 1]) {
+          // None of the selectors matched an element on the page
+          throw new Error(`No elements found with vendor data for product ${productAttribute}.`);
         }
       }
     }
