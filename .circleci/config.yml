@@ -2,12 +2,13 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/python:2.7-node-browsers
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
+            pipenv install
             npm install
       - run:
           name: Build extension
@@ -17,6 +18,10 @@ jobs:
           name: Run linting checks
           command: |
             npm run lint
+      - run:
+          name: Run automated tests
+          command: |
+            pipenv run test -- --firefox_bin $(which firefox)
       - run:
           name: Package extension as XPI
           command: |
