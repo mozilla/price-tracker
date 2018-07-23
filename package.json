@@ -1,5 +1,5 @@
 {
-  "name": "moz-commerce",
+  "name": "webext-commerce",
   "version": "0.1.0",
   "description": "",
   "private": "true",
@@ -10,7 +10,11 @@
     "build": "webpack --mode=development",
     "watch": "webpack --watch --mode=development",
     "package": "web-ext build --source-dir build --overwrite-dest",
-    "lint": "bin/run_lints.sh"
+    "lint": "bin/run_lints.sh",
+    "test": "bin/run_tests.py"
+  },
+  "config": {
+    "firefox_bin": ""
   },
   "devDependencies": {
     "babel-core": "6.26.3",
@@ -21,15 +25,20 @@
     "babel-preset-react": "6.24.1",
     "copy-webpack-plugin": "4.5.2",
     "css-loader": "1.0.0",
+    "enzyme": "3.3.0",
+    "enzyme-adapter-react-16": "1.1.1",
     "eslint": "4.19.1",
     "eslint-config-airbnb": "17.0.0",
     "eslint-import-resolver-webpack": "0.10.1",
     "eslint-plugin-import": "2.13.0",
     "eslint-plugin-jsx-a11y": "6.0.3",
     "eslint-plugin-react": "7.10.0",
+    "null-loader": "0.1.1",
     "style-loader": "0.21.0",
     "stylelint": "9.3.0",
     "stylelint-config-standard": "18.2.0",
+    "tap-mocha-reporter": "3.0.7",
+    "tape": "4.9.1",
     "web-ext": "2.7.0",
     "webpack": "4.15.1",
     "webpack-command": "0.3.1"
