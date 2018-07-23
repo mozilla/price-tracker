@@ -42,7 +42,7 @@ module.exports = {
       // Static files
       {from: '**/*.svg'},
       {from: '**/*.html'},
-      {from: '**/*.json'},
+      {from: 'manifest.json'},
     ], {context: 'src/'}),
   ],
   resolve: {
