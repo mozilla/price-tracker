@@ -31,6 +31,13 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     help='Path to Firefox binary',
 )
 def main(firefox_bin):
+    if not firefox_bin:
+        raise click.BadParameter(
+            'No Firefox binary found; configure the path to Firefox with `npm config`.'
+        )
+    elif not os.path.exists(firefox_bin):
+        raise click.BadParameter('Path to Firefox binary does not exist.')
+
     click.echo('== Building test bundle with Webpack')
     bundle_handle, bundle_path = mkstemp()
     try:
