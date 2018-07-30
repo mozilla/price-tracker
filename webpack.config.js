@@ -21,7 +21,6 @@ module.exports = {
   target: 'web',
   entry: {
     background: './src/background',
-    sidebar: './src/sidebar/index',
     product_info: './src/product_info',
   },
   output: {
