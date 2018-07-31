@@ -43,7 +43,17 @@ module.exports = {
           {loader: 'css-loader'},
         ],
       },
+      // jsdom is imported by fathom-web utils.js; it's only used for testing
+      {
+        test: /jsdom.*/,
+        use: {
+          loader: 'null-loader',
+        },
+      },
     ],
+  },
+  node: {
+    fs: 'empty',
   },
   plugins: [
     new CopyWebpackPlugin([

@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import {tuningRoutines, formatPrice} from 'commerce/fathom_ruleset';
 import {retry} from 'commerce/utils';
 import extractionData from './product_extraction_data.json';
 
@@ -54,13 +55,14 @@ async function openBackgroundPort() {
  * and if so, sends it to the background script via the port.
  */
 async function getProductInfo(port) {
-  const productInfo = extractData();
-  if (productInfo) {
-    port.postMessage({
-      type: 'product-data',
-      data: productInfo,
-    });
-  }
+  port.postMessage({
+    from: 'content',
+    subject: 'ready',
+    data: {
+      price: runRuleset('price', tuningRoutines.price.coeffs) || extractData().price,
+      url: window.document.URL,
+    },
+  });
 }
 
 /**
@@ -130,4 +132,20 @@ function extractData() {
     }
   }
   return data;
+}
+
+/*
+ * Run the ruleset for a feature against the current window document
+ * @param {string} feature title/image/price
+ * @param {object} array of tuning coeffs if any
+ */
+function runRuleset(feature, coeffs = []) {
+  const tuningRoutine = tuningRoutines[feature].routine;
+  let gotText;
+  if (feature === 'price') {
+    // strip whitespace, dollar sign, words, and trailing zeros when comparing price
+    gotText = tuningRoutine(...coeffs)(window.document).map(fnode => fnode.element)[0];
+    gotText = formatPrice((gotText.tagName !== 'META') ? gotText.textContent : gotText.getAttribute('content'));
+  }
+  return gotText;
 }
