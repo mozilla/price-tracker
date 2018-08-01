@@ -37,10 +37,3 @@ export async function retry(callback, maxRetries = 5, delayFactor = 2, initialDe
   }
   throw lastError;
 }
-
-/**
- * Check if an object contains all the specified keys.
- */
-export function hasKeys(object, keys) {
-  return keys.map(key => key in object).every(val => val);
-}
