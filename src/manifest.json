@@ -17,21 +17,12 @@
   "background": {
     "scripts": ["background.bundle.js"]
   },
-  "page_action": {
-    "default_icon": "icon.svg",
-    "default_title": "Show Shopping Sidebar"
-  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["product_info.bundle.js"]
     }
   ],
-  "sidebar_action": {
-    "default_icon": "icon.svg",
-    "default_title": "Commerce",
-    "default_panel": "sidebar.html"
-  },
   "permissions": [
     "<all_urls>",
     "tabs"
