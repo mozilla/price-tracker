@@ -1,9 +1,9 @@
-/** This Source Code Form is subject to the terms of the Mozilla Public
+/* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /*
- * Using Fathom to extract a product from its product page,
+ * Uses Fathom to extract a product from its product page,
  * where a 'product' is defined by the bundle of features that
  * makes it identifiable.
  *
@@ -42,15 +42,31 @@ const rules = ruleset(
 );
 
 /**
- * Extracts the highest scoring element above a score threshold for a
- * given feature contained in a page's HTML document.
+ * Extracts the highest scoring element above a score threshold
+ * contained in a page's HTML document.
  */
-export default function runTuningRoutine(doc) {
+function runRuleset(doc) {
   let fnodesList = rules.against(doc).get('product-price');
   fnodesList = fnodesList.filter(fnode => fnode.scoreFor('priceish') >= SCORE_THRESHOLD);
   // It is possible for multiple elements to have the same highest score.
   if (fnodesList.length >= 1) {
     return fnodesList[0].element;
+  }
+  return null;
+}
+
+/*
+ * Run the ruleset for the product features against the current window document
+ */
+export default function extractProduct(doc) {
+  const priceEle = runRuleset(doc);
+  if (priceEle) {
+    const price = (priceEle.tagName !== 'META') ? priceEle.textContent : priceEle.getAttribute('content');
+    if (price) {
+      return {
+        price,
+      };
+    }
   }
   return null;
 }

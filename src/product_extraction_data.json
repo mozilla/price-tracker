@@ -27,6 +27,7 @@
     "price": {
       "selectors": [
         "#priceblock_ourprice",
+        "#priceblock_dealprice",
         ".display-price",
         ".offer-price"
       ],
