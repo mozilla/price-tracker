@@ -5,7 +5,7 @@
 browser.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message) => {
     if (message.from === 'content' && message.subject === 'ready') {
-      console.log(message.data); // eslint-disable-line no-console
+      console.log(message.extractedProduct); // eslint-disable-line no-console
     }
   });
   port.postMessage({

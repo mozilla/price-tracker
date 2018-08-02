@@ -1,61 +1,54 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
+/** This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /*
- * Using fathom to extract a product from its product page,
+ * Using Fathom to extract a product from its product page,
  * where a 'product' is defined by the bundle of features that
  * makes it identifiable.
  *
- * Features: Title, Image, Price
- *
- * Note that this page is defined in manifest.json to run at "document_idle"
- * which is after all DOM content has been loaded.
- *
+ * Features: title, image, price
  */
 
 import {dom, out, rule, ruleset, score, type} from 'fathom-web';
+import fathomCoeffs from 'commerce/fathom_coefficients.json';
 
-const tuningRoutines = {
-  price: {routine: tunedPriceFnodes, coeffs: [2]},
-};
-
-/*
- * Remove dollar sign, strip whitespace, strip words (anything not numeric
- * or a price symbol), and remove trailing zeros
+/**
+ * Checks to see if an element is a <div> with a class of "price".
+ * Returns an integer corresponding to the coefficient to use for
+ * scoring an element with this rule.
  */
-function formatPrice(priceString) {
-  const formattedPriceStr = priceString.replace('$', '').replace(/([\s]|[^0-9$.-])/g, '');
-  return parseFloat(formattedPriceStr.substr(formattedPriceStr.indexOf('$') + 1));
+function hasDivWithPriceClass(fnode) {
+  if (fnode.element.classList.contains('price')) {
+    return fathomCoeffs.hasDivWithPriceClass;
+  }
+  return 1;
 }
 
-/*
- * Ruleset for product prices
+/**
+ * Ruleset for product features. Each feature has its own type.
  */
-function tunedPriceFnodes(coeffHasDivWithPriceClass = 1) {
-  function hasDivWithPriceClass(fnode) {
-    if (fnode.element.classList.contains('price')) {
-      return coeffHasDivWithPriceClass;
-    }
-    return 1;
+const rules = ruleset(
+  // get all elements that could contain the price
+  rule(dom('div'), type('priceish')),
+
+  // check class names to see if they contain 'price'
+  rule(type('priceish'), score(hasDivWithPriceClass)),
+
+  // return price element with max score
+  rule(type('priceish').max(), out('product-price')),
+);
+
+/**
+ * Extracts the highest scoring element for a given feature contained
+ * in a page's HTML document.
+ */
+export default function runTuningRoutine(doc) {
+  const fnodesList = rules.against(doc).get('product-price');
+  // It is possible for multiple elements to have the same highest score.
+  const elementsList = fnodesList.map(fnode => fnode.element);
+  if (elementsList.length === 1) {
+    return elementsList[0];
   }
-
-  const rules = ruleset(
-    // get all elements that could contain the price
-    rule(dom('div'), type('priceish')),
-
-    // check class names to see if they contain 'price'
-    rule(type('priceish'), score(hasDivWithPriceClass)),
-
-    // return price element with max score
-    rule(type('priceish').max(), out('product-price')),
-  );
-
-  function tuningRoutine(doc) {
-    return rules.against(doc).get('product-price');
-  }
-
-  return tuningRoutine;
+  return null;
 }
-
-export {tuningRoutines, formatPrice};
