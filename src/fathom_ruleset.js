@@ -13,6 +13,8 @@
 import {dom, out, rule, ruleset, score, type} from 'fathom-web';
 import fathomCoeffs from 'commerce/fathom_coefficients.json';
 
+const SCORE_THRESHOLD = fathomCoeffs.hasDivWithPriceClass;
+
 /**
  * Checks to see if an element is a <div> with a class of "price".
  * Returns an integer corresponding to the coefficient to use for
@@ -40,15 +42,15 @@ const rules = ruleset(
 );
 
 /**
- * Extracts the highest scoring element for a given feature contained
- * in a page's HTML document.
+ * Extracts the highest scoring element above a score threshold for a
+ * given feature contained in a page's HTML document.
  */
 export default function runTuningRoutine(doc) {
-  const fnodesList = rules.against(doc).get('product-price');
+  let fnodesList = rules.against(doc).get('product-price');
+  fnodesList = fnodesList.filter(fnode => fnode.scoreFor('priceish') >= SCORE_THRESHOLD);
   // It is possible for multiple elements to have the same highest score.
-  const elementsList = fnodesList.map(fnode => fnode.element);
-  if (elementsList.length === 1) {
-    return elementsList[0];
+  if (fnodesList.length >= 1) {
+    return fnodesList[0].element;
   }
   return null;
 }
