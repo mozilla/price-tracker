@@ -81,5 +81,19 @@
       ],
       "extractUsing": "src"
     }
-  }
+  },
+  "www.mkelly.me": {
+     "title": {
+       "selectors": ["#title"],
+       "extractUsing": "innerText"
+     },
+     "price": {
+       "selectors": ["#price"],
+       "extractUsing": "innerText"
+     },
+     "image": {
+       "selectors": ["img"],
+       "extractUsing": "src"
+     }
+   }
 }

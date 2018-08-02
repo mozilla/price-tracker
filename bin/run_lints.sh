@@ -9,7 +9,7 @@
 set -e
 
 echo ">>> eslint"
-eslint .
+eslint . --ext js,jsx
 
 echo ">>> stylelint"
 stylelint src/**/*.css

@@ -20,8 +20,10 @@ module.exports = {
   devtool: 'inline-source-map',
   target: 'web',
   entry: {
-    background: './src/background',
+    background: './src/background/index',
     product_info: './src/product_info',
+    browser_action: './src/browser_action/index',
+    page_action: './src/page_action/index',
   },
   output: {
     path: BUILD_DIR,
@@ -30,7 +32,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
