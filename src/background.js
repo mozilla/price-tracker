@@ -4,8 +4,8 @@
 
 browser.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message) => {
-    if (message.type === 'product-data') {
-      console.log(message.data); // eslint-disable-line no-console
+    if (message.from === 'content' && message.subject === 'ready') {
+      console.log(message.extractedProduct); // eslint-disable-line no-console
     }
   });
   port.postMessage({
