@@ -13,16 +13,14 @@
 import {dom, out, rule, ruleset, score, type} from 'fathom-web';
 import fathomCoeffs from 'commerce/fathom_coefficients.json';
 
-const SCORE_THRESHOLD = fathomCoeffs.hasDivWithPriceClass;
+const SCORE_THRESHOLD = fathomCoeffs.hasPriceClass;
 
 /**
- * Checks to see if an element is a <div> with a class of "price".
- * Returns an integer corresponding to the coefficient to use for
- * scoring an element with this rule.
+ * Scores fnodes with a "price" class
  */
-function hasDivWithPriceClass(fnode) {
+function hasPriceClass(fnode) {
   if (fnode.element.classList.contains('price')) {
-    return fathomCoeffs.hasDivWithPriceClass;
+    return fathomCoeffs.hasPriceClass;
   }
   return 1;
 }
@@ -35,7 +33,7 @@ const rules = ruleset(
   rule(dom('div'), type('priceish')),
 
   // check class names to see if they contain 'price'
-  rule(type('priceish'), score(hasDivWithPriceClass)),
+  rule(type('priceish'), score(hasPriceClass)),
 
   // return price element with max score
   rule(type('priceish').max(), out('product-price')),
