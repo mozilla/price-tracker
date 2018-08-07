@@ -1,9 +1,9 @@
 {
-  "largerImage": 3,
-  "largerFontSize": 1,
-  "hasDollarSign": 3,
-  "hasTitleInID": 10,
-  "hasTitleInClassName": 5,
-  "isHidden": -100,
-  "isHeaderElement": 10
+  "largerImageCoeff": 3,
+  "largerFontSizeCoeff": 1,
+  "hasDollarSignCoeff": 3,
+  "hasTitleInIDCoeff": 10,
+  "hasTitleInClassNameCoeff": 5,
+  "isHiddenCoeff": -100,
+  "isHeaderElementCoeff": 10
 }
