@@ -14,15 +14,10 @@ import {dom, out, rule, ruleset, score, type} from 'fathom-web';
 import fathomCoeffs from 'commerce/fathom_coefficients.json';
 
 const PRODUCT_FEATURES = ['title', 'price', 'image'];
-const SCORE_THRESHOLD = 3;
+const SCORE_THRESHOLD = 4;
+const DEFAULT_BODY_FONT_SIZE = 14;
 const DEFAULT_SCORE = 1;
 const VIEWPORT_HEIGHT = window.innerHeight;
-
-/**
- * Each of these functions represents a rule check: if the fnode passes
- * the rule, it gets a weighted score from 'fathom_coefficients.json';
- * otherwise, it gets the default score.
- */
 
 /**
  * Returns true if the fnode is above the fold
@@ -61,16 +56,66 @@ function hasDollarSign(fnode) {
  * Scores fnode in direct proportion to its font size
  */
 function largerFontSize(fnode) {
-  const sizeWithUnits = window.getComputedStyle(fnode.element).getPropertyValue('font-size');
+  const sizeWithUnits = window.getComputedStyle(fnode.element).fontSize;
   const size = sizeWithUnits.replace('px', '');
   if (size) {
-    return (parseInt(size, 10) * fathomCoeffs.largerFontSize);
+    // normalize the multiplier by the default font size
+    const sizeMultiplier = parseInt(size, 10) / DEFAULT_BODY_FONT_SIZE;
+    return (sizeMultiplier * fathomCoeffs.largerFontSize);
   }
   return DEFAULT_SCORE;
 }
 
 /**
- * Ruleset for product features. Each feature has its own type.
+ * Scores fnode with "title" in its id
+ */
+function hasTitleInID(fnode) {
+  const id = fnode.element.id;
+  if (id.includes('title') || id.includes('Title')) {
+    return fathomCoeffs.hasTitleInID;
+  }
+  return DEFAULT_SCORE;
+}
+
+/**
+ * Scores fnode with "title" in a class name
+ */
+function hasTitleInClassName(fnode) {
+  const className = fnode.element.className;
+  if (className.includes('title') || className.includes('Title')) {
+    return fathomCoeffs.hasTitleInClassName;
+  }
+  return DEFAULT_SCORE;
+}
+
+/**
+ * Scores fnode that is hidden
+ */
+function isHidden(fnode) {
+  const element = fnode.element;
+  const style = window.getComputedStyle(element);
+  if (!element.offsetParent // null if the offsetParent has a display set to "none"
+    || style.visibility === 'hidden'
+    || style.opacity === '0'
+    || style.width === '0'
+    || style.height === '0') {
+    return fathomCoeffs.isHidden;
+  }
+  return DEFAULT_SCORE;
+}
+
+/**
+ * Scores fnode that is an H1 element
+ */
+function isHeaderElement(fnode) {
+  if (fnode.element.tagName === 'H1') {
+    return fathomCoeffs.isHeaderElement;
+  }
+  return DEFAULT_SCORE;
+}
+
+/**
+ * Ruleset for product features; each feature has its own type.
  */
 const rules = ruleset(
   /**
@@ -86,10 +131,18 @@ const rules = ruleset(
   /**
   * Title rules
   */
-  // consider only the title element
-  rule(dom('title'), type('titleish')),
-  // give the title element the minimum score
-  rule(type('titleish'), score(() => SCORE_THRESHOLD)),
+  // consider all h1 and span elements near the top of the page
+  rule(dom('h1, span').when(isAboveTheFold), type('titleish')),
+  // score higher for h1 elements
+  rule(type('titleish'), score(isHeaderElement)),
+  // check if the id has "title" in it
+  rule(type('titleish'), score(hasTitleInID)),
+  // check if any class names have "title" in them
+  rule(type('titleish'), score(hasTitleInClassName)),
+  // better score for larger font size
+  rule(type('titleish'), score(largerFontSize)),
+  // reduce score if element is hidden
+  rule(type('titleish'), score(isHidden)),
   // return title element with max score
   rule(type('titleish').max(), out('title')),
 
@@ -102,6 +155,8 @@ const rules = ruleset(
   rule(type('priceish'), score(hasDollarSign)),
   // better score for larger font size
   rule(type('priceish'), score(largerFontSize)),
+  // reduce score if element is hidden
+  rule(type('priceish'), score(isHidden)),
   // return price element with max score
   rule(type('priceish').max(), out('price')),
 );
@@ -130,42 +185,6 @@ function hasAllFeatures(obj) {
   return PRODUCT_FEATURES.map(key => obj[key]).every(val => val);
 }
 
-// Trim off the shorter substring between ' - ', ': ' or ' | '
-function trimTitle(title) {
-  let textArr = [];
-  // TODO: This currently cuts of the " - Black" substring on E-bay
-  if (title.includes(' - ')) {
-    textArr = title.split(' - ');
-  }
-  if (title.includes(': ')) {
-    textArr = title.split(': ');
-  }
-  if (textArr.length >= 1) {
-    return textArr.reduce((a, b) => ((a.length > b.length) ? a : b));
-  }
-  return title;
-}
-
-/**
- * Takes a price string of the form "$1997 /each" and turns
- * it into "$19.97".
- * TODO: Can this be generalized/simplified? This is very specific
- * to Home Depot's product pages.
- */
-function formatPrice(price) {
-  let formattedPrice = price;
-  if (price.includes('/')) {
-    const index = price.indexOf('/');
-    formattedPrice = price.slice(0, index);
-    formattedPrice = formattedPrice.trim();
-    const decimalIndex = formattedPrice.length - 2;
-    const rightSide = formattedPrice.substring(decimalIndex);
-    const leftSide = formattedPrice.replace(rightSide, '');
-    formattedPrice = `${leftSide}.${rightSide}`;
-  }
-  return formattedPrice;
-}
-
 /*
  * Run the ruleset for the product features against the current window document
  */
@@ -174,16 +193,9 @@ export default function extractProduct(doc) {
   const extractedElements = runRuleset(doc);
   if (hasAllFeatures(extractedElements)) {
     for (const feature of PRODUCT_FEATURES) {
-      let text = extractedElements[feature].innerText;
-      if (feature === 'title') {
-        text = trimTitle(text);
-      }
-      if (feature === 'price') {
-        text = formatPrice(text);
-      }
       extractedProduct[feature] = (feature === 'image'
         ? extractedElements[feature].src
-        : text
+        : extractedElements[feature].innerText
       );
     }
   }

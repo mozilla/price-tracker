@@ -1,5 +1,9 @@
 {
   "largerImage": 3,
-  "largerFontSize": 2,
-  "hasDollarSign": 3
+  "largerFontSize": 1,
+  "hasDollarSign": 3,
+  "hasTitleInID": 10,
+  "hasTitleInClassName": 5,
+  "isHidden": -100,
+  "isHeaderElement": 10
 }
