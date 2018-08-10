@@ -15,10 +15,12 @@ import {
   largerImageCoeff,
   largerFontSizeCoeff,
   hasDollarSignCoeff,
-  hasTitleInIDCoeff,
-  hasTitleInClassNameCoeff,
-  isHiddenCoeff,
-  isHeaderElementCoeff,
+  hasPriceInIDCoeff,
+  hasPriceInClassNameCoeff,
+  isAboveTheFoldPriceCoeff,
+  isAboveTheFoldImageCoeff,
+  isNearbyImageXAxisCoeff,
+  hasPriceishPatternCoeff,
 } from 'commerce/fathom_coefficients.json';
 
 const PRODUCT_FEATURES = ['title', 'price', 'image'];
@@ -36,10 +38,12 @@ function runRuleset(doc) {
       largerImageCoeff,
       largerFontSizeCoeff,
       hasDollarSignCoeff,
-      hasTitleInIDCoeff,
-      hasTitleInClassNameCoeff,
-      isHiddenCoeff,
-      isHeaderElementCoeff,
+      hasPriceInIDCoeff,
+      hasPriceInClassNameCoeff,
+      isAboveTheFoldPriceCoeff,
+      isAboveTheFoldImageCoeff,
+      isNearbyImageXAxisCoeff,
+      hasPriceishPatternCoeff,
     ]).against(doc).get(`${feature}`);
     fnodesList = fnodesList.filter(fnode => fnode.scoreFor(`${feature}ish`) >= SCORE_THRESHOLD);
     // It is possible for multiple elements to have the same highest score.
