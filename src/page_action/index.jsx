@@ -31,10 +31,13 @@ import 'commerce/page_action/styles.css';
 @autobind
 class ProductViewer extends React.Component {
   static propTypes = {
+    // Direct props
     extractedProduct: extractedProductShape.isRequired,
 
+    // State props
     savedProduct: productShape,
 
+    // Dispatch props
     addProductFromExtracted: pt.func.isRequired,
     loadStateFromStorage: pt.func.isRequired,
   }
@@ -66,7 +69,7 @@ class ProductViewer extends React.Component {
     return (
       <div>
         <h2>{extractedProduct.title}</h2>
-        <div>{amount.toFormat('$0.0')}</div>
+        <div>{amount.toFormat('$0.00')}</div>
         <button type="button" onClick={this.handleClickTrack}>
           Track
         </button>

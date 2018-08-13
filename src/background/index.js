@@ -10,9 +10,9 @@ import {loadStateFromStorage} from 'commerce/state/sync';
 const PAGE_ACTION_URL = browser.extension.getURL('/page_action/index.html');
 
 /**
- * Background tasks when a product is extracted from a webpage. Along with
- * normal page navigation, this is also run when the prices are being updated
- * in the background.
+ * Triggers background tasks when a product is extracted from a webpage. Along
+ * with normal page navigation, this is also run when the prices are being
+ * updated in the background.
  */
 function handleExtractedProductData(extractedProduct, sender) {
   // Display pageAction if we can

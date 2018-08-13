@@ -8,8 +8,6 @@
 
 import pt from 'prop-types';
 
-import {createReducer} from 'commerce/utils';
-
 export const ADD_PRODUCT = 'commerce/products/ADD_PRODUCT'; // Used by price duck
 const REMOVE_PRODUCT = 'commerce/products/REMOVE_PRODUCT';
 
@@ -34,30 +32,34 @@ function initialState() {
   };
 }
 
-export default createReducer(initialState, {
-  [ADD_PRODUCT](state, action) {
-    const data = action.extractedProductData;
-    const newProduct = {
-      id: getProductIdFromExtracted(data),
-      title: data.title,
-      url: data.url,
-      image: data.image,
-    };
+export default function reducer(state = initialState(), action) {
+  switch (action.type) {
+    case ADD_PRODUCT: {
+      const data = action.extractedProductData;
+      const newProduct = {
+        id: getProductIdFromExtracted(data),
+        title: data.title,
+        url: data.url,
+        image: data.image,
+      };
 
-    return {
-      ...state,
-      savedProducts: state.savedProducts.concat([newProduct]),
-    };
-  },
-  [REMOVE_PRODUCT](state, action) {
-    return {
-      ...state,
-      savedProducts: state.savedProducts.filter(
-        product => product.id !== action.productId,
-      ),
-    };
-  },
-});
+      return {
+        ...state,
+        savedProducts: state.savedProducts.concat([newProduct]),
+      };
+    }
+    case REMOVE_PRODUCT: {
+      return {
+        ...state,
+        savedProducts: state.savedProducts.filter(
+          product => product.id !== action.productId,
+        ),
+      };
+    }
+    default:
+      return state;
+  }
+}
 
 export function addProductFromExtracted(data) {
   return {

@@ -10,9 +10,12 @@ import Dinero from 'dinero.js';
 import pt from 'prop-types';
 
 import {ADD_PRODUCT, getProductIdFromExtracted} from 'commerce/state/products';
-import {createReducer, findMax, priceStringToAmount} from 'commerce/utils';
+import {
+  findMax,
+  priceStringToAmount,
+} from 'commerce/utils';
 
-const ADD_PRICE = 'commerce/pries/ADD_PRICE';
+const ADD_PRICE = 'commerce/prices/ADD_PRICE';
 
 /**
  * Model for the price of a product at a specific point in time.
@@ -41,28 +44,33 @@ function initialState() {
   };
 }
 
-export default createReducer(initialState, {
-  [ADD_PRODUCT](state, action) {
-    const newPriceEntry = priceEntryFromExtracted(action.extractedProductData);
-    return {
-      ...state,
-      priceEntries: state.priceEntries.concat([newPriceEntry]),
-    };
-  },
-  [ADD_PRICE](state, action) {
-    const newPriceEntry = priceEntryFromExtracted(action.extractedProductData);
-
-    let priceEntries = state.priceEntries;
-    if (shouldAddNewPrice(state, newPriceEntry)) {
-      priceEntries = state.priceEntries.concat([newPriceEntry]);
+export default function reducer(state = initialState(), action) {
+  switch (action.type) {
+    case ADD_PRODUCT: {
+      const newPriceEntry = priceEntryFromExtracted(action.extractedProductData);
+      return {
+        ...state,
+        priceEntries: state.priceEntries.concat([newPriceEntry]),
+      };
     }
+    case ADD_PRICE: {
+      const newPriceEntry = priceEntryFromExtracted(action.extractedProductData);
 
-    return {
-      ...state,
-      priceEntries,
-    };
-  },
-});
+      let priceEntries = state.priceEntries;
+      if (shouldAddNewPrice(state, newPriceEntry)) {
+        priceEntries = state.priceEntries.concat([newPriceEntry]);
+      }
+
+      return {
+        ...state,
+        priceEntries,
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+}
 
 export function addPriceFromExtracted(data) {
   return {
@@ -80,7 +88,7 @@ export function getPricesForProduct(state, productId) {
 
 export function getLatestPriceForProduct(state, productId) {
   const prices = getPricesForProduct(state, productId);
-  return findMax(prices, (a, b) => a.date - b.date);
+  return findMax(prices, price => price.date);
 }
 
 /**

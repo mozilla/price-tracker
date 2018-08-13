@@ -10,7 +10,7 @@ import {connect, Provider} from 'react-redux';
 import store from 'commerce/state';
 import {getPricesForProduct, priceShape} from 'commerce/state/prices';
 import {getAllProducts, productShape} from 'commerce/state/products';
-import {loadStateFromStorage} from 'commerce/state/sync';
+import * as syncActions from 'commerce/state/sync';
 
 import 'commerce/browser_action/styles.css';
 
@@ -18,12 +18,16 @@ import 'commerce/browser_action/styles.css';
   state => ({
     products: getAllProducts(state),
   }),
-  {loadStateFromStorage},
+  {
+    loadStateFromStorage: syncActions.loadStateFromStorage,
+  },
 )
 class ProductManager extends React.Component {
   static propTypes = {
+    // Direct props
     products: pt.arrayOf(productShape),
 
+    // Dispatch props
     loadStateFromStorage: pt.func.isRequired,
   }
 
@@ -44,20 +48,8 @@ class ProductManager extends React.Component {
     }
 
     return (
-      <ProductList products={products} />
-    );
-  }
-}
-
-class ProductList extends React.Component {
-  static propTypes = {
-    products: pt.arrayOf(productShape).isRequired,
-  }
-
-  render() {
-    return (
       <ul>
-        {this.props.products.map(product => (
+        {products.map(product => (
           <ProductListItem product={product} key={product.id} />
         ))}
       </ul>
@@ -72,8 +64,10 @@ class ProductList extends React.Component {
 )
 class ProductListItem extends React.Component {
   static propTypes = {
+    // Direct props
     product: productShape.isRequired,
 
+    // State props
     prices: pt.arrayOf(priceShape),
   }
 
@@ -91,15 +85,7 @@ class ProductListItem extends React.Component {
         </a>
         {prices.map(price => (
           <div key={price.date}>
-            {price.amount.toFormat('$0.0')}
-            ({price.date.toLocaleDateString(undefined, {
-              month: 'numeric',
-              day: 'numeric',
-              year: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
-              second: 'numeric',
-            })})
+            {price.amount.toFormat('$0.0')} ({price.date.toLocaleString()})
           </div>
         ))}
       </li>

@@ -39,23 +39,19 @@ export async function retry(callback, maxRetries = 5, delayFactor = 2, initialDe
 }
 
 /**
- * Search a list for the maximum value as determined by the given compare
- * function.
+ * Search a list for the maximum value. The key function is used to extract
+ * the comparison key, and returns the values in the list by default.
  * @param  {array} collection
- * @param  {function} compare
- *   Given two items from the list a and b, should return:
- *     -1 if a < b
- *     0 if a == b
- *     1 if a > b
+ * @param  {function} key
  */
-export function findMax(collection, compare) {
+export function findMax(collection, key = a => a) {
   if (collection.length < 1) {
     return null;
   }
 
   let max = collection[0];
   for (let k = 1; k < collection.length; k++) {
-    if (compare(max, collection[k]) > 0) {
+    if (key(collection[k]) > key(max)) {
       max = collection[k];
     }
   }
@@ -75,26 +71,4 @@ export function findMax(collection, compare) {
 export function priceStringToAmount(priceString) {
   const priceMatch = priceString.trim().match(/^\$([0-9]+)\.([0-9]{2})$/);
   return (Number.parseInt(priceMatch[1], 10) * 100) + Number.parseInt(priceMatch[2], 10);
-}
-
-
-/**
- * Create a reducer function from an object that maps action types to functions
- * that handle the reduction for that type.
- *
- * This lets us avoid `switch` statements, which have some annoying syntactical
- * issues (see no-case-declarations in eslint).
- *
- * @param  {function} initialStateCallback
- * @param  {object} handlers
- * @return {function}
- */
-export function createReducer(initialStateCallback, handlers) {
-  return function reducer(state = initialStateCallback(), action) {
-    if (handlers.hasOwnProperty(action.type)) {
-      return handlers[action.type](state, action);
-    }
-
-    return state;
-  };
 }

@@ -35,6 +35,7 @@ function fetchLatestPrice(product) {
     return;
   }
 
+  // TODO(osmose): This method fails for domains that block framing. See #41.
   const iframe = document.createElement('iframe');
   iframe.src = product.url;
   iframe.id = product.id;

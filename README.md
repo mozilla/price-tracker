@@ -83,7 +83,7 @@ Global state for the add-on is managed via [Redux][]. Any time the data is chang
 
 Reducers, action creators, etc. are organized into [ducks][] inside the `src/state` directory.
 
-[Redux]: https://github.com/erikras/ducks-modular-redux
+[Redux]: https://redux.js.org/
 [localstorage]: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/local
 [ducks]: https://github.com/erikras/ducks-modular-redux
 
