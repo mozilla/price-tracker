@@ -16,3 +16,6 @@ export const PRICE_CHECK_TIMEOUT_INTERVAL = 1000 * 60 * 15; // 15 minutes
 
 /** Delay before removing iframes created during price checks */
 export const IFRAME_TIMEOUT = 1000 * 60; // 1 minute
+
+// Minimum score to be considered the "correct" feature element extracted by Fathom
+export const SCORE_THRESHOLD = 4;

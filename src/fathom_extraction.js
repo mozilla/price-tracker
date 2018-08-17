@@ -19,32 +19,36 @@ import {
   hasPriceInClassNameCoeff,
   isAboveTheFoldPriceCoeff,
   isAboveTheFoldImageCoeff,
-  isNearbyImageXAxisCoeff,
+  isNearbyImageXAxisPriceCoeff,
+  isNearbyImageYAxisTitleCoeff,
   hasPriceishPatternCoeff,
 } from 'commerce/fathom_coefficients.json';
+import {SCORE_THRESHOLD} from 'commerce/config';
 
 const PRODUCT_FEATURES = ['title', 'price', 'image'];
-const SCORE_THRESHOLD = 4;
+const {rulesetMaker} = productRuleset.get('product');
+const rulesetWithCoeffs = rulesetMaker([
+  largerImageCoeff,
+  largerFontSizeCoeff,
+  hasDollarSignCoeff,
+  hasPriceInIDCoeff,
+  hasPriceInClassNameCoeff,
+  isAboveTheFoldPriceCoeff,
+  isAboveTheFoldImageCoeff,
+  isNearbyImageXAxisPriceCoeff,
+  isNearbyImageYAxisTitleCoeff,
+  hasPriceishPatternCoeff,
+]);
 
 /**
  * Extracts the highest scoring element above a score threshold
  * contained in a page's HTML document.
  */
 function runRuleset(doc) {
+  const rulesetOutput = rulesetWithCoeffs.against(doc);
   const extractedElements = {};
-  const rules = productRuleset.get('product').rulesetMaker;
   for (const feature of PRODUCT_FEATURES) {
-    let fnodesList = rules([
-      largerImageCoeff,
-      largerFontSizeCoeff,
-      hasDollarSignCoeff,
-      hasPriceInIDCoeff,
-      hasPriceInClassNameCoeff,
-      isAboveTheFoldPriceCoeff,
-      isAboveTheFoldImageCoeff,
-      isNearbyImageXAxisCoeff,
-      hasPriceishPatternCoeff,
-    ]).against(doc).get(`${feature}`);
+    let fnodesList = rulesetOutput.get(feature);
     fnodesList = fnodesList.filter(fnode => fnode.scoreFor(`${feature}ish`) >= SCORE_THRESHOLD);
     // It is possible for multiple elements to have the same highest score.
     if (fnodesList.length >= 1) {
@@ -69,10 +73,10 @@ export default function extractProduct(doc) {
   const extractedElements = runRuleset(doc);
   if (hasAllFeatures(extractedElements)) {
     for (const feature of PRODUCT_FEATURES) {
-      extractedProduct[feature] = (feature === 'image'
-        ? extractedElements[feature].src
-        : extractedElements[feature].innerText
-      );
+      if (feature === 'image') {
+        extractedProduct[feature] = extractedElements[feature].src;
+      }
+      extractedProduct[feature] = extractedElements[feature].innerText;
     }
   }
   return hasAllFeatures(extractedProduct) ? extractedProduct : null;

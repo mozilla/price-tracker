@@ -6,6 +6,7 @@
   "hasPriceInClassNameCoeff": 2,
   "isAboveTheFoldPriceCoeff": 33,
   "isAboveTheFoldImageCoeff": 13,
-  "isNearbyImageXAxisCoeff": 5,
+  "isNearbyImageXAxisPriceCoeff": 5,
+  "isNearbyImageYAxisTitleCoeff": 5,
   "hasPriceishPatternCoeff": 15
 }
