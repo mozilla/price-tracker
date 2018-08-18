@@ -85,5 +85,5 @@ ReactDOM.render(
   <Provider store={store}>
     <ProductViewer productId={productId} extractedProduct={extractedProduct} />
   </Provider>,
-  document.getElementById('app'),
+  document.getElementById('page-action-app'),
 );

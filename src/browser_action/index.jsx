@@ -97,5 +97,5 @@ ReactDOM.render(
   <Provider store={store}>
     <ProductManager />
   </Provider>,
-  document.getElementById('app'),
+  document.getElementById('browser-action-app'),
 );

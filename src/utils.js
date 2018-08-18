@@ -2,6 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import checkPropTypes from 'check-prop-types';
+
 /**
  * Resolves when the amount of time specified by delay has elapsed.
  */
@@ -50,9 +52,9 @@ export function findMax(collection, key = a => a) {
   }
 
   let max = collection[0];
-  for (let k = 1; k < collection.length; k++) {
-    if (key(collection[k]) > key(max)) {
-      max = collection[k];
+  for (const item of collection.slice(1)) {
+    if (key(item) > key(max)) {
+      max = item;
     }
   }
 
@@ -61,14 +63,28 @@ export function findMax(collection, key = a => a) {
 
 /**
  * Parse a string containing a price to the currency amount in sub-units (e.g.
- * cents).
+ * "$10.00" would return 1000, the value in cents).
  *
  * Strings of the form "$10.00" are the only supported format for now.
  *
- * @param  {string} priceString
+ * @param {string} priceString
  * @return {number}
  */
 export function priceStringToAmount(priceString) {
   const priceMatch = priceString.trim().match(/^\$([0-9]+)\.([0-9]{2})$/);
-  return (Number.parseInt(priceMatch[1], 10) * 100) + Number.parseInt(priceMatch[2], 10);
+  const dollars = Number.parseInt(priceMatch[1], 10);
+  const cents = Number.parseInt(priceMatch[2], 10);
+  return (dollars * 100) + cents;
+}
+
+/**
+ * Wrapper for check-prop-types to check a propType against a single value.
+ * @param {*} value Value to validate
+ * @param {PropType} propType The Proptype to validate value against
+ * @return {string|undefined}
+ *  Undefined if the validation was successful, or an error string explaining
+ *  why it failed.
+ */
+export function validatePropType(value, propType) {
+  return checkPropTypes({value: propType}, {value}, 'prop', 'Validation');
 }

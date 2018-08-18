@@ -2,6 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+/**
+ * Functions to support background price checks.
+ * @module
+ */
+
 import {IFRAME_TIMEOUT, PRICE_CHECK_INTERVAL} from 'commerce/config';
 import store from 'commerce/state';
 import {addPriceFromExtracted, getLatestPriceForProduct} from 'commerce/state/prices';
@@ -28,6 +33,7 @@ export function updatePrices() {
  * Fetch the latest price info by loading the product page in an iframe; the
  * extraction content script will send us the latest price info, which is passed
  * to updateProductWithExtracted.
+ * @param {Product} product
  */
 function fetchLatestPrice(product) {
   // Do nothing if there's already a fetch in progress.
@@ -37,7 +43,9 @@ function fetchLatestPrice(product) {
 
   // TODO(osmose): This method fails for domains that block framing. See #41.
   const iframe = document.createElement('iframe');
-  iframe.src = product.url;
+  const url = new URL(product.url);
+  url.hash = 'moz-commerce-background';
+  iframe.src = url.href;
   iframe.id = product.id;
   iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
   document.body.appendChild(iframe);
@@ -51,6 +59,7 @@ function fetchLatestPrice(product) {
 /**
  * If we have a saved product matching the extracted data, update the
  * price history with the latest price.
+ * @param {ExtractedProduct} data
  */
 export function updateProductWithExtracted(data) {
   const state = store.getState();

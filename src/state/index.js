@@ -8,27 +8,54 @@
  *
  * This module has side-effects on import to register listeners for persisting
  * and loading state.
+ * @module
  */
 
-import {applyMiddleware, combineReducers, createStore} from 'redux';
+import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
 
 import prices from 'commerce/state/prices';
 import products from 'commerce/state/products';
 import sync, {loadStateFromStorage, saveStateToStorage} from 'commerce/state/sync';
 
-const appReducer = combineReducers({
-  prices,
-  products,
-});
+/**
+ * Type definition for the global Redux state object.
+ * @typedef ReduxState
+ * @type {object}
+ */
+
+const REDUCERS = [sync, prices, products];
 
 /**
- * Applies the sync reducer without namespacing from combineReducers so that it
- * can replace the entire state object from storage.
+ * Build the initial app state in a similar way to combineReducers by calling
+ * each reducer with an undefined state.
+ * @return {ReduxState} Initial state for the app
  */
-function rootReducer(state, action = {}) {
-  const syncedState = sync(state, action);
-  return appReducer(syncedState, action);
+function initialState() {
+  const initialStates = REDUCERS.map(
+    reducer => reducer(undefined, {type: '@@INIT'}),
+  );
+  return Object.assign({}, ...initialStates);
+}
+
+/**
+ * Base reducer for the entire app.
+ *
+ * We avoid Redux's combineReducers here so that reducers aren't namespaced and
+ * can access the entire app state.
+ */
+function rootReducer(state = initialState(), action = {}) {
+  // Runs each reducer against the state/action in sequence from top to bottom.
+  // The modified state returned by each reducer is passed to the next one in
+  // sequence.
+  return [
+    sync,
+    prices,
+    products,
+  ].reduce(
+    (reducedState, reducer) => reducer(reducedState, action),
+    state,
+  );
 }
 
 const store = createStore(

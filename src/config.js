@@ -5,13 +5,14 @@
 /**
  * Config values that are shared between files or otherwise useful to have in
  * a separate file.
+ * @module
  */
 
-// Time to wait between price checks for a product
-export const PRICE_CHECK_INTERVAL = 1000 * 10; // 6 hours
+/** Time to wait between price checks for a product */
+export const PRICE_CHECK_INTERVAL = 1000 * 60 * 60 * 6; // 6 hours
 
-// Time to wait between checking if we should fetch new prices
-export const PRICE_CHECK_TIMEOUT_INTERVAL = 1000 * 10; // 15 minutes
+/** Time to wait between checking if we should fetch new prices */
+export const PRICE_CHECK_TIMEOUT_INTERVAL = 1000 * 60 * 15; // 15 minutes
 
-// Delay before removing iframes created during price checks
-export const IFRAME_TIMEOUT = 1000 * 5; // 1 minute
+/** Delay before removing iframes created during price checks */
+export const IFRAME_TIMEOUT = 1000 * 60; // 1 minute

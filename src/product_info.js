@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /**
- * Note that this page is defined in manifest.json to run at "document_idle"
- * which is after all DOM content has been loaded.
+ * Note that this page is defined in the background script to run at
+ * "document_idle", which is after all DOM content has been loaded.
  */
 
 import extractProductWithFathom from 'commerce/fathom_extraction';
@@ -19,24 +19,28 @@ async function getProductInfo() {
     extractProductWithFathom(window.document)
     || extractProductWithFallback()
   );
-  browser.runtime.sendMessage({
+  await browser.runtime.sendMessage({
     from: 'content',
     subject: 'ready',
     extractedProduct: {
       ...extractedProduct,
       url: document.location.href,
-      date: new Date(),
+      date: (new Date()).toISOString(),
     },
   });
 }
 
-(async function main() {
-  // Make sure the page has finished loading, as JS could alter the DOM.
-  if (document.readyState === 'complete') {
-    getProductInfo();
-  } else {
-    window.addEventListener('load', () => {
+(function main() {
+  // If we're in an iframe, don't bother extracting a product EXCEPT if we were
+  // started by the background script for a price check.
+  const isInIframe = window !== window.top;
+  const isBackgroundUpdate = window.location.hash === '#moz-commerce-background';
+  if (!isInIframe || isBackgroundUpdate) {
+    // Make sure the page has finished loading, as JS could alter the DOM.
+    if (document.readyState === 'complete') {
       getProductInfo();
-    });
+    } else {
+      window.addEventListener('load', getProductInfo);
+    }
   }
 }());

@@ -4,6 +4,7 @@
 
 /**
  * Redux duck for product prices extracted from a product webpage.
+ * @module
  */
 
 import Dinero from 'dinero.js';
@@ -15,16 +16,27 @@ import {
   priceStringToAmount,
 } from 'commerce/utils';
 
-const ADD_PRICE = 'commerce/prices/ADD_PRICE';
+// Types
 
 /**
- * Model for the price of a product at a specific point in time.
+ * @typedef Price
+ * @type {object}
  */
-export class Price {
-  constructor(priceEntry) {
-    this.productId = priceEntry.productId;
-    this.amount = Dinero({amount: priceEntry.amount});
-    this.date = new Date(priceEntry.date);
+export const priceShape = pt.shape({
+  productId: pt.string.isRequired,
+  amount: pt.object.isRequired,
+  date: pt.instanceOf(Date).isRequired,
+});
+
+/**
+ * Wrapper for price data from the state. Instances of this class are what is
+ * returned by the selectors.
+ */
+export class PriceWrapper {
+  constructor(price) {
+    this.productId = price.productId;
+    this.amount = Dinero({amount: price.amount});
+    this.date = new Date(price.date);
   }
 
   equals(price) {
@@ -32,38 +44,38 @@ export class Price {
   }
 }
 
-export const priceShape = pt.shape({
-  productId: pt.string.isRequired,
-  amount: pt.object.isRequired,
-  date: pt.instanceOf(Date).isRequired,
-});
+// Actions
+
+const ADD_PRICE = 'commerce/prices/ADD_PRICE';
+
+// Reducer
 
 function initialState() {
   return {
-    priceEntries: [],
+    prices: [],
   };
 }
 
 export default function reducer(state = initialState(), action) {
   switch (action.type) {
     case ADD_PRODUCT: {
-      const newPriceEntry = priceEntryFromExtracted(action.extractedProductData);
+      const newPrice = priceFromExtracted(action.extractedProductData);
       return {
         ...state,
-        priceEntries: state.priceEntries.concat([newPriceEntry]),
+        prices: state.prices.concat([newPrice]),
       };
     }
     case ADD_PRICE: {
-      const newPriceEntry = priceEntryFromExtracted(action.extractedProductData);
+      const newPrice = priceFromExtracted(action.extractedProductData);
 
-      let priceEntries = state.priceEntries;
-      if (shouldAddNewPrice(state, newPriceEntry)) {
-        priceEntries = state.priceEntries.concat([newPriceEntry]);
+      let prices = state.prices;
+      if (shouldAddNewPrice(state, newPrice)) {
+        prices = state.prices.concat([newPrice]);
       }
 
       return {
         ...state,
-        priceEntries,
+        prices,
       };
     }
     default: {
@@ -72,6 +84,12 @@ export default function reducer(state = initialState(), action) {
   }
 }
 
+// Action Creators
+
+/**
+ * Adds a new price to the store.
+ * @param {ExtractedProduct} data
+ */
 export function addPriceFromExtracted(data) {
   return {
     type: ADD_PRICE,
@@ -79,22 +97,40 @@ export function addPriceFromExtracted(data) {
   };
 }
 
+// Selectors
+
+/**
+ * Fetch every stored price for a product.
+ * @param {ReduxState} state
+ * @param {string} productId Unique ID of the product to fetch prices for.
+ * @return {PriceWrapper[]}
+ */
 export function getPricesForProduct(state, productId) {
-  const priceEntries = state.prices.priceEntries.filter(
-    priceEntry => priceEntry.productId === productId,
+  const prices = state.prices.filter(
+    price => price.productId === productId,
   );
-  return priceEntries.map(priceEntry => new Price(priceEntry));
+  return prices.map(price => new PriceWrapper(price));
 }
 
+/**
+ * Fetch the most recently-fetched price for a product.
+ * @param {ReduxState} state
+ * @param {[type]} productId Unique ID of the product to fetch prices for
+ * @return {PriceWrapper}
+ */
 export function getLatestPriceForProduct(state, productId) {
   const prices = getPricesForProduct(state, productId);
   return findMax(prices, price => price.date);
 }
 
+// Helpers
+
 /**
  * Create a price entry from extracted product data.
+ * @param {ExtractedProduct} data
+ * @return {Price}
  */
-function priceEntryFromExtracted(data) {
+function priceFromExtracted(data) {
   return {
     productId: getProductIdFromExtracted(data),
     amount: priceStringToAmount(data.price),
@@ -103,16 +139,15 @@ function priceEntryFromExtracted(data) {
 }
 
 /**
- * Determine if the given price entry should be added to the stored price
- * history.
+ * Determine if the given price should be added to the stored price history.
+ * @param {ReduxState} state
+ * @param {Price} price
+ * @return {boolean} True if the price should be stored, False otherwise.
  */
-function shouldAddNewPrice(state, priceEntry) {
-  const price = new Price(priceEntry);
-
-  // Pretend this is global state so that the selector works. This isn't ideal,
-  // but we don't hit this enough to generalize a fix.
-  const latestPrice = getLatestPriceForProduct({prices: state}, price.productId);
+function shouldAddNewPrice(state, price) {
+  const newPrice = new PriceWrapper(price);
+  const latestPrice = getLatestPriceForProduct(state, price.productId);
 
   // Skip if the price hasn't changed.
-  return !latestPrice.equals(price);
+  return !latestPrice.equals(newPrice);
 }

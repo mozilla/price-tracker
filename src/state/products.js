@@ -4,13 +4,18 @@
 
 /**
  * Redux duck for products that the user is monitoring for price changes.
+ * @module
  */
 
 import pt from 'prop-types';
 
-export const ADD_PRODUCT = 'commerce/products/ADD_PRODUCT'; // Used by price duck
-const REMOVE_PRODUCT = 'commerce/products/REMOVE_PRODUCT';
+// Types
 
+/**
+ * Data about a product as stored in the Redux state
+ * @typedef Product
+ * @type {object}
+ */
 export const productShape = pt.shape({
   id: pt.string.isRequired,
   title: pt.string.isRequired,
@@ -18,6 +23,11 @@ export const productShape = pt.shape({
   image: pt.string.isRequired,
 });
 
+/**
+ * Data about a product as extracted from a webpage by the content script
+ * @typedef ExtractedProduct
+ * @type {object}
+ */
 export const extractedProductShape = pt.shape({
   title: pt.string.isRequired,
   url: pt.string.isRequired,
@@ -26,9 +36,17 @@ export const extractedProductShape = pt.shape({
   date: pt.string.isRequired,
 });
 
+
+// Actions
+
+export const ADD_PRODUCT = 'commerce/products/ADD_PRODUCT'; // Used by price duck
+const REMOVE_PRODUCT = 'commerce/products/REMOVE_PRODUCT';
+
+// Reducer
+
 function initialState() {
   return {
-    savedProducts: [],
+    products: [],
   };
 }
 
@@ -45,13 +63,13 @@ export default function reducer(state = initialState(), action) {
 
       return {
         ...state,
-        savedProducts: state.savedProducts.concat([newProduct]),
+        products: state.products.concat([newProduct]),
       };
     }
     case REMOVE_PRODUCT: {
       return {
         ...state,
-        savedProducts: state.savedProducts.filter(
+        products: state.products.filter(
           product => product.id !== action.productId,
         ),
       };
@@ -61,6 +79,12 @@ export default function reducer(state = initialState(), action) {
   }
 }
 
+// Action Creators
+
+/**
+ * Add a new product to the store.
+ * @param {ExtractedProduct} data
+ */
 export function addProductFromExtracted(data) {
   return {
     type: ADD_PRODUCT,
@@ -68,6 +92,10 @@ export function addProductFromExtracted(data) {
   };
 }
 
+/**
+ * Remove a product from the store.
+ * @param {string} productId Unique ID for the product to remove.
+ */
 export function removeProduct(productId) {
   return {
     type: REMOVE_PRODUCT,
@@ -75,14 +103,40 @@ export function removeProduct(productId) {
   };
 }
 
+// Selectors
+
+/**
+ * Get every product saved in the store.
+ * @param {ReduxState} state
+ * @return {Product[]}
+ */
 export function getAllProducts(state) {
-  return state.products.savedProducts;
+  return state.products;
 }
 
+/**
+ * Get a single product saved in the store
+ *
+ * @param {ReduxState} state
+ * @param {string} productId Unique ID for the product to fetch.
+ * @return {Product|undefined}
+ *  The matching product, or undefined if none was found.
+ */
 export function getProduct(state, productId) {
-  return state.products.savedProducts.find(product => product.id === productId);
+  return state.products.find(product => product.id === productId);
 }
 
+// Helpers
+
+/**
+ * Determine the unique ID for a product from extracted data.
+ *
+ * If you change this method, you must also migrate clients with older saved
+ * product data to the new identifier.
+ *
+ * @param {ExtractedProduct} data
+ * @return {string} Unique ID for the given product
+ */
 export function getProductIdFromExtracted(data) {
   return data.url;
 }

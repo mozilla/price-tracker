@@ -5,15 +5,15 @@
 /**
  * Redux duck that handles syncing the state tree to extension storage so that
  * it persists between JS contexts and restarts.
+ * @module
  */
+
+// Actions
 
 export const LOAD_FROM_STORAGE = 'commerce/sync/LOAD_FROM_STORAGE';
 
-/**
- * Replace the entire state tree with the loaded state. This reducer must not be
- * run via combineReducers, as it needs to replace the _entire_ state tree;
- * combineReducers would limit it to a "sync" namespace.
- */
+// Reducer
+
 export default function reducer(state, action = {}) {
   switch (action.type) {
     case LOAD_FROM_STORAGE:
@@ -29,28 +29,11 @@ export default function reducer(state, action = {}) {
   }
 }
 
-/**
- * Save state to extension storage, and notify the rest of the add-on that
- * things have changed.
- */
-export async function saveStateToStorage(state) {
-  const serializedState = JSON.stringify(state);
-  await browser.storage.local.set({commerce: serializedState});
-
-  if (state.needsSync) {
-    try {
-      await browser.runtime.sendMessage({type: 'store-update'});
-    } catch (err) {
-      if (!err.message.includes('Receiving end does not exist.')) {
-        throw err;
-      }
-    }
-  }
-}
+// Action Creators
 
 /**
- * Action creator that loads persisted state from extension storage, and tells
- * the store to replace the existing state with it.
+ * Load persisted state from extension storage, and replace the entire state
+ * with it.
  */
 export function loadStateFromStorage() {
   return async (dispatch) => {
@@ -63,4 +46,31 @@ export function loadStateFromStorage() {
       });
     }
   };
+}
+
+// Helpers
+
+/**
+ * Save the given state to extension storage, and notify the rest of the add-on
+ * that the newly saved state needs to be loaded.
+ * @param {ReduxState} state
+ */
+export async function saveStateToStorage(state) {
+  const serializedState = JSON.stringify(state);
+  await browser.storage.local.set({commerce: serializedState});
+
+  // needsSync is always true, unless the last action to be processed was
+  // LOAD_FROM_STORAGE. This avoids a loop between two contexts that keep
+  // sending update messages in response to loading new state from eachother.
+  if (state.needsSync) {
+    try {
+      await browser.runtime.sendMessage({type: 'store-update'});
+    } catch (err) {
+      // Ignore the case where there are no other listeners, such as when the
+      // background script is the only active context.
+      if (!err.message.includes('Receiving end does not exist.')) {
+        throw err;
+      }
+    }
+  }
 }
