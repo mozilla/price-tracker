@@ -10,45 +10,26 @@
  * Features: title, image, price
  */
 
-import productRuleset from 'commerce/fathom_ruleset';
-import {
-  largerImageCoeff,
-  largerFontSizeCoeff,
-  hasDollarSignCoeff,
-  hasPriceInIDCoeff,
-  hasPriceInClassNameCoeff,
-  isAboveTheFoldPriceCoeff,
-  isAboveTheFoldImageCoeff,
-  isNearbyImageXAxisPriceCoeff,
-  isNearbyImageYAxisTitleCoeff,
-  hasPriceishPatternCoeff,
-} from 'commerce/fathom_coefficients.json';
+import defaultCoefficients from 'commerce/fathom_default_coefficients.json';
+import RulesetFactory from 'commerce/ruleset_factory';
 import {SCORE_THRESHOLD} from 'commerce/config';
 
 const PRODUCT_FEATURES = ['title', 'price', 'image'];
-const {rulesetMaker} = productRuleset.get('product');
-const rulesetWithCoeffs = rulesetMaker([
-  largerImageCoeff,
-  largerFontSizeCoeff,
-  hasDollarSignCoeff,
-  hasPriceInIDCoeff,
-  hasPriceInClassNameCoeff,
-  isAboveTheFoldPriceCoeff,
-  isAboveTheFoldImageCoeff,
-  isNearbyImageXAxisPriceCoeff,
-  isNearbyImageYAxisTitleCoeff,
-  hasPriceishPatternCoeff,
-]);
+// Array of numbers corresponding to the coefficients
+const coefficients = Object.values(defaultCoefficients);
+// For production, we don't need to generate a new ruleset factory
+// and ruleset every time we run Fathom, since the coefficients are static.
+const rulesetFactory = new RulesetFactory(coefficients);
+const rules = rulesetFactory.makeRuleset();
 
 /**
  * Extracts the highest scoring element above a score threshold
  * contained in a page's HTML document.
  */
 function runRuleset(doc) {
-  const rulesetOutput = rulesetWithCoeffs.against(doc);
   const extractedElements = {};
   for (const feature of PRODUCT_FEATURES) {
-    let fnodesList = rulesetOutput.get(feature);
+    let fnodesList = rules.against(doc).get(feature);
     fnodesList = fnodesList.filter(fnode => fnode.scoreFor(`${feature}ish`) >= SCORE_THRESHOLD);
     // It is possible for multiple elements to have the same highest score.
     if (fnodesList.length >= 1) {
