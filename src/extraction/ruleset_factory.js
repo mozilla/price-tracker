@@ -2,13 +2,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+/**
+ * Exports a RulesetFactory class, which when instantiated, binds Fathom
+ * coefficients to a ruleset. An instance of this class is used for product
+ * feature extraction (`fathom_extraction.js`) and for training (`trainees.js`).
+ */
+
 import {dom, out, rule, ruleset, score, type} from 'fathom-web';
 // Since the fathom-trainees add-on currently uses a submodule of Fathom, for
 // training, replace 'utils' with 'utilsForFrontend'
 import {ancestors} from 'fathom-web/utils';
 // relative URLs are needed for training, as the 'commerce' alias doesn't exist
 // in that context
-import {SCORE_THRESHOLD} from './config';
+import {SCORE_THRESHOLD} from '../config';
 
 const DEFAULT_BODY_FONT_SIZE = 14;
 const DEFAULT_SCORE = 1;

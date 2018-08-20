@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import defaultCoefficients from './fathom_default_coefficients.json';
-import RulesetFactory from './ruleset_factory';
+import defaultCoefficients from './extraction/fathom_default_coefficients.json';
+import RulesetFactory from './extraction/ruleset_factory';
 
 // Array of numbers corresponding to the coefficients
 const coeffs = Object.values(defaultCoefficients);
@@ -20,9 +20,12 @@ const coeffs = Object.values(defaultCoefficients);
  *
  * How to train:
  *  1. Fork the `mozilla/fathom-trainees` repo,
- *  2. Copy this file, `fathom_default_coefficients.json`, `ruleset_factory.js`
- *   and `config.js` over to the `./src` folder in the `fathom-trainees` add-on.
- *  3. Follow instructions at: https://github.com/erikrose/fathom-fox#the-trainer
+ *  2. In the `fathom-trainees` add-on, copy this file and `config.js` over to the
+ *  `./src` folder, and copy `./extraction/fathom_default_coefficients.json` and
+ *  `./extraction/ruleset_factory.js` to a new `./src/extraction` subfolder.
+ *    * Note: You will have to replace 'utils' with 'utilsForFrontend' on the
+ *      import in `ruleset_factory.js`. See that file for more information.
+ *  3. Follow instructions at: https://github.com/erikrose/fathom-fox#the-trainer.
  *
  * Notes:
  * - The FathomFox Trainer assumes that the value of your corpus' `data-fathom`

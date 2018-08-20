@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/*
+/**
  * Uses Fathom to extract a product from its product page,
  * where a 'product' is defined by the bundle of features that
  * makes it identifiable.
@@ -10,8 +10,8 @@
  * Features: title, image, price
  */
 
-import defaultCoefficients from 'commerce/fathom_default_coefficients.json';
-import RulesetFactory from 'commerce/ruleset_factory';
+import defaultCoefficients from 'commerce/extraction/fathom_default_coefficients.json';
+import RulesetFactory from 'commerce/extraction/ruleset_factory';
 import {SCORE_THRESHOLD} from 'commerce/config';
 
 const PRODUCT_FEATURES = ['title', 'price', 'image'];
