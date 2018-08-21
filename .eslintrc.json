@@ -13,6 +13,7 @@
     "prefer-destructuring": ["off"],
     "no-restricted-syntax": ["off"],
     "no-use-before-define": ["error", {"functions": false}],
+    "no-prototype-builtins": ["off"],
 
     "react/jsx-one-expression-per-line": ["off"],
     "react/prefer-stateless-function": ["off"],

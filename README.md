@@ -69,6 +69,24 @@ After this, you can run `pipenv run test` to run the automated test suite.
 | `npm run package` | Package the extension into an XPI file |
 | `pipenv run test` | Run test suite (See "Running Tests" for setup) |
 
+## Code Organization
+
+- `src/background` contains the background scripts that trigger UI elements (such as the page action) and periodically check for price updates.
+- `src/browser_action` contains the toolbar popup for managing the list of currently-tracked products.
+- `src/page_action` contains the URL bar popup for viewing and tracking the product in the current tab.
+- `src/state` contains the Redux-based code for managing global extension state.
+- `src/tests` contains the automated test suite.
+
+### Data Storage
+
+Global state for the add-on is managed via [Redux][]. Any time the data is changed, it is persisted to the [add-on local storage][localstorage].
+
+Reducers, action creators, etc. are organized into [ducks][] inside the `src/state` directory.
+
+[Redux]: https://redux.js.org/
+[localstorage]: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/local
+[ducks]: https://github.com/erikras/ducks-modular-redux
+
 ## License
 
 The Commerce WebExtension is licensed under the MPL v2.0. See `LICENSE` for details.
