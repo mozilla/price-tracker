@@ -9,6 +9,7 @@ import {extractedProductShape} from 'commerce/state/products';
 import {loadStateFromStorage} from 'commerce/state/sync';
 import {validatePropType} from 'commerce/utils';
 
+const FIRST_RUN_URL = browser.extension.getURL('/first_run/index.html');
 const PAGE_ACTION_URL = browser.extension.getURL('/page_action/index.html');
 
 /**
@@ -61,6 +62,13 @@ function handleExtractedProductData(extractedProduct, sender) {
     ],
     runAt: 'document_idle',
     allFrames: true,
+  });
+
+  // Display first run page if we were just installed
+  browser.runtime.onInstalled.addListener((details) => {
+    if (details.reason === 'install') {
+      browser.tabs.create({url: FIRST_RUN_URL});
+    }
   });
 
   // Make sure the store is loaded before we check prices.
