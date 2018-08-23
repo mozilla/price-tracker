@@ -8,13 +8,12 @@
  */
 
 import Dinero from 'dinero.js';
+import maxBy from 'lodash.maxby';
+import minBy from 'lodash.minby';
 import pt from 'prop-types';
 
 import {ADD_PRODUCT, getProductIdFromExtracted} from 'commerce/state/products';
-import {
-  findMax,
-  priceStringToAmount,
-} from 'commerce/utils';
+import {priceStringToAmount} from 'commerce/utils';
 
 // Types
 
@@ -32,7 +31,7 @@ export const priceShape = pt.shape({
  * Wrapper for price data from the state. Instances of this class are what is
  * returned by the selectors.
  */
-export class PriceWrapper {
+class PriceWrapper {
   constructor(price) {
     this.productId = price.productId;
     this.amount = Dinero({amount: price.amount});
@@ -120,7 +119,18 @@ export function getPricesForProduct(state, productId) {
  */
 export function getLatestPriceForProduct(state, productId) {
   const prices = getPricesForProduct(state, productId);
-  return findMax(prices, price => price.date);
+  return maxBy(prices, price => price.date);
+}
+
+/**
+ * Fetch the oldest price for a product.
+ * @param {ReduxState} state
+ * @param {[type]} productId Unique ID of the product to fetch prices for
+ * @return {PriceWrapper}
+ */
+export function getOldestPriceForProduct(state, productId) {
+  const prices = getPricesForProduct(state, productId);
+  return minBy(prices, price => price.date);
 }
 
 // Helpers
@@ -130,12 +140,21 @@ export function getLatestPriceForProduct(state, productId) {
  * @param {ExtractedProduct} data
  * @return {Price}
  */
-function priceFromExtracted(data) {
+export function priceFromExtracted(data) {
   return {
     productId: getProductIdFromExtracted(data),
     amount: priceStringToAmount(data.price),
     date: data.date,
   };
+}
+
+/**
+ * Create a PriceWrapper from extracted product data.
+ * @param {ExtractedProduct} data
+ * @return {PriceWrapper}
+ */
+export function priceWrapperFromExtracted(data) {
+  return new PriceWrapper(priceFromExtracted(data));
 }
 
 /**

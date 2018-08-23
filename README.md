@@ -72,7 +72,7 @@ After this, you can run `pipenv run test` to run the automated test suite.
 ## Code Organization
 
 - `src/background` contains the background scripts that trigger UI elements (such as the page action) and periodically check for price updates.
-- `src/browser_action` contains the toolbar popup for managing the list of currently-tracked products.
+- `src/browser_action` contains the toolbar popup for managing the list of currently-tracked products and tracking new products.
 - `src/extraction` contains the content scripts that extract product information from product web pages.
 - `src/page_action` contains the URL bar popup for viewing and tracking the product in the current tab.
 - `src/state` contains the Redux-based code for managing global extension state.

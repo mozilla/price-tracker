@@ -11,9 +11,17 @@ import store from 'commerce/state';
 
 import 'commerce/browser_action/index.css';
 
+// Pull info about the currently-viewed product if its present.
+const appProps = {};
+const url = new URL(window.location.href);
+const extractedProductJSON = url.searchParams.get('extractedProduct');
+if (extractedProductJSON) {
+  appProps.extractedProduct = JSON.parse(extractedProductJSON);
+}
+
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserActionApp />
+    <BrowserActionApp {...appProps} />
   </Provider>,
   document.getElementById('browser-action-app'),
 );
