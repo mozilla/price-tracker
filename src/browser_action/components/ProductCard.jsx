@@ -28,14 +28,28 @@ export default class ProductCard extends React.Component {
 
     /** If provided, displays a button in the card with the given text */
     buttonText: pt.string,
+
     /** URL to an image of the product to show */
     imageUrl: pt.string.isRequired,
+
     /** Latest fetched price for the product */
     latestPrice: priceShape,
+
     /** Function to run when the button is clicked, if it is shown */
     onClickButton: pt.func,
+
+    /** Function to run when the close button is clicked, if it is shown */
+    onClickClose: pt.func,
+
     /** The price of the product when it was first tracked. */
     originalPrice: priceShape.isRequired,
+
+    /**
+     * If true, show a close icon on hover in the top right corner.
+     * Will not be shown if latestPrice is not provided.
+     */
+    showClose: pt.bool,
+
     /** Title of the product */
     title: pt.string.isRequired,
   }
@@ -44,10 +58,16 @@ export default class ProductCard extends React.Component {
     buttonText: null,
     latestPrice: null,
     onClickButton: () => {},
+    onClickClose: () => {},
+    showClose: false,
   }
 
   handleClickButton(event) {
     this.props.onClickButton(event);
+  }
+
+  handleClickClose(event) {
+    this.props.onClickClose(event);
   }
 
   render() {
@@ -56,6 +76,7 @@ export default class ProductCard extends React.Component {
       imageUrl,
       latestPrice,
       originalPrice,
+      showClose,
       title,
     } = this.props;
 
@@ -64,6 +85,15 @@ export default class ProductCard extends React.Component {
         {latestPrice && (
           <div className="latest-price">
             {latestPrice.amount.toFormat('$0.00')}
+            {showClose && (
+              <button className="close-button" type="button" onClick={this.handleClickClose}>
+                <img
+                  alt="Stop tracking product"
+                  className="close-icon"
+                  src={browser.extension.getURL('/img/close.svg')}
+                />
+              </button>
+            )}
           </div>
         )}
         <div className="product-info">
@@ -92,7 +122,9 @@ export default class ProductCard extends React.Component {
     latestPrice: getLatestPriceForProduct(state, props.product.id),
     originalPrice: getOldestPriceForProduct(state, props.product.id),
   }),
+  {removeProduct: productActions.removeProduct},
 )
+@autobind
 export class TrackedProductCard extends React.Component {
   static propTypes = {
     // Direct props
@@ -101,6 +133,16 @@ export class TrackedProductCard extends React.Component {
     // State props
     latestPrice: priceShape.isRequired,
     originalPrice: priceShape.isRequired,
+
+    // Dispatch props
+    removeProduct: pt.func.isRequired,
+  }
+
+  /**
+   * Stop tracking the product when the close button is clicked.
+   */
+  handleClickClose() {
+    this.props.removeProduct(this.props.product.id);
   }
 
   render() {
@@ -109,7 +151,9 @@ export class TrackedProductCard extends React.Component {
       <ProductCard
         imageUrl={product.image}
         latestPrice={latestPrice}
+        onClickClose={this.handleClickClose}
         originalPrice={originalPrice}
+        showClose
         title={product.title}
         {...props}
       />

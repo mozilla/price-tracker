@@ -13,9 +13,35 @@
 
 .product-card .latest-price {
   padding: 5px 15px;
+  position: relative;
   border-bottom: 1px solid #dfdfdf;
   font-size: 1.2em;
   font-weight: bold;
+}
+
+.product-card .latest-price .close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.product-card:hover .latest-price .close-button {
+  display: inline-block;
+}
+
+.product-card .latest-price .close-icon {
+  height: 16px;
+  width: 16px;
+}
+
+.product-card .latest-price .close-icon path {
+  fill: #0c0c0d 80%;
 }
 
 .product-card .product-info {
