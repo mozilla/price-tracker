@@ -2,11 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+/* eslint-disable import/no-unresolved */
+// This file is moved up a level to the ./src folder for training
 import defaultCoefficients from './extraction/fathom_default_coefficients.json';
 import RulesetFactory from './extraction/ruleset_factory';
 
-// Array of numbers corresponding to the coefficients
-const coeffs = Object.values(defaultCoefficients);
+// Array of numbers corresponding to the coefficients in order
+const coeffs = RulesetFactory.getCoeffsInOrder(defaultCoefficients);
 
 /**
  * Rulesets to train using Fathom.
@@ -41,59 +43,33 @@ const coeffs = Object.values(defaultCoefficients);
  *   the freeze-dried library Fathom uses).
  */
 
+function rulesetMaker(coefficients) {
+  // The coefficients are updated over time during training, so create a new factory for
+  // each iteration
+  const rulesetFactory = new RulesetFactory(coefficients);
+  return rulesetFactory.makeRuleset();
+}
+
 const trainees = new Map([
   [
-    /**
-     * A ruleset that finds the main product image on a product page.
-     */
-    'image', // Ruleset name
+    'image',
     {
       coeffs,
-      /**
-      * @param {Array.number} coefficients
-      */
-      rulesetMaker(coefficients) {
-        // The coefficients are updated over time during training, so create a new factory for
-        // each iteration
-        const rulesetFactory = new RulesetFactory(coefficients);
-        return rulesetFactory.makeRuleset(); // The ruleset
-      },
+      rulesetMaker,
     },
   ],
   [
-    /**
-     * A ruleset that finds the main product title on a product page.
-     */
-    'title', // Ruleset name
+    'title',
     {
       coeffs,
-      /**
-      * @param {Array.number} coefficients
-      */
-      rulesetMaker(coefficients) {
-        // The coefficients are updated over time during training, so create a new factory for
-        // each iteration
-        const rulesetFactory = new RulesetFactory(coefficients);
-        return rulesetFactory.makeRuleset(); // The ruleset
-      },
+      rulesetMaker,
     },
   ],
   [
-    /**
-     * A ruleset that finds the main product price on a product page.
-     */
-    'price', // Ruleset name
+    'price',
     {
       coeffs,
-      /**
-      * @param {Array.number} coefficients
-      */
-      rulesetMaker(coefficients) {
-        // The coefficients are updated over time during training, so create a new factory for
-        // each iteration
-        const rulesetFactory = new RulesetFactory(coefficients);
-        return rulesetFactory.makeRuleset(); // The ruleset
-      },
+      rulesetMaker,
     },
   ],
 ]);

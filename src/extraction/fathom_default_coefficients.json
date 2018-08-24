@@ -1,12 +1,12 @@
 {
-  "largerImageCoeff": 2,
-  "largerFontSizeCoeff": 7,
   "hasDollarSignCoeff": 8,
-  "hasPriceInIDCoeff": 17,
   "hasPriceInClassNameCoeff": 2,
-  "isAboveTheFoldPriceCoeff": 33,
+  "hasPriceInIDCoeff": 17,
+  "hasPriceishPatternCoeff": 15,
   "isAboveTheFoldImageCoeff": 13,
+  "isAboveTheFoldPriceCoeff": 33,
   "isNearbyImageXAxisPriceCoeff": 5,
   "isNearbyImageYAxisTitleCoeff": 5,
-  "hasPriceishPatternCoeff": 15
+  "largerFontSizeCoeff": 7,
+  "largerImageCoeff": 2
 }

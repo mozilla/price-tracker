@@ -31,16 +31,16 @@ export default class RulesetFactory {
    */
   constructor(coefficients) {
     [
-      this.largerImageCoeff,
-      this.largerFontSizeCoeff,
       this.hasDollarSignCoeff,
-      this.hasPriceInIDCoeff,
       this.hasPriceInClassNameCoeff,
-      this.isAboveTheFoldPriceCoeff,
+      this.hasPriceInIDCoeff,
+      this.hasPriceishPatternCoeff,
       this.isAboveTheFoldImageCoeff,
+      this.isAboveTheFoldPriceCoeff,
       this.isNearbyImageXAxisPriceCoeff,
       this.isNearbyImageYAxisTitleCoeff,
-      this.hasPriceishPatternCoeff,
+      this.largerFontSizeCoeff,
+      this.largerImageCoeff,
     ] = coefficients;
   }
 
@@ -113,15 +113,20 @@ export default class RulesetFactory {
     const viewportHeight = window.innerHeight;
     const top = fnode.element.getBoundingClientRect().top;
     const upperHeightLimit = viewportHeight * 2;
-    // Use a falling trapezoid function to score the element
-    // Taken from: https://github.com/mozilla/fathom-trainees
+
+    // If the node is below the fold by more than a viewport's length,
+    // return a low score.
     if (top >= upperHeightLimit) {
       return ZEROISH * featureCoeff;
     }
+
+    // If the node is above the fold, return a high score.
     if (top <= viewportHeight) {
       return ONEISH * featureCoeff;
     }
-    // slope = deltaY / deltaX
+
+    // Otherwise, scale the score linearly between the fold and a viewport's
+    // length below it.
     const slope = (ONEISH - ZEROISH) / (viewportHeight - upperHeightLimit);
     return (slope * (top - upperHeightLimit) + ZEROISH) * featureCoeff;
   }
@@ -132,7 +137,7 @@ export default class RulesetFactory {
   isNearbyImageXAxisPrice(fnode) {
     const viewportWidth = window.innerWidth;
     const eleDOMRect = fnode.element.getBoundingClientRect();
-    const imageElement = fnode._ruleset.get('image')[0].element; // eslint-disable-line no-underscore-dangle
+    const imageElement = this.getHighestScoringImage(fnode);
     const imageDOMRect = imageElement.getBoundingClientRect();
     const deltaRight = eleDOMRect.left - imageDOMRect.right;
     const deltaLeft = imageDOMRect.left - eleDOMRect.right;
@@ -157,7 +162,7 @@ export default class RulesetFactory {
   isNearbyImageYAxisTitle(fnode) {
     const viewportHeight = window.innerHeight;
     const DOMRect = fnode.element.getBoundingClientRect();
-    const imageElement = fnode._ruleset.get('image')[0].element; // eslint-disable-line no-underscore-dangle
+    const imageElement = this.getHighestScoringImage(fnode);
     const imageDOMRect = imageElement.getBoundingClientRect();
     // Some titles (like on Ebay) are above the image, so include a top buffer
     const isEleTopNearby = DOMRect.top >= (imageDOMRect.top - TOP_BUFFER);
@@ -240,7 +245,7 @@ export default class RulesetFactory {
   isNearbyImageYAxisPrice(fnode) {
     const element = fnode.element;
     const DOMRect = element.getBoundingClientRect();
-    const imageElement = fnode._ruleset.get('image')[0].element; // eslint-disable-line no-underscore-dangle
+    const imageElement = this.getHighestScoringImage(fnode);
     const imageDOMRect = imageElement.getBoundingClientRect();
     if (DOMRect.top >= (imageDOMRect.top - TOP_BUFFER)
       && DOMRect.bottom <= imageDOMRect.bottom) {
@@ -318,5 +323,23 @@ export default class RulesetFactory {
       // return price element(s) with max score
       rule(type('priceish').max(), out('price')),
     );
+  }
+
+  /**
+   * Takes in a coefficients object and returns a coefficients array in the
+   * same order.
+   */
+  static getCoeffsInOrder(coeffsObj) {
+    const coeffsKeys = Object.keys(coeffsObj);
+    coeffsKeys.sort(); // sort keys in string Unicode order
+    const coeffs = [];
+    for (const key of coeffsKeys) {
+      coeffs.push(coeffsObj[key]);
+    }
+    return coeffs;
+  }
+
+  getHighestScoringImage(fnode) {
+    return fnode._ruleset.get('image')[0].element; // eslint-disable-line no-underscore-dangle
   }
 }

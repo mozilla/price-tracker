@@ -15,8 +15,8 @@ import RulesetFactory from 'commerce/extraction/ruleset_factory';
 import {SCORE_THRESHOLD} from 'commerce/config';
 
 const PRODUCT_FEATURES = ['title', 'price', 'image'];
-// Array of numbers corresponding to the coefficients
-const coefficients = Object.values(defaultCoefficients);
+// Array of numbers corresponding to the coefficients in order
+const coefficients = RulesetFactory.getCoeffsInOrder(defaultCoefficients);
 // For production, we don't need to generate a new ruleset factory
 // and ruleset every time we run Fathom, since the coefficients are static.
 const rulesetFactory = new RulesetFactory(coefficients);
@@ -28,8 +28,9 @@ const rules = rulesetFactory.makeRuleset();
  */
 function runRuleset(doc) {
   const extractedElements = {};
+  const results = rules.against(doc);
   for (const feature of PRODUCT_FEATURES) {
-    let fnodesList = rules.against(doc).get(feature);
+    let fnodesList = results.get(feature);
     fnodesList = fnodesList.filter(fnode => fnode.scoreFor(`${feature}ish`) >= SCORE_THRESHOLD);
     // It is possible for multiple elements to have the same highest score.
     if (fnodesList.length >= 1) {
@@ -56,8 +57,9 @@ export default function extractProduct(doc) {
     for (const feature of PRODUCT_FEATURES) {
       if (feature === 'image') {
         extractedProduct[feature] = extractedElements[feature].src;
+      } else {
+        extractedProduct[feature] = extractedElements[feature].innerText;
       }
-      extractedProduct[feature] = extractedElements[feature].innerText;
     }
   }
   return hasAllFeatures(extractedProduct) ? extractedProduct : null;
