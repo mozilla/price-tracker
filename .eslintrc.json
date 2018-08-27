@@ -15,8 +15,10 @@
     "no-use-before-define": ["error", {"functions": false}],
     "no-prototype-builtins": ["off"],
     "class-methods-use-this": ["off"],
+    "no-continue": ["off"],
 
     "import/no-duplicates": ["off"],
+    "import/prefer-default-export": ["off"],
 
     "react/jsx-one-expression-per-line": ["off"],
     "react/prefer-stateless-function": ["off"],

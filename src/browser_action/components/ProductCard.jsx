@@ -7,11 +7,14 @@ import pt from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 
+import * as priceActions from 'commerce/state/prices';
 import {
+  getActivePriceAlertForProduct,
   getLatestPriceForProduct,
   getOldestPriceForProduct,
+  priceAlertShape,
   priceWrapperFromExtracted,
-  priceShape,
+  priceWrapperShape,
 } from 'commerce/state/prices';
 import {extractedProductShape, productShape} from 'commerce/state/products';
 import * as productActions from 'commerce/state/products';
@@ -33,7 +36,7 @@ export default class ProductCard extends React.Component {
     imageUrl: pt.string.isRequired,
 
     /** Latest fetched price for the product */
-    latestPrice: priceShape,
+    latestPrice: priceWrapperShape,
 
     /** Function to run when the button is clicked, if it is shown */
     onClickButton: pt.func,
@@ -41,8 +44,11 @@ export default class ProductCard extends React.Component {
     /** Function to run when the close button is clicked, if it is shown */
     onClickClose: pt.func,
 
+    /** Function to run when the info block is clicked */
+    onClickInfo: pt.func,
+
     /** The price of the product when it was first tracked. */
-    originalPrice: priceShape.isRequired,
+    originalPrice: priceWrapperShape.isRequired,
 
     /**
      * If true, show a close icon on hover in the top right corner.
@@ -59,6 +65,7 @@ export default class ProductCard extends React.Component {
     latestPrice: null,
     onClickButton: () => {},
     onClickClose: () => {},
+    onClickInfo: () => {},
     showClose: false,
   }
 
@@ -68,6 +75,10 @@ export default class ProductCard extends React.Component {
 
   handleClickClose(event) {
     this.props.onClickClose(event);
+  }
+
+  handleClickInfo(event) {
+    this.props.onClickInfo(event);
   }
 
   render() {
@@ -96,7 +107,7 @@ export default class ProductCard extends React.Component {
             )}
           </div>
         )}
-        <div className="product-info">
+        <div className="product-info" onClick={this.handleClickInfo}>
           <img className="image" src={imageUrl} alt={title} />
           <h3 className="title">{title}</h3>
           <div className="vendor">
@@ -121,8 +132,12 @@ export default class ProductCard extends React.Component {
   (state, props) => ({
     latestPrice: getLatestPriceForProduct(state, props.product.id),
     originalPrice: getOldestPriceForProduct(state, props.product.id),
+    priceAlert: getActivePriceAlertForProduct(state, props.product.id),
   }),
-  {removeProduct: productActions.removeProduct},
+  {
+    deactivateAlert: priceActions.deactivateAlert,
+    removeProduct: productActions.removeProduct,
+  },
 )
 @autobind
 export class TrackedProductCard extends React.Component {
@@ -131,11 +146,17 @@ export class TrackedProductCard extends React.Component {
     product: productShape.isRequired,
 
     // State props
-    latestPrice: priceShape.isRequired,
-    originalPrice: priceShape.isRequired,
+    latestPrice: priceWrapperShape.isRequired,
+    originalPrice: priceWrapperShape.isRequired,
+    priceAlert: priceAlertShape,
 
     // Dispatch props
+    deactivateAlert: pt.func.isRequired,
     removeProduct: pt.func.isRequired,
+  }
+
+  static defaultProps = {
+    priceAlert: null,
   }
 
   /**
@@ -143,6 +164,18 @@ export class TrackedProductCard extends React.Component {
    */
   handleClickClose() {
     this.props.removeProduct(this.props.product.id);
+  }
+
+  /**
+   * Open the product page when the product info is clicked,
+   */
+  handleClickInfo() {
+    const {deactivateAlert, priceAlert, product} = this.props;
+    if (priceAlert) {
+      deactivateAlert(priceAlert);
+    }
+
+    browser.tabs.create({url: product.url});
   }
 
   render() {
@@ -155,6 +188,7 @@ export class TrackedProductCard extends React.Component {
         originalPrice={originalPrice}
         showClose
         title={product.title}
+        onClickInfo={this.handleClickInfo}
         {...props}
       />
     );

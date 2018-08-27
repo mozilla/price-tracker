@@ -2,11 +2,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+/**
+ * Entry point for the background script. Registers listeners for various
+ * background tasks, such as extracting prices from webpages or alerting the
+ * user of a new price alert.
+ * @module
+ */
+
 import {
   BROWSER_ACTION_URL,
   FIRST_RUN_URL,
   PRICE_CHECK_TIMEOUT_INTERVAL,
 } from 'commerce/config';
+import {handleNotificationClicked, handlePriceAlerts} from 'commerce/background/price_alerts';
 import {updateProductWithExtracted, updatePrices} from 'commerce/background/prices';
 import store from 'commerce/state';
 import {extractedProductShape} from 'commerce/state/products';
@@ -45,12 +53,21 @@ function handleExtractedProductData(extractedProduct, sender) {
 }
 
 (async function main() {
+  // Set browser action default badge color, which can't be set via manifest
+  browser.browserAction.setBadgeBackgroundColor({color: '#24ba20'});
+
   // Setup product extraction listener
   browser.runtime.onMessage.addListener((message, sender) => {
     if (message.from === 'content' && message.subject === 'ready') {
       handleExtractedProductData(message.extractedProduct, sender);
     }
   });
+
+  // Display price alerts when they are inserted into the state.
+  store.subscribe(handlePriceAlerts);
+
+  // Open the product page when an alert notification is clicked.
+  browser.notifications.onClicked.addListener(handleNotificationClicked);
 
   // Enable content scripts now that the background listener is registered.
   // Store the return value globally to avoid destroying it, which would
