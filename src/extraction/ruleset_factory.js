@@ -12,9 +12,6 @@ import {dom, out, rule, ruleset, score, type} from 'fathom-web';
 // Since the fathom-trainees add-on currently uses a submodule of Fathom, for
 // training, replace 'utils' with 'utilsForFrontend'
 import {ancestors} from 'fathom-web/utils';
-// relative URLs are needed for training, as the 'commerce' alias doesn't exist
-// in that context
-import {SCORE_THRESHOLD} from '../config';
 
 const DEFAULT_BODY_FONT_SIZE = 14;
 const DEFAULT_SCORE = 1;
@@ -296,8 +293,6 @@ export default class RulesetFactory {
       rule(dom('h1').when(this.isEligibleTitle.bind(this)), type('titleish')),
       // better score based on y-axis proximity to max scoring image element
       rule(type('titleish'), score(this.isNearbyImageYAxisTitle.bind(this))),
-      // since no further rules are needed for title, give all inputs the minimum score
-      rule(type('titleish'), score(() => SCORE_THRESHOLD)),
       // return title element(s) with max score
       rule(type('titleish').max(), out('title')),
 

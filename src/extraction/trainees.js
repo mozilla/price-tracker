@@ -3,9 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /* eslint-disable import/no-unresolved */
-// This file is moved up a level to the ./src folder for training
-import defaultCoefficients from './extraction/fathom_default_coefficients.json';
-import RulesetFactory from './extraction/ruleset_factory';
+import defaultCoefficients from './fathom_default_coefficients.json';
+import RulesetFactory from './ruleset_factory';
 
 // Array of numbers corresponding to the coefficients in order
 const coeffs = RulesetFactory.getCoeffsInOrder(defaultCoefficients);
@@ -22,9 +21,9 @@ const coeffs = RulesetFactory.getCoeffsInOrder(defaultCoefficients);
  *
  * How to train:
  *  1. Fork the `mozilla/fathom-trainees` repo,
- *  2. In the `fathom-trainees` add-on, copy this file and `config.js` over to the
- *  `./src` folder, and copy `./extraction/fathom_default_coefficients.json` and
- *  `./extraction/ruleset_factory.js` to a new `./src/extraction` subfolder.
+ *  2. In the `fathom-trainees` add-on, copy this file,
+ * `./extraction/fathom_default_coefficients.json` and
+ * `./extraction/ruleset_factory.js` to the `./src` folder.
  *    * Note: You will have to replace 'utils' with 'utilsForFrontend' on the
  *      import in `ruleset_factory.js`. See that file for more information.
  *  3. Follow instructions at: https://github.com/erikrose/fathom-fox#the-trainer.

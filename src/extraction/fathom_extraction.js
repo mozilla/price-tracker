@@ -12,9 +12,10 @@
 
 import defaultCoefficients from 'commerce/extraction/fathom_default_coefficients.json';
 import RulesetFactory from 'commerce/extraction/ruleset_factory';
-import {SCORE_THRESHOLD} from 'commerce/config';
 
 const PRODUCT_FEATURES = ['title', 'price', 'image'];
+// Minimum score to be considered the "correct" feature element extracted by Fathom
+const SCORE_THRESHOLD = 4;
 // Array of numbers corresponding to the coefficients in order
 const coefficients = RulesetFactory.getCoeffsInOrder(defaultCoefficients);
 // For production, we don't need to generate a new ruleset factory
