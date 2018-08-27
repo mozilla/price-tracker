@@ -1,0 +1,12 @@
+{
+  "hasDollarSignCoeff": 8,
+  "hasPriceInClassNameCoeff": 2,
+  "hasPriceInIDCoeff": 17,
+  "hasPriceishPatternCoeff": 15,
+  "isAboveTheFoldImageCoeff": 13,
+  "isAboveTheFoldPriceCoeff": 33,
+  "isNearbyImageXAxisPriceCoeff": 5,
+  "isNearbyImageYAxisTitleCoeff": 5,
+  "largerFontSizeCoeff": 7,
+  "largerImageCoeff": 2
+}

@@ -7,8 +7,8 @@
  * "document_idle", which is after all DOM content has been loaded.
  */
 
-import extractProductWithFathom from 'commerce/fathom_extraction';
-import extractProductWithFallback from 'commerce/fallback_extraction';
+import extractProductWithFathom from 'commerce/extraction/fathom_extraction';
+import extractProductWithFallback from 'commerce/extraction/fallback_extraction';
 
 /**
  * Checks to see if any product information for the page was found,
