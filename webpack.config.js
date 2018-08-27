@@ -63,6 +63,9 @@ module.exports = {
       {from: '**/*.svg'},
       {from: '**/*.html'},
       {from: 'manifest.json'},
+
+      // First run page doesn't use JS so it can't bundle CSS
+      {from: 'first_run/*.css'},
     ], {context: 'src/'}),
   ],
   resolve: {
