@@ -9,7 +9,7 @@ import {Provider} from 'react-redux';
 import BrowserActionApp from 'commerce/browser_action/components/BrowserActionApp';
 import store from 'commerce/state';
 
-import 'commerce/browser_action/styles.css';
+import 'commerce/browser_action/index.css';
 
 ReactDOM.render(
   <Provider store={store}>
