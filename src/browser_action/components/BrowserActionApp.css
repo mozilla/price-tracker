@@ -1,0 +1,31 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/** Empty state (when no products are saved) */
+
+.empty-onboarding {
+  margin: 15px;
+}
+
+.empty-onboarding .cta {
+  margin: 0 0 15px;
+  font-size: 1.4em;
+  text-align: center;
+  font-weight: bold;
+}
+
+.empty-onboarding .image {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px #ccc;
+  text-align: center;
+  height: 120px;
+  margin: 0 auto 15px;
+}
+
+.empty-onboarding .description {
+  margin: 0 15px 15px;
+  font-size: 1.1em;
+}

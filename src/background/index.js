@@ -2,15 +2,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import {PRICE_CHECK_TIMEOUT_INTERVAL} from 'commerce/config';
+import {
+  FIRST_RUN_URL,
+  PAGE_ACTION_URL,
+  PRICE_CHECK_TIMEOUT_INTERVAL,
+} from 'commerce/config';
 import {updateProductWithExtracted, updatePrices} from 'commerce/background/prices';
 import store from 'commerce/state';
 import {extractedProductShape} from 'commerce/state/products';
 import {loadStateFromStorage} from 'commerce/state/sync';
 import {validatePropType} from 'commerce/utils';
-
-const FIRST_RUN_URL = browser.extension.getURL('/first_run/index.html');
-const PAGE_ACTION_URL = browser.extension.getURL('/page_action/index.html');
 
 /**
  * Triggers background tasks when a product is extracted from a webpage. Along

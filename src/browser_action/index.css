@@ -1,0 +1,33 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/** Global layout and top-level elements */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: #f1f1f3;
+  font: message-box;
+  margin: 0;
+  padding: 0;
+}
+
+#browser-action-app {
+  width: 325px;
+}
+
+/** Common element styles */
+
+a {
+  color: #0a8dff;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #0060df;
+  text-decoration: underline;
+}
