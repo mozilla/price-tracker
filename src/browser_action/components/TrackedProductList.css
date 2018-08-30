@@ -1,0 +1,32 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/** Listing of currently-tracked products */
+
+.tracked-product-list {
+  padding: 5px;
+}
+
+.tracked-product-list hr {
+  border-color: #d6d6d8;
+  margin: 5px -5px;
+}
+
+.product-list-heading {
+  color: #6e6e6e;
+  font-size: 1em;
+  font-weight: normal;
+  margin: 0 0 5px;
+}
+
+.product-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.product-list .product-list-item {
+  margin: 0 0 10px;
+  padding: 0;
+}

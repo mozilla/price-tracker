@@ -6,8 +6,8 @@ import pt from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 
-import ProductCard from 'commerce/browser_action/components/ProductCard';
 import EmptyOnboarding from 'commerce/browser_action/components/EmptyOnboarding';
+import TrackedProductList from 'commerce/browser_action/components/TrackedProductList';
 import {extractedProductShape, getAllProducts, productShape} from 'commerce/state/products';
 import * as syncActions from 'commerce/state/sync';
 
@@ -29,14 +29,13 @@ export default class BrowserActionApp extends React.Component {
     extractedProduct: extractedProductShape, // Product detected on the current page, if any
 
     // State props
-    products: pt.arrayOf(productShape),
+    products: pt.arrayOf(productShape).isRequired,
 
     // Dispatch props
     loadStateFromStorage: pt.func.isRequired,
   }
 
   static defaultProps = {
-    products: [],
     extractedProduct: null,
   }
 
@@ -53,11 +52,7 @@ export default class BrowserActionApp extends React.Component {
     }
 
     return (
-      <ul>
-        {products.map(product => (
-          <ProductCard product={product} key={product.id} />
-        ))}
-      </ul>
+      <TrackedProductList products={products} extractedProduct={extractedProduct} />
     );
   }
 }

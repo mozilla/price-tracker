@@ -11,6 +11,13 @@
   overflow: hidden;
 }
 
+.product-card .latest-price {
+  padding: 5px 15px;
+  border-bottom: 1px solid #dfdfdf;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
 .product-card .product-info {
   display: grid;
   gap: 12px;
@@ -45,7 +52,7 @@
   grid-row: 2;
 }
 
-.product-card .track-button {
+.product-card .button {
   background: #0156da;
   border: none;
   color: #fff;
@@ -57,10 +64,10 @@
   width: 100%;
 }
 
-.product-card .track-button:hover {
+.product-card .button:hover {
   background: #2a7ffe;
 }
 
-.product-card .track-button:active {
+.product-card .button:active {
   background: #0141a2;
 }
