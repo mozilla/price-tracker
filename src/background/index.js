@@ -29,7 +29,7 @@ function handleExtractedProductData(extractedProduct, sender) {
     return;
   }
 
-  // Update toolbar icon with the current page's product if we can
+  // Update the toolbar icon's URL with the current page's product if we can
   if (sender.tab) {
     const url = new URL(BROWSER_ACTION_URL);
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));

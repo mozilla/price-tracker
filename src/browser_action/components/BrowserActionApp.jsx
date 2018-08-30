@@ -29,14 +29,13 @@ export default class BrowserActionApp extends React.Component {
     extractedProduct: extractedProductShape, // Product detected on the current page, if any
 
     // State props
-    products: pt.arrayOf(productShape),
+    products: pt.arrayOf(productShape).isRequired,
 
     // Dispatch props
     loadStateFromStorage: pt.func.isRequired,
   }
 
   static defaultProps = {
-    products: [],
     extractedProduct: null,
   }
 
