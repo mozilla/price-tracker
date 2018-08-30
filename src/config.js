@@ -19,4 +19,4 @@ export const IFRAME_TIMEOUT = 1000 * 60; // 1 minute
 
 // URLs to files within the extension
 export const FIRST_RUN_URL = browser.extension.getURL('/first_run/index.html');
-export const PAGE_ACTION_URL = browser.extension.getURL('/page_action/index.html');
+export const BROWSER_ACTION_URL = browser.extension.getURL('/browser_action/index.html');

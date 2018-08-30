@@ -23,7 +23,6 @@ module.exports = {
     background: './src/background/index',
     product_info: './src/product_info',
     browser_action: './src/browser_action/index',
-    page_action: './src/page_action/index',
   },
   output: {
     path: BUILD_DIR,

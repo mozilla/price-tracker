@@ -41,27 +41,6 @@ export async function retry(callback, maxRetries = 5, delayFactor = 2, initialDe
 }
 
 /**
- * Search a list for the maximum value. The key function is used to extract
- * the comparison key, and returns the values in the list by default.
- * @param  {array} collection
- * @param  {function} key
- */
-export function findMax(collection, key = a => a) {
-  if (collection.length < 1) {
-    return null;
-  }
-
-  let max = collection[0];
-  for (const item of collection.slice(1)) {
-    if (key(item) > key(max)) {
-      max = item;
-    }
-  }
-
-  return max;
-}
-
-/**
  * Parse a string containing a price to the currency amount in sub-units (e.g.
  * "$10.00" would return 1000, the value in cents).
  *

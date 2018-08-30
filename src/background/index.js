@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import {
+  BROWSER_ACTION_URL,
   FIRST_RUN_URL,
-  PAGE_ACTION_URL,
   PRICE_CHECK_TIMEOUT_INTERVAL,
 } from 'commerce/config';
 import {updateProductWithExtracted, updatePrices} from 'commerce/background/prices';
@@ -29,16 +29,15 @@ function handleExtractedProductData(extractedProduct, sender) {
     return;
   }
 
-  // Display pageAction if we can
+  // Update toolbar icon with the current page's product if we can
   if (sender.tab) {
-    const url = new URL(PAGE_ACTION_URL);
+    const url = new URL(BROWSER_ACTION_URL);
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
 
-    browser.pageAction.setPopup({
+    browser.browserAction.setPopup({
       popup: url.href,
       tabId: sender.tab.id,
     });
-    browser.pageAction.show(sender.tab.id);
   }
 
   // Update saved product data if it exists

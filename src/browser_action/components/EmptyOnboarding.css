@@ -15,6 +15,11 @@
   font-weight: bold;
 }
 
+.empty-onboarding .image,
+.empty-onboarding .product-card {
+  margin: 0 auto 15px;
+}
+
 .empty-onboarding .image {
   background: #fff;
   border: 1px solid #ccc;
@@ -22,7 +27,6 @@
   box-shadow: 0 1px #ccc;
   text-align: center;
   height: 120px;
-  margin: 0 auto 15px;
 }
 
 .empty-onboarding .description {

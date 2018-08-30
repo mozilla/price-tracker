@@ -53,14 +53,7 @@ function initialState() {
 export default function reducer(state = initialState(), action) {
   switch (action.type) {
     case ADD_PRODUCT: {
-      const data = action.extractedProductData;
-      const newProduct = {
-        id: getProductIdFromExtracted(data),
-        title: data.title,
-        url: data.url,
-        image: data.image,
-      };
-
+      const newProduct = getProductFromExtracted(action.extractedProductData);
       return {
         ...state,
         products: state.products.concat([newProduct]),
@@ -139,4 +132,18 @@ export function getProduct(state, productId) {
  */
 export function getProductIdFromExtracted(data) {
   return data.url;
+}
+
+/**
+ * Generate a product suitable for the store from extracted data.
+ * @param {ExtractedProduct} data
+ * @return {Product} Product that can be stored in the state
+ */
+export function getProductFromExtracted(data) {
+  return {
+    id: getProductIdFromExtracted(data),
+    title: data.title,
+    url: data.url,
+    image: data.image,
+  };
 }

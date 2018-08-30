@@ -16,6 +16,8 @@
     "no-prototype-builtins": ["off"],
     "class-methods-use-this": ["off"],
 
+    "import/no-duplicates": ["off"],
+
     "react/jsx-one-expression-per-line": ["off"],
     "react/prefer-stateless-function": ["off"],
     "react/no-multi-comp": ["off"],
