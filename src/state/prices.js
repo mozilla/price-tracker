@@ -18,6 +18,8 @@ import {priceStringToAmount} from 'commerce/utils';
 // Types
 
 /**
+ * A price as it is stored within the Redux store. Must be JSON serializable to
+ * be saved to extension storage.
  * @typedef Price
  * @type {object}
  */
@@ -28,8 +30,9 @@ export const priceShape = pt.shape({
 });
 
 /**
- * Wrapper for price data from the state. Instances of this class are what is
- * returned by the selectors.
+ * A price as it is returned by the selectors. PriceWrapper converts fields that
+ * are JSON-serializable to more useful types for the app, e.g. converting date
+ * strings into Date instances so we can compare them.
  */
 class PriceWrapper {
   constructor(price) {
