@@ -30,6 +30,8 @@
     "tabs",
     "storage",
     "unlimitedStorage",
-    "notifications"
+    "notifications",
+    "webRequest",
+    "webRequestBlocking"
   ]
 }

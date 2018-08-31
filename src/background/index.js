@@ -52,6 +52,21 @@ function handleExtractedProductData(extractedProduct, sender) {
   updateProductWithExtracted(extractedProduct);
 }
 
+/**
+ * Remove the x-frame-options header, so that the product page can load in the
+ * background page's iframe.
+ */
+function handleWebRequest(details) {
+  const bgWindow = browser.extension.getBackgroundPage();
+  // only remove the header if this extension's background page made the request
+  if (details.documentUrl === bgWindow.location.href) {
+    const responseHeaders = details.responseHeaders
+      .filter(header => !header.name.toLowerCase().includes('x-frame-options'));
+    return {responseHeaders};
+  }
+  return {responseHeaders: details.responseHeaders};
+}
+
 (async function main() {
   // Set browser action default badge color, which can't be set via manifest
   browser.browserAction.setBadgeBackgroundColor({color: '#24ba20'});
@@ -87,6 +102,18 @@ function handleExtractedProductData(extractedProduct, sender) {
       browser.tabs.create({url: FIRST_RUN_URL});
     }
   });
+
+  // Set up web request listener to modify framing headers for background updates
+  const filter = {
+    urls: ['<all_urls>'],
+    types: ['sub_frame'],
+    tabId: browser.tabs.TAB_ID_NONE,
+  };
+  browser.webRequest.onHeadersReceived.addListener(
+    handleWebRequest,
+    filter,
+    ['blocking', 'responseHeaders'],
+  );
 
   // Make sure the store is loaded before we check prices.
   await store.dispatch(loadStateFromStorage());
