@@ -131,7 +131,13 @@ export function getProduct(state, productId) {
  * @return {string} Unique ID for the given product
  */
 export function getProductIdFromExtracted(data) {
-  return data.url;
+  const url = new URL(data.url);
+
+  // Background update pages use a special hash value, we strip it out to
+  // normalize and avoid missed updates.
+  url.hash = '';
+
+  return url.href;
 }
 
 /**
