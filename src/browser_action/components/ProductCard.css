@@ -45,6 +45,7 @@
 }
 
 .product-card .product-info {
+  cursor: pointer;
   display: grid;
   gap: 12px;
   grid-template-columns: 65px auto;

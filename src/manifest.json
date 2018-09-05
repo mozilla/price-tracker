@@ -29,6 +29,7 @@
     "<all_urls>",
     "tabs",
     "storage",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "notifications"
   ]
 }

@@ -20,3 +20,7 @@ export const IFRAME_TIMEOUT = 1000 * 60; // 1 minute
 // URLs to files within the extension
 export const FIRST_RUN_URL = browser.extension.getURL('/first_run/index.html');
 export const BROWSER_ACTION_URL = browser.extension.getURL('/browser_action/index.html');
+
+// Price alert config
+export const ALERT_PERCENT_THRESHOLD = 0.05;
+export const ALERT_ABSOLUTE_THRESHOLD = 1000;
