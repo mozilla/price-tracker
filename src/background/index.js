@@ -57,11 +57,11 @@ function handleExtractedProductData(extractedProduct, sender) {
  * background page's iframe.
  */
 function handleWebRequest(details) {
-  const bgWindow = browser.extension.getBackgroundPage();
   // only remove the header if this extension's background page made the request
-  if (details.documentUrl === bgWindow.location.href) {
-    const responseHeaders = details.responseHeaders
-      .filter(header => !header.name.toLowerCase().includes('x-frame-options'));
+  if (details.documentUrl === window.location.href) {
+    const responseHeaders = details.responseHeaders.filter(
+      header => !header.name.toLowerCase().includes('x-frame-options'),
+    );
     return {responseHeaders};
   }
   return {responseHeaders: details.responseHeaders};
@@ -104,14 +104,14 @@ function handleWebRequest(details) {
   });
 
   // Set up web request listener to modify framing headers for background updates
-  const filter = {
+  const webRequestFilter = {
     urls: ['<all_urls>'],
     types: ['sub_frame'],
     tabId: browser.tabs.TAB_ID_NONE,
   };
   browser.webRequest.onHeadersReceived.addListener(
     handleWebRequest,
-    filter,
+    webRequestFilter,
     ['blocking', 'responseHeaders'],
   );
 
