@@ -12,7 +12,6 @@ import store from 'commerce/state';
 import {addPriceFromExtracted, getLatestPriceForProduct} from 'commerce/state/prices';
 import {getAllProducts, getProduct, getProductIdFromExtracted} from 'commerce/state/products';
 
-
 /**
  * Find products that are due for price updates and update them.
  */
@@ -41,12 +40,14 @@ function fetchLatestPrice(product) {
     return;
   }
 
-  // TODO(osmose): This method fails for domains that block framing. See #41.
   const iframe = document.createElement('iframe');
   const url = new URL(product.url);
   url.hash = 'moz-commerce-background';
   iframe.src = url.href;
   iframe.id = product.id;
+  // Desktop viewport dimensions (in px) on which Fathom proximity rules are based
+  iframe.width = 1680;
+  iframe.height = 950;
   iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
   document.body.appendChild(iframe);
 
