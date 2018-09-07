@@ -5,6 +5,7 @@
 /** Cards that display info about a product */
 
 .product-card {
+  position: relative;
   background: #fdfdfd;
   border: 1px solid #d3d2d3;
   border-radius: 4px;
@@ -19,11 +20,11 @@
   font-weight: bold;
 }
 
-.product-card .latest-price .close-button {
+.product-card .latest-price .close-button,
+.product-card .latest-price .undo-button {
   background: none;
   border: none;
   cursor: pointer;
-  display: none;
   margin: 0;
   padding: 0;
   position: absolute;
@@ -31,17 +32,47 @@
   top: 5px;
 }
 
+.product-card .latest-price .undo-button {
+  display: flex;
+  align-items: center;
+  color: #3f88f7;
+  font-weight: 700;
+}
+
+.product-card.disabled .latest-price .undo-button {
+  z-index: 1;
+}
+
 .product-card:hover .latest-price .close-button {
   display: inline-block;
 }
 
-.product-card .latest-price .close-icon {
+.product-card .latest-price .close-button,
+.product-card .latest-price .close-button.hidden, /* Override close button being shown on hover when undo button is visible */
+.product-card .latest-price .undo-button.hidden {
+  display: none;
+}
+
+.product-card .latest-price .close-icon,
+.product-card .latest-price .undo-icon {
   height: 16px;
   width: 16px;
 }
 
-.product-card .latest-price .close-icon path {
-  fill: #0c0c0d 80%;
+/* Needed to assign fill colors for fill="context-fill" SVGs in <img> elements */
+.product-card .latest-price .close-icon,
+.product-card .latest-price .undo-icon {
+  -moz-context-properties: fill;
+}
+
+.product-card .latest-price .close-icon {
+  fill: #0c0c0d;
+  opacity: 0.8;
+}
+
+.product-card .latest-price .undo-icon {
+  margin-right: 5px;
+  fill: #3f88f7;
 }
 
 .product-card .product-info {
@@ -51,6 +82,10 @@
   grid-template-columns: 65px auto;
   grid-template-rows: 65px auto;
   padding: 15px;
+}
+
+.product-card.disabled .product-info {
+  cursor: default;
 }
 
 .product-card .product-info .image {
@@ -97,4 +132,18 @@
 
 .product-card .button:active {
   background: #0141a2;
+}
+
+.opaque-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0.6;
+  background-color: white;
+}
+
+.opaque-overlay.hidden {
+  display: none;
 }

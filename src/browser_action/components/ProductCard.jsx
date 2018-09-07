@@ -47,6 +47,9 @@ export default class ProductCard extends React.Component {
     /** Function to run when the info block is clicked */
     onClickInfo: pt.func,
 
+    /** Function to run when the undo button is clicked, if it is shown */
+    onClickUndo: pt.func,
+
     /** The price of the product when it was first tracked. */
     originalPrice: priceWrapperShape.isRequired,
 
@@ -55,6 +58,12 @@ export default class ProductCard extends React.Component {
      * Will not be shown if latestPrice is not provided.
      */
     showClose: pt.bool,
+
+    /**
+     * If true, show an undo icon in the top right corner.
+     * Will not be shown unless the close icon is clicked.
+     */
+    showUndo: pt.bool,
 
     /** Title of the product */
     title: pt.string.isRequired,
@@ -66,7 +75,9 @@ export default class ProductCard extends React.Component {
     onClickButton: () => {},
     onClickClose: () => {},
     onClickInfo: () => {},
+    onClickUndo: () => {},
     showClose: false,
+    showUndo: false,
   }
 
   handleClickButton(event) {
@@ -75,6 +86,10 @@ export default class ProductCard extends React.Component {
 
   handleClickClose(event) {
     this.props.onClickClose(event);
+  }
+
+  handleClickUndo(event) {
+    this.props.onClickUndo(event);
   }
 
   handleClickInfo(event) {
@@ -88,16 +103,27 @@ export default class ProductCard extends React.Component {
       latestPrice,
       originalPrice,
       showClose,
+      showUndo,
       title,
     } = this.props;
 
     return (
-      <div className="product-card">
+      <div className={showUndo ? 'product-card disabled' : 'product-card'}>
         {latestPrice && (
           <div className="latest-price">
             {latestPrice.amount.toFormat('$0.00')}
+            {showUndo && (
+              <button className={showUndo ? 'undo-button' : 'undo-button hidden'} type="button" onClick={this.handleClickUndo}>
+                <img
+                  alt="Keep tracking product"
+                  className="undo-icon"
+                  src={browser.extension.getURL('/img/undo.svg')}
+                />
+                Undo Delete
+              </button>
+            )}
             {showClose && (
-              <button className="close-button" type="button" onClick={this.handleClickClose}>
+              <button className={showUndo ? 'close-button hidden' : 'close-button'} type="button" onClick={this.handleClickClose}>
                 <img
                   alt="Stop tracking product"
                   className="close-icon"
@@ -119,6 +145,7 @@ export default class ProductCard extends React.Component {
             {buttonText}
           </button>
         )}
+        <div className={showUndo ? 'opaque-overlay' : 'opaque-overlay hidden'} />
       </div>
     );
   }
@@ -136,7 +163,8 @@ export default class ProductCard extends React.Component {
   }),
   {
     deactivateAlert: priceActions.deactivateAlert,
-    removeProduct: productActions.removeProduct,
+    deleteProduct: productActions.deleteProduct,
+    undeleteProduct: productActions.undeleteProduct,
   },
 )
 @autobind
@@ -152,7 +180,8 @@ export class TrackedProductCard extends React.Component {
 
     // Dispatch props
     deactivateAlert: pt.func.isRequired,
-    removeProduct: pt.func.isRequired,
+    deleteProduct: pt.func.isRequired,
+    undeleteProduct: pt.func.isRequired,
   }
 
   static defaultProps = {
@@ -160,10 +189,17 @@ export class TrackedProductCard extends React.Component {
   }
 
   /**
-   * Stop tracking the product when the close button is clicked.
+   * Mark product as deleted when the close button is clicked
    */
   handleClickClose() {
-    this.props.removeProduct(this.props.product.id);
+    this.props.deleteProduct(this.props.product.id);
+  }
+
+  /**
+   * Mark product as undeleted when the undo button is clicked
+   */
+  handleClickUndo() {
+    this.props.undeleteProduct(this.props.product.id);
   }
 
   /**
@@ -185,8 +221,10 @@ export class TrackedProductCard extends React.Component {
         imageUrl={product.image}
         latestPrice={latestPrice}
         onClickClose={this.handleClickClose}
+        onClickUndo={this.handleClickUndo}
         originalPrice={originalPrice}
         showClose
+        showUndo={product.isDeleted}
         title={product.title}
         onClickInfo={this.handleClickInfo}
         {...props}

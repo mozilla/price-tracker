@@ -21,6 +21,7 @@ export const productShape = pt.shape({
   title: pt.string.isRequired,
   url: pt.string.isRequired,
   image: pt.string.isRequired,
+  isDeleted: pt.bool.isRequired, // flag to include in returned list of products from store
 });
 
 /**
@@ -40,7 +41,9 @@ export const extractedProductShape = pt.shape({
 // Actions
 
 export const ADD_PRODUCT = 'commerce/products/ADD_PRODUCT'; // Used by price duck
-const REMOVE_PRODUCT = 'commerce/products/REMOVE_PRODUCT';
+const DELETE_PRODUCT = 'commerce/products/DELETE_PRODUCT';
+const UNDELETE_PRODUCT = 'commerce/products/UNDELETE_PRODUCT';
+const DELETE_MARKED_PRODUCTS = 'commerce/products/DELETE_MARKED_PRODUCTS';
 
 // Reducer
 
@@ -59,12 +62,36 @@ export default function reducer(state = initialState(), action) {
         products: state.products.concat([newProduct]),
       };
     }
-    case REMOVE_PRODUCT: {
+    case DELETE_PRODUCT: {
       return {
         ...state,
-        products: state.products.filter(
-          product => product.id !== action.productId,
-        ),
+        products: state.products.map((product) => {
+          if (product.id === action.productId) {
+            const flaggedProduct = {...product};
+            flaggedProduct.isDeleted = true;
+            return flaggedProduct;
+          }
+          return product;
+        }),
+      };
+    }
+    case UNDELETE_PRODUCT: {
+      return {
+        ...state,
+        products: state.products.map((product) => {
+          if (product.id === action.productId) {
+            const flaggedProduct = {...product};
+            flaggedProduct.isDeleted = false;
+            return flaggedProduct;
+          }
+          return product;
+        }),
+      };
+    }
+    case DELETE_MARKED_PRODUCTS: {
+      return {
+        ...state,
+        products: state.products.filter(product => !product.isDeleted),
       };
     }
     default:
@@ -86,13 +113,34 @@ export function addProductFromExtracted(data) {
 }
 
 /**
- * Remove a product from the store.
+ * Mark a product as deleted in the store.
  * @param {string} productId Unique ID for the product to remove.
  */
-export function removeProduct(productId) {
+export function deleteProduct(productId) {
   return {
-    type: REMOVE_PRODUCT,
+    type: DELETE_PRODUCT,
     productId,
+  };
+}
+
+/**
+ * Mark a product as undeleted in the store.
+ * @param {string} productId Unique ID for the product to remove.
+ */
+export function undeleteProduct(productId) {
+  return {
+    type: UNDELETE_PRODUCT,
+    productId,
+  };
+}
+
+/**
+ * Remove all products marked as deleted from the store.
+ * @param {string} productId Unique ID for the product to remove.
+ */
+export function deleteMarkedProducts() {
+  return {
+    type: DELETE_MARKED_PRODUCTS,
   };
 }
 
@@ -151,5 +199,6 @@ export function getProductFromExtracted(data) {
     title: data.title,
     url: data.url,
     image: data.image,
+    isDeleted: false,
   };
 }
