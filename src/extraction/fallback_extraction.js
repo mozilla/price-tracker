@@ -10,7 +10,9 @@
 * Features: title, image, price
 */
 
-import extractionData from 'commerce/extraction/product_extraction_data.json';
+import extractionData from 'commerce/extraction/fallback_extraction_selectors.json';
+import {getPriceString, extractValueFromElement} from 'commerce/utils';
+
 
 const OPEN_GRAPH_PROPERTY_VALUES = {
   title: 'og:title',
@@ -23,32 +25,14 @@ const OPEN_GRAPH_PROPERTY_VALUES = {
  * for the page.
  */
 function getProductAttributeInfo() {
-  const hostname = new URL(window.location.href).host;
-  for (const [vendor, attributeInfo] of Object.entries(extractionData)) {
-    if (hostname.includes(vendor)) {
+  const url = window.location.href;
+  for (const [regExpStr, attributeInfo] of Object.entries(extractionData)) {
+    const regExp = new RegExp(regExpStr);
+    if (regExp.test(url)) {
       return attributeInfo;
     }
   }
   return null;
-}
-
-/**
- * Extracts and returns the string value for a given element property or attribute.
- *
- * @param {HTMLElement} element
- * @param {string} extractionProperty
- */
-function extractValueFromElement(element, extractionProperty) {
-  switch (extractionProperty) {
-    case 'content':
-      return element.getAttribute('content');
-    case 'innerText':
-      return element.innerText;
-    case 'src':
-      return element.src;
-    default:
-      throw new Error(`Unrecognized extraction property or attribute '${extractionProperty}'.`);
-  }
 }
 
 /**
@@ -59,18 +43,22 @@ export default function extractProduct() {
   const data = {};
   const attributeInfo = getProductAttributeInfo();
   if (attributeInfo) {
-    for (const [productAttribute, extractor] of Object.entries(attributeInfo)) {
-      const {selectors, extractUsing} = extractor;
-      for (const selector of selectors) {
+    for (const [productAttribute, tuples] of Object.entries(attributeInfo)) {
+      for (const tuple of tuples) {
+        const [selector, extractUsing] = tuple;
         const element = document.querySelector(selector);
         if (element) {
-          data[productAttribute] = extractValueFromElement(element, extractUsing);
+          if (productAttribute === 'price') {
+            data[productAttribute] = getPriceString(element, extractUsing);
+          } else {
+            data[productAttribute] = extractValueFromElement(element, extractUsing);
+          }
           if (data[productAttribute]) {
             break;
           } else {
             throw new Error(`Element found did not return a valid product ${productAttribute}.`);
           }
-        } else if (selector === selectors[selectors.length - 1]) {
+        } else if (tuple === tuples[tuples.length - 1]) {
           // None of the selectors matched an element on the page
           throw new Error(`No elements found with vendor data for product ${productAttribute}.`);
         }

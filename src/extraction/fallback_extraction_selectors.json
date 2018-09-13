@@ -1,0 +1,88 @@
+{
+  "^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}amazon\\.com": {
+    "title": [
+      ["#productTitle", "innerText"],
+      [".product-title", "innerText"]
+    ],
+    "price": [
+      ["#priceblock_dealprice", "innerText"],
+      ["#priceblock_ourprice", "innerText"],
+      ["#price_inside_buybox", "innerText"],
+      ["#buybox .a-color-price", "innerText"],
+      ["input[name='displayedPrice']", "value"],
+      [".a-size-large.a-color-price.guild_priceblock_ourprice", "innerText"],
+      [".a-color-price.a-size-medium.a-align-bottom", "innerText"],
+      [".display-price", "innerText"], [".offer-price", "innerText"]
+    ],
+    "image": [
+      ["#landingImage", "src"],
+      ["#imgBlkFront", "src"],
+      ["#ebooksImgBlkFront", "src"]
+    ]
+  },
+  "^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}bestbuy\\.com": {
+    "title": [
+      [".sku-title h1", "innerText"]
+    ],
+    "price": [
+      [".priceView-hero-price.priceView-purchase-price", "innerText"]
+    ],
+    "image": [
+      ["img.primary-image", "src"]
+    ]
+  },
+  "^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}ebay\\.com": {
+    "title": [
+      ["#itemTitle", "innerText"],
+      [".product-title", "innerText"]
+    ],
+    "price": [
+      ["#prcIsum", "innerText"],
+      ["#orgPrc", "innerText"],
+      ["#mm-saleDscPrc", "innerText"],
+      [".display-price", "innerText"]
+    ],
+    "image": [
+      ["#icImg", "src"],
+      [".vi-image-gallery__image.vi-image-gallery__image--absolute-center", "src"]
+    ]
+  },
+  "^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}homedepot\\.com": {
+    "title": [
+      ["h1.product-title__title", "innerText"]
+    ],
+    "price": [
+      ["#ajaxPrice", "content"],
+      ["#ajaxPriceAlt", "innerText"]
+    ],
+    "image": [
+      ["#mainImage", "src"]
+    ]
+  },
+  "^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}walmart\\.com": {
+    "title": [
+      ["h1.prod-ProductTitle", "content"],
+      ["h1.prod-ProductTitle", "innerText"]
+    ],
+    "price": [
+      [".PriceRange.prod-PriceHero", "innerText"],
+      [".price-group", "aria-label"],
+      [".price-group", "innerText"]
+    ],
+    "image": [
+      [".prod-hero-image-image", "src"],
+      [".prod-hero-image-carousel-image", "src"]
+    ]
+  },
+  "www.mkelly.me": {
+     "title": [
+      ["#title", "innerText"]
+     ],
+     "price": [
+      ["#price", "innerText"]
+     ],
+     "image": [
+       ["img", "src"]
+     ]
+   }
+}
