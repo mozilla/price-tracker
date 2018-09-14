@@ -18,10 +18,20 @@ const extractedProductJSON = url.searchParams.get('extractedProduct');
 if (extractedProductJSON) {
   appProps.extractedProduct = JSON.parse(extractedProductJSON);
 }
+render();
 
-ReactDOM.render(
-  <Provider store={store}>
-    <BrowserActionApp {...appProps} />
-  </Provider>,
-  document.getElementById('browser-action-app'),
-);
+browser.runtime.onMessage.addListener((message) => {
+  if (message.from === 'background' && message.subject === 'extracted-product') {
+    appProps.extractedProduct = message.data;
+    render();
+  }
+});
+
+function render() {
+  ReactDOM.render(
+    <Provider store={store}>
+      <BrowserActionApp {...appProps} />
+    </Provider>,
+    document.getElementById('browser-action-app'),
+  );
+}

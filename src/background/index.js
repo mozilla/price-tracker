@@ -37,7 +37,8 @@ function handleExtractedProductData(extractedProduct, sender) {
     return;
   }
 
-  // Update the toolbar icon's URL with the current page's product if we can
+  // Update the toolbar popup the next time it is opened with the current page's product
+  // This is done by passing product information via the popup's URL
   if (sender.tab) {
     const url = new URL(BROWSER_ACTION_URL);
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
@@ -47,6 +48,13 @@ function handleExtractedProductData(extractedProduct, sender) {
       tabId: sender.tab.id,
     });
   }
+
+  // Update the toolbar popup while it is open with the current page's product
+  browser.runtime.sendMessage({
+    from: 'background',
+    subject: 'extracted-product',
+    data: extractedProduct,
+  });
 
   // Update saved product data if it exists
   updateProductWithExtracted(extractedProduct);
