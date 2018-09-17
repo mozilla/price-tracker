@@ -24,3 +24,6 @@ export const BROWSER_ACTION_URL = browser.extension.getURL('/browser_action/inde
 // Price alert config
 export const ALERT_PERCENT_THRESHOLD = 0.05;
 export const ALERT_ABSOLUTE_THRESHOLD = 1000;
+
+/** Color of the toolbar badge for showing active price alerts. */
+export const BADGE_ALERT_BACKGROUND = '#00FEFF';

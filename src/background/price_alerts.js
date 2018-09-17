@@ -29,7 +29,7 @@ export function handlePriceAlerts() {
 
   // Show the browser action badge if there are any active alerts.
   if (activeAlerts.length > 0) {
-    browser.browserAction.setBadgeText({text: '!'});
+    browser.browserAction.setBadgeText({text: `${activeAlerts.length}`});
   } else {
     browser.browserAction.setBadgeText({text: null});
   }
