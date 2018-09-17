@@ -13,6 +13,21 @@ import {addPriceFromExtracted, getLatestPriceForProduct} from 'commerce/state/pr
 import {getAllProducts, getProduct, getProductIdFromExtracted} from 'commerce/state/products';
 
 /**
+ * Remove the x-frame-options header, so that the product page can load in the
+ * background page's iframe.
+ */
+export function handleWebRequest(details) {
+  // only remove the header if this extension's background page made the request
+  if (details.documentUrl === window.location.href) {
+    const responseHeaders = details.responseHeaders.filter(
+      header => !header.name.toLowerCase().includes('x-frame-options'),
+    );
+    return {responseHeaders};
+  }
+  return {responseHeaders: details.responseHeaders};
+}
+
+/**
  * Find products that are due for price updates and update them.
  */
 export function updatePrices() {
