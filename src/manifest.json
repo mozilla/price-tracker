@@ -9,10 +9,8 @@
     }
   },
   "icons": {
-    "16": "img/shopping_list.svg",
-    "24": "img/shopping_list.svg",
-    "48": "img/shopping_list.svg",
-    "96": "img/shopping_list.svg"
+    "48": "img/shopping_list_48.png",
+    "96": "img/shopping_list_96.png"
   },
   "background": {
     "scripts": ["background.bundle.js"]
