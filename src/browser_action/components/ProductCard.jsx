@@ -113,7 +113,7 @@ export default class ProductCard extends React.Component {
           <div className="latest-price">
             {latestPrice.amount.toFormat('$0.00')}
             {showUndo && (
-              <button className={showUndo ? 'undo-button' : 'undo-button hidden'} type="button" onClick={this.handleClickUndo}>
+              <button className="undo-button" type="button" onClick={this.handleClickUndo}>
                 <img
                   alt="Keep tracking product"
                   className="undo-icon"
@@ -122,8 +122,8 @@ export default class ProductCard extends React.Component {
                 Undo Delete
               </button>
             )}
-            {showClose && (
-              <button className={showUndo ? 'close-button hidden' : 'close-button'} type="button" onClick={this.handleClickClose}>
+            {(showClose && !showUndo) && (
+              <button className="close-button" type="button" onClick={this.handleClickClose}>
                 <img
                   alt="Stop tracking product"
                   className="close-icon"
@@ -145,7 +145,9 @@ export default class ProductCard extends React.Component {
             {buttonText}
           </button>
         )}
-        <div className={showUndo ? 'opaque-overlay' : 'opaque-overlay hidden'} />
+        {showUndo && (
+          <div className="opaque-overlay" />
+        )}
       </div>
     );
   }
@@ -163,8 +165,7 @@ export default class ProductCard extends React.Component {
   }),
   {
     deactivateAlert: priceActions.deactivateAlert,
-    deleteProduct: productActions.deleteProduct,
-    undeleteProduct: productActions.undeleteProduct,
+    setDeletionFlag: productActions.setDeletionFlag,
   },
 )
 @autobind
@@ -180,8 +181,7 @@ export class TrackedProductCard extends React.Component {
 
     // Dispatch props
     deactivateAlert: pt.func.isRequired,
-    deleteProduct: pt.func.isRequired,
-    undeleteProduct: pt.func.isRequired,
+    setDeletionFlag: pt.func.isRequired,
   }
 
   static defaultProps = {
@@ -192,14 +192,16 @@ export class TrackedProductCard extends React.Component {
    * Mark product as deleted when the close button is clicked
    */
   handleClickClose() {
-    this.props.deleteProduct(this.props.product.id);
+    const deletionFlag = true;
+    this.props.setDeletionFlag(this.props.product.id, deletionFlag);
   }
 
   /**
    * Mark product as undeleted when the undo button is clicked
    */
   handleClickUndo() {
-    this.props.undeleteProduct(this.props.product.id);
+    const deletionFlag = false;
+    this.props.setDeletionFlag(this.props.product.id, deletionFlag);
   }
 
   /**

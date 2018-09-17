@@ -47,9 +47,7 @@
   display: inline-block;
 }
 
-.product-card .latest-price .close-button,
-.product-card .latest-price .close-button.hidden, /* Override close button being shown on hover when undo button is visible */
-.product-card .latest-price .undo-button.hidden {
+.product-card .latest-price .close-button {
   display: none;
 }
 
@@ -142,8 +140,4 @@
   right: 0;
   opacity: 0.6;
   background-color: white;
-}
-
-.opaque-overlay.hidden {
-  display: none;
 }
