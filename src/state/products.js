@@ -21,6 +21,7 @@ export const productShape = pt.shape({
   title: pt.string.isRequired,
   url: pt.string.isRequired,
   image: pt.string.isRequired,
+  isDeleted: pt.bool.isRequired,
 });
 
 /**
@@ -40,7 +41,8 @@ export const extractedProductShape = pt.shape({
 // Actions
 
 export const ADD_PRODUCT = 'commerce/products/ADD_PRODUCT'; // Used by price duck
-const REMOVE_PRODUCT = 'commerce/products/REMOVE_PRODUCT';
+const SET_DELETION_FLAG = 'commerce/products/SET_DELETION_FLAG';
+const REMOVE_MARKED_PRODUCTS = 'commerce/products/REMOVE_MARKED_PRODUCTS';
 
 // Reducer
 
@@ -59,12 +61,21 @@ export default function reducer(state = initialState(), action) {
         products: state.products.concat([newProduct]),
       };
     }
-    case REMOVE_PRODUCT: {
+    case SET_DELETION_FLAG: {
       return {
         ...state,
-        products: state.products.filter(
-          product => product.id !== action.productId,
-        ),
+        products: state.products.map((product) => {
+          if (product.id === action.productId) {
+            return {...product, isDeleted: action.deletionFlag};
+          }
+          return product;
+        }),
+      };
+    }
+    case REMOVE_MARKED_PRODUCTS: {
+      return {
+        ...state,
+        products: state.products.filter(product => !product.isDeleted),
       };
     }
     default:
@@ -86,13 +97,24 @@ export function addProductFromExtracted(data) {
 }
 
 /**
- * Remove a product from the store.
+ * Mark a product by setting its deletion flag.
  * @param {string} productId Unique ID for the product to remove.
+ * @param {boolean} deletionFlag True if the product should be marked for deletion
  */
-export function removeProduct(productId) {
+export function setDeletionFlag(productId, deletionFlag) {
   return {
-    type: REMOVE_PRODUCT,
+    type: SET_DELETION_FLAG,
     productId,
+    deletionFlag,
+  };
+}
+
+/**
+ * Remove all products marked as deleted from the store.
+ */
+export function removeMarkedProducts() {
+  return {
+    type: REMOVE_MARKED_PRODUCTS,
   };
 }
 
@@ -151,5 +173,6 @@ export function getProductFromExtracted(data) {
     title: data.title,
     url: data.url,
     image: data.image,
+    isDeleted: false,
   };
 }
