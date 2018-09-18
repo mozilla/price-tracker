@@ -7,7 +7,7 @@
  * @module
  */
 
-import {BROWSER_ACTION_URL} from 'commerce/config';
+import {BADGE_DETECT_BACKGROUND, BROWSER_ACTION_URL} from 'commerce/config';
 import {updateProductWithExtracted} from 'commerce/background/price_updates';
 import {extractedProductShape} from 'commerce/state/products';
 import {validatePropType} from 'commerce/utils';
@@ -30,13 +30,13 @@ export function handleExtractedProductData(extractedProduct, sender) {
 
   // Update the toolbar icon's URL with the current page's product if we can
   if (sender.tab) {
+    const tabId = sender.tab.id;
     const url = new URL(BROWSER_ACTION_URL);
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
 
-    browser.browserAction.setPopup({
-      popup: url.href,
-      tabId: sender.tab.id,
-    });
+    browser.browserAction.setPopup({popup: url.href, tabId});
+    browser.browserAction.setBadgeBackgroundColor({color: BADGE_DETECT_BACKGROUND, tabId});
+    browser.browserAction.setBadgeText({text: '✚', tabId});
   }
 
   // Update saved product data if it exists
