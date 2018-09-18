@@ -10,7 +10,7 @@
 
 html,
 body {
-  background: #f1f1f3;
+  background: var(--white-100);
   font: message-box;
   margin: 0;
   padding: 0;
