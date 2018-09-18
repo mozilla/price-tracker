@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /**
- * Converts a price element into a numerical price value checking for subunits (like cents).
+ * Converts a price element into a numerical price value in subunits (like cents).
  * e.g. <span>$10.00</span> returns 1000. If string parsing fails, returns NaN.
  * @param {HTMLElement} priceEle
  * @returns {Number} An integer that represents the price in subunits
@@ -14,6 +14,10 @@ export function getPriceIntegerInSubunits(priceEle) {
   const allTokens = getAllTokens(childNodes);
   const priceTokens = getPriceTokens(allTokens);
   const cleanedPriceTokens = cleanPriceTokens(priceTokens);
+  // Handle the case when we have fewer or more price tokens than expected
+  if (cleanedPriceTokens.length === 0 || cleanedPriceTokens.length > 2) {
+    return NaN;
+  }
   // Convert units and subunits to a single integer value in subunits
   const mainUnits = parseInt(cleanedPriceTokens[0], 10) * 100;
   const subUnits = cleanedPriceTokens.length === 2 ? parseInt(cleanedPriceTokens[1], 10) : 0;
