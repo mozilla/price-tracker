@@ -41,22 +41,6 @@ export async function retry(callback, maxRetries = 5, delayFactor = 2, initialDe
 }
 
 /**
- * Parse a string containing a price to the currency amount in sub-units (e.g.
- * "$10.00" would return 1000, the value in cents).
- *
- * Strings of the form "$10.00" are the only supported format for now.
- *
- * @param {string} priceString
- * @return {number}
- */
-export function priceStringToAmount(priceString) {
-  const priceMatch = priceString.trim().match(/^\$([0-9]+)\.([0-9]{2})$/);
-  const dollars = Number.parseInt(priceMatch[1], 10);
-  const cents = Number.parseInt(priceMatch[2], 10);
-  return (dollars * 100) + cents;
-}
-
-/**
  * Wrapper for check-prop-types to check a propType against a single value.
  * @param {*} value Value to validate
  * @param {PropType} propType The Proptype to validate value against

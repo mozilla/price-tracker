@@ -14,7 +14,6 @@ import pt from 'prop-types';
 
 import {ALERT_ABSOLUTE_THRESHOLD, ALERT_PERCENT_THRESHOLD} from 'commerce/config';
 import {ADD_PRODUCT, getProductIdFromExtracted} from 'commerce/state/products';
-import {priceStringToAmount} from 'commerce/utils';
 
 // Types
 
@@ -327,7 +326,7 @@ export function priceFromExtracted(data) {
   return {
     id: `${productId}_${data.date}`,
     productId,
-    amount: priceStringToAmount(data.price),
+    amount: data.price,
     date: data.date,
   };
 }
