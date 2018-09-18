@@ -21,6 +21,11 @@ import {extractedProductShape} from 'commerce/state/products';
 import {loadStateFromStorage} from 'commerce/state/sync';
 import {validatePropType} from 'commerce/utils';
 
+async function isWindowActive(windowId) {
+  const activeWindow = await browser.windows.getCurrent();
+  return (activeWindow.id === windowId);
+}
+
 /**
  * Triggers background tasks when a product is extracted from a webpage. Along
  * with normal page navigation, this is also run when the prices are being
@@ -30,7 +35,7 @@ import {validatePropType} from 'commerce/utils';
  * @param {MessageSender} sender
  *  The sender for the content script that extracted this product
  */
-function handleExtractedProductData(extractedProduct, sender) {
+async function handleExtractedProductData(extractedProduct, sender) {
   // Do nothing if the extracted product is missing fields.
   const result = validatePropType(extractedProduct, extractedProductShape);
   if (result !== undefined) {
@@ -38,7 +43,6 @@ function handleExtractedProductData(extractedProduct, sender) {
   }
 
   // Update the toolbar popup the next time it is opened with the current page's product
-  // This is done by passing product information via the popup's URL
   if (sender.tab) {
     const url = new URL(BROWSER_ACTION_URL);
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
@@ -50,11 +54,12 @@ function handleExtractedProductData(extractedProduct, sender) {
   }
 
   // Update the toolbar popup while it is open with the current page's product
-  browser.runtime.sendMessage({
-    from: 'background',
-    subject: 'extracted-product',
-    data: extractedProduct,
-  });
+  if (sender.tab.active && await isWindowActive(sender.tab.windowId)) {
+    browser.runtime.sendMessage({
+      subject: 'extracted-product',
+      data: extractedProduct,
+    });
+  }
 
   // Update saved product data if it exists
   updateProductWithExtracted(extractedProduct);

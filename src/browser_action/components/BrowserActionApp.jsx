@@ -44,9 +44,22 @@ export default class BrowserActionApp extends React.Component {
     extractedProduct: null,
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      extractedProduct: props.extractedProduct,
+    };
+  }
+
   componentDidMount() {
     this.props.loadStateFromStorage();
     window.addEventListener('unload', this.handleUnload);
+
+    browser.runtime.onMessage.addListener((message) => {
+      if (message.subject === 'extracted-product') {
+        this.setState({extractedProduct: message.data});
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -61,7 +74,8 @@ export default class BrowserActionApp extends React.Component {
   }
 
   render() {
-    const {products, extractedProduct} = this.props;
+    const {products} = this.props;
+    const {extractedProduct} = this.state;
     if (products.length < 1) {
       return (
         <EmptyOnboarding extractedProduct={extractedProduct} />
