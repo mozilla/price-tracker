@@ -17,7 +17,7 @@ body {
 }
 
 #browser-action-app {
-  width: 325px;
+  width: 320px;
 }
 
 /** Common element styles */
@@ -32,29 +32,61 @@ a:hover {
   text-decoration: underline;
 }
 
-/** Photon Ghost Button */
-.button-ghost {
-  background: transparent;
+/** Buttons */
+
+.button {
+  background: var(--grey-90-a10);
+  border: none;
+  color: var(--grey-90);
   border-radius: 2px;
+  font-size: 13px;
+  font-weight: 400;
   height: 32px;
-  line-height: 16px;
-  padding: 8px;
+  line-height: 32px;
   text-align: center;
 }
 
-.button-ghost .icon {
-  -moz-context-properties: fill;
-  fill: var(--grey-90-a80);
-}
-
-.button-ghost:hover {
-  background: var(--grey-90-a10);
-}
-
-.button-ghost:active {
+.button:hover:enabled {
   background: var(--grey-90-a20);
 }
 
-.button-ghost:focus {
+.button:active:enabled {
+  background: var(--grey-90-a30);
+}
+
+.button:focus {
   box-shadow: 0 0 0 1px #0a84ff inset, 0 0 0 1px #0a84ff, 0 0 0 4px var(--blue-50-a30);
+}
+
+.button:disabled {
+  opacity: 0.4;
+}
+
+.button .icon {
+  height: 16px;
+  margin-inline-end: 4px;
+  position: relative;
+  top: 3px;
+  width: 16px;
+}
+
+/** Ghost Button */
+
+.button.ghost {
+  background: transparent;
+  fill: var(--grey-90-a80);
+}
+
+.button.ghost .icon {
+  -moz-context-properties: fill;
+  fill: var(--grey-90-a80);
+  margin: 0;
+}
+
+.button.ghost:hover {
+  background: var(--grey-90-a10);
+}
+
+.button.ghost:active {
+  background: var(--grey-90-a20);
 }
