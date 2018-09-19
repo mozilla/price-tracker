@@ -21,11 +21,6 @@ import {extractedProductShape} from 'commerce/state/products';
 import {loadStateFromStorage} from 'commerce/state/sync';
 import {validatePropType} from 'commerce/utils';
 
-async function isWindowActive(windowId) {
-  const activeWindow = await browser.windows.getCurrent();
-  return (activeWindow.id === windowId);
-}
-
 /**
  * Triggers background tasks when a product is extracted from a webpage. Along
  * with normal page navigation, this is also run when the prices are being
@@ -35,15 +30,15 @@ async function isWindowActive(windowId) {
  * @param {MessageSender} sender
  *  The sender for the content script that extracted this product
  */
-async function handleExtractedProductData(extractedProduct, sender) {
+function handleExtractedProductData(extractedProduct, sender) {
   // Do nothing if the extracted product is missing fields.
   const result = validatePropType(extractedProduct, extractedProductShape);
   if (result !== undefined) {
     return;
   }
 
-  // Update the toolbar popup the next time it is opened with the current page's product
   if (sender.tab) {
+    // Update the toolbar popup the next time it is opened with the current page's product
     const url = new URL(BROWSER_ACTION_URL);
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
 
@@ -51,14 +46,14 @@ async function handleExtractedProductData(extractedProduct, sender) {
       popup: url.href,
       tabId: sender.tab.id,
     });
-  }
 
-  // Update the toolbar popup while it is open with the current page's product
-  if (sender.tab.active && await isWindowActive(sender.tab.windowId)) {
-    browser.runtime.sendMessage({
-      subject: 'extracted-product',
-      data: extractedProduct,
-    });
+    // Update the toolbar popup while it is open with the current page's product
+    if (sender.tab.active) {
+      browser.runtime.sendMessage({
+        subject: 'extracted-product',
+        extractedProduct,
+      });
+    }
   }
 
   // Update saved product data if it exists

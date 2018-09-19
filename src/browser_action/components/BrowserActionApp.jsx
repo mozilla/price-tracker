@@ -57,7 +57,7 @@ export default class BrowserActionApp extends React.Component {
 
     browser.runtime.onMessage.addListener((message) => {
       if (message.subject === 'extracted-product') {
-        this.setState({extractedProduct: message.data});
+        this.setState({extractedProduct: message.extractedProduct});
       }
     });
   }
