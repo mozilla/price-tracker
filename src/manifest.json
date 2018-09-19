@@ -9,18 +9,16 @@
     }
   },
   "icons": {
-    "16": "img/shopping_basket.svg",
-    "24": "img/shopping_basket.svg",
-    "48": "img/shopping_basket.svg",
-    "96": "img/shopping_basket.svg"
+    "48": "img/shopping_list_48.png",
+    "96": "img/shopping_list_96.png"
   },
   "background": {
     "scripts": ["background.bundle.js"]
   },
   "browser_action": {
     "default_icon": {
-      "16": "img/tracking.svg",
-      "32": "img/tracking.svg"
+      "16": "img/shopping_list.svg",
+      "32": "img/shopping_list.svg"
     },
     "default_title": "Tracked Products",
     "default_popup": "browser_action/index.html"

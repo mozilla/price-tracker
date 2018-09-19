@@ -52,7 +52,6 @@ export function handlePriceAlerts() {
         `Placeholder · Was ${originalPrice.amount.toFormat('$0.00')}, Now `
         + `${alertPrice.amount.toFormat('$0.00')}`
       ),
-      iconUrl: browser.extension.getURL('img/tracking.svg'),
     });
 
     // Update state now that we've shown it

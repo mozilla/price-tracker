@@ -60,6 +60,7 @@ module.exports = {
     new CopyWebpackPlugin([
       // Static files
       {from: '**/*.svg'},
+      {from: '**/*.png'},
       {from: '**/*.html'},
       {from: 'manifest.json'},
 
