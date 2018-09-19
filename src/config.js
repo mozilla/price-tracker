@@ -27,3 +27,6 @@ export const ALERT_ABSOLUTE_THRESHOLD = 1000;
 
 /** Color of the toolbar badge for showing active price alerts. */
 export const BADGE_ALERT_BACKGROUND = '#00FEFF';
+
+/** Color of the toolbar badge when a product on the current page is trackable. */
+export const BADGE_DETECT_BACKGROUND = '#33F70C';

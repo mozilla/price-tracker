@@ -11,70 +11,14 @@
 
 import {
   BADGE_ALERT_BACKGROUND,
-  BROWSER_ACTION_URL,
   FIRST_RUN_URL,
   PRICE_CHECK_TIMEOUT_INTERVAL,
 } from 'commerce/config';
+import {handleExtractedProductData} from 'commerce/background/extraction';
 import {handleNotificationClicked, handlePriceAlerts} from 'commerce/background/price_alerts';
-import {updateProductWithExtracted, updatePrices} from 'commerce/background/prices';
+import {handleWebRequest, updatePrices} from 'commerce/background/price_updates';
 import store from 'commerce/state';
-import {extractedProductShape} from 'commerce/state/products';
 import {loadStateFromStorage} from 'commerce/state/sync';
-import {validatePropType} from 'commerce/utils';
-
-/**
- * Triggers background tasks when a product is extracted from a webpage. Along
- * with normal page navigation, this is also run when the prices are being
- * updated in the background.
- *
- * @param {ExtractedProduct} extracted
- * @param {MessageSender} sender
- *  The sender for the content script that extracted this product
- */
-function handleExtractedProductData(extractedProduct, sender) {
-  // Do nothing if the extracted product is missing fields.
-  const result = validatePropType(extractedProduct, extractedProductShape);
-  if (result !== undefined) {
-    return;
-  }
-
-  if (sender.tab) {
-    // Update the toolbar popup the next time it is opened with the current page's product
-    const url = new URL(BROWSER_ACTION_URL);
-    url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
-
-    browser.browserAction.setPopup({
-      popup: url.href,
-      tabId: sender.tab.id,
-    });
-
-    // Update the toolbar popup while it is open with the current page's product
-    if (sender.tab.active) {
-      browser.runtime.sendMessage({
-        subject: 'extracted-product',
-        extractedProduct,
-      });
-    }
-  }
-
-  // Update saved product data if it exists
-  updateProductWithExtracted(extractedProduct);
-}
-
-/**
- * Remove the x-frame-options header, so that the product page can load in the
- * background page's iframe.
- */
-function handleWebRequest(details) {
-  // only remove the header if this extension's background page made the request
-  if (details.documentUrl === window.location.href) {
-    const responseHeaders = details.responseHeaders.filter(
-      header => !header.name.toLowerCase().includes('x-frame-options'),
-    );
-    return {responseHeaders};
-  }
-  return {responseHeaders: details.responseHeaders};
-}
 
 (async function main() {
   // Set browser action default badge color, which can't be set via manifest
