@@ -88,7 +88,7 @@ function handleWebRequest(details) {
   });
 
   // Display price alerts when they are inserted into the state.
-  // This runs on startup once the state is loaded from storage.
+  // This includes the initial load from extension storage below.
   store.subscribe(handlePriceAlerts);
 
   // Open the product page when an alert notification is clicked.
