@@ -6,7 +6,7 @@
 
 .title-bar {
   border-bottom: 1px solid var(--grey-30);
-  height: 41px;
+  height: 42px;
   margin: 0;
   padding: 0 16px;
   position: relative;
@@ -21,12 +21,10 @@
 }
 
 .title-bar .help-button {
-  background: none;
   border: none;
   cursor: pointer;
   margin: 0;
-  padding: 0;
   position: absolute;
-  right: 16px;
-  top: 12px;
+  right: 8px;
+  top: 5px;
 }
