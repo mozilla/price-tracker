@@ -10,6 +10,7 @@
  */
 
 import {
+  BADGE_ALERT_BACKGROUND,
   BROWSER_ACTION_URL,
   FIRST_RUN_URL,
   PRICE_CHECK_TIMEOUT_INTERVAL,
@@ -77,7 +78,7 @@ function handleWebRequest(details) {
 
 (async function main() {
   // Set browser action default badge color, which can't be set via manifest
-  browser.browserAction.setBadgeBackgroundColor({color: '#24ba20'});
+  browser.browserAction.setBadgeBackgroundColor({color: BADGE_ALERT_BACKGROUND});
 
   // Setup product extraction listener
   browser.runtime.onMessage.addListener((message, sender) => {
@@ -87,6 +88,7 @@ function handleWebRequest(details) {
   });
 
   // Display price alerts when they are inserted into the state.
+  // This includes the initial load from extension storage below.
   store.subscribe(handlePriceAlerts);
 
   // Open the product page when an alert notification is clicked.
