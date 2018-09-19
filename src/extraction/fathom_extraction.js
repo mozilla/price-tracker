@@ -12,7 +12,7 @@
 
 import defaultCoefficients from 'commerce/extraction/fathom_default_coefficients.json';
 import RulesetFactory from 'commerce/extraction/ruleset_factory';
-import {getPriceIntegerInSubunits} from 'commerce/extraction/utils';
+import {getPriceInSubunits} from 'commerce/extraction/utils';
 
 // Minimum score to be considered the "correct" feature element extracted by Fathom
 const SCORE_THRESHOLD = 4;
@@ -42,7 +42,7 @@ const PRODUCT_FEATURES = {
   price: {
     ...FEATURE_DEFAULTS,
     getValueFromElement(element) {
-      return getPriceIntegerInSubunits(element);
+      return getPriceInSubunits(element);
     },
   },
 };

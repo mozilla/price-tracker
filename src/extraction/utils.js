@@ -6,75 +6,37 @@
  * Converts a price element into a numerical price value in subunits (like cents).
  * e.g. <span>$10.00</span> returns 1000. If string parsing fails, returns NaN.
  * @param {HTMLElement} priceEle
- * @returns {Number} An integer that represents the price in subunits
+ * @returns {Number} the price in subunits
  */
-export function getPriceIntegerInSubunits(priceEle) {
-  // Get all child nodes including text nodes
-  const childNodes = priceEle.childNodes;
-  const allTokens = getAllTokens(childNodes);
-  const priceTokens = getPriceTokens(allTokens);
-  const cleanedPriceTokens = cleanPriceTokens(priceTokens);
-  // Handle the case when we have fewer or more price tokens than expected
-  if (cleanedPriceTokens.length === 0 || cleanedPriceTokens.length > 2) {
-    return NaN;
-  }
+export function getPriceInSubunits(priceEle) {
+  const priceUnits = getPriceUnits(priceEle.childNodes);
   // Convert units and subunits to a single integer value in subunits
-  const mainUnits = parseInt(cleanedPriceTokens[0], 10) * 100;
-  const subUnits = cleanedPriceTokens.length === 2 ? parseInt(cleanedPriceTokens[1], 10) : 0;
-  return mainUnits + subUnits;
-}
-
-/**
- * Separate token strings in a list into substrings using '$' and '.' as separators
- * @param {Array.string} tokens
- * @returns {Array.string}
- */
-function getAllTokens(tokens) {
-  const allTokens = [];
-  let shouldPush = true;
-  for (const node of tokens) {
-    const text = node.textContent;
-    for (const char of text) {
-      if (char === '$' || char === '.') {
-        shouldPush = false;
-        const [firstStr, secondStr] = text.split(char);
-        if (firstStr.length > 0) {
-          allTokens.push(firstStr);
-        }
-        allTokens.push(char);
-        // Only push if there is a substring after the split and the '.' separator is not present
-        if (secondStr.length > 0 && secondStr !== char && !(secondStr.includes('.'))) {
-          allTokens.push(secondStr);
-        }
-      }
-    }
-    if (shouldPush) {
-      allTokens.push(text);
-    } else {
-      shouldPush = true;
-    }
+  switch (priceUnits.length) {
+    case 1:
+      return priceUnits[0] * 100;
+    case 2:
+      return ((priceUnits[0] * 100) + priceUnits[1]);
+    default:
+      return NaN;
   }
-  return allTokens;
 }
 
 /**
- * Filter a list of string tokens for those containing digits
- * @param {Array.strings} tokens
- * @returns {Array.strings}
+ * Extracts price units by filtering and cleaning textContent from text and DOM nodes
+ * @param {Array.NodeList} nodes
+ * @returns {Array.Number}
  */
-function getPriceTokens(tokens) {
-  return tokens.filter(token => /\d/g.test(token));
-}
+function getPriceUnits(nodes) {
+  const nodesArr = Array.from(nodes);
+  // Separate token strings in a list into substrings using '$' and '.' as separators
+  const allTokens = nodesArr.flatMap(token => token.textContent.split(/[.$]/));
 
-/**
- * Remove any non-digit characters for each string in the list
- * @param {Array.strings} tokens
- * @returns {Array.strings}
- */
-function cleanPriceTokens(priceTokens) {
-  const result = [];
-  for (const token of priceTokens) {
-    result.push(token.replace(/\D/g, ''));
-  }
-  return result;
+  // Filter out any tokens that do not contain a digit
+  const priceTokens = allTokens.filter(token => /\d/g.test(token));
+
+  // Remove any non-digit characters for each token in the list
+  const cleanedPriceTokens = priceTokens.map(token => token.replace(/\D/g, ''));
+
+  // Convert price token strings to integers
+  return cleanedPriceTokens.map(token => parseInt(token, 10));
 }
