@@ -33,7 +33,7 @@ export const extractedProductShape = pt.shape({
   title: pt.string.isRequired,
   url: pt.string.isRequired,
   image: pt.string.isRequired,
-  price: pt.string.isRequired,
+  price: pt.number.isRequired,
   date: pt.string.isRequired,
 });
 
