@@ -35,13 +35,16 @@ a:hover {
 /** Buttons */
 
 .button {
+  align-items: center;
   background: var(--grey-90-a10);
   border: none;
   color: var(--grey-90);
   border-radius: 2px;
+  display: flex;
   font-size: 13px;
   font-weight: 400;
   height: 32px;
+  justify-content: center;
   line-height: 32px;
   text-align: center;
 }
@@ -65,8 +68,6 @@ a:hover {
 .button .icon {
   height: 16px;
   margin-inline-end: 4px;
-  position: relative;
-  top: 3px;
   width: 16px;
 }
 
@@ -74,7 +75,6 @@ a:hover {
 
 .button.ghost {
   background: transparent;
-  fill: var(--grey-90-a80);
 }
 
 .button.ghost .icon {
