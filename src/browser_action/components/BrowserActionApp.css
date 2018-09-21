@@ -20,10 +20,7 @@
   text-align: center;
 }
 
-.title-bar .help-button {
-  border: none;
-  cursor: pointer;
-  margin: 0;
+.title-bar .help {
   position: absolute;
   right: 8px;
   top: calc(50% - 16px);

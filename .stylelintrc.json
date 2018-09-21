@@ -2,6 +2,7 @@
   "extends": "stylelint-config-standard",
   "rules": {
     "font-family-no-missing-generic-family-keyword": null,
-    "custom-property-empty-line-before": null
+    "custom-property-empty-line-before": null,
+    "no-descending-specificity": null
   }
 }

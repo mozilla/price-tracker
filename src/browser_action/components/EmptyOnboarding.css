@@ -5,7 +5,7 @@
 /** Empty state (when no products are saved) */
 
 .empty-onboarding {
-  margin: 15px;
+  margin: 16px;
 }
 
 .empty-onboarding .cta {
@@ -15,21 +15,11 @@
   font-weight: bold;
 }
 
-.empty-onboarding .image,
-.empty-onboarding .product-card {
-  margin: 0 auto 15px;
-}
-
-.empty-onboarding .image {
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 1px #ccc;
-  text-align: center;
-  height: 120px;
-}
-
 .empty-onboarding .description {
   margin: 0 15px 15px;
   font-size: 1.1em;
+}
+
+.empty-onboarding .watch.button {
+  width: 100%;
 }
