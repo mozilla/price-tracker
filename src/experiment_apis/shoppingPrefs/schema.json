@@ -1,0 +1,65 @@
+[
+  {
+    "namespace": "shoppingPrefs",
+    "description": "Read and write config values.",
+    "functions": [
+      {
+        "name": "getBoolPref",
+        "type": "function",
+        "description": "Get a boolean preference value.",
+        "async": true,
+        "parameters": [
+          {
+            "name": "prefName",
+            "type": "string",
+            "description": "The name of the preference."
+          },
+          {
+            "name": "defaultValue",
+            "type": "boolean",
+            "description": "The default value to use if the preference is unset.",
+            "optional": true
+          }
+        ]
+      },
+      {
+        "name": "getCharPref",
+        "type": "function",
+        "description": "Get a string preference value.",
+        "async": true,
+        "parameters": [
+          {
+            "name": "prefName",
+            "type": "string",
+            "description": "The name of the preference."
+          },
+          {
+            "name": "defaultValue",
+            "type": "string",
+            "description": "The default value to use if the preference is unset.",
+            "optional": true
+          }
+        ]
+      },
+      {
+        "name": "getIntPref",
+        "type": "function",
+        "description": "Get an integer preference value.",
+        "async": true,
+        "parameters": [
+          {
+            "name": "prefName",
+            "type": "string",
+            "description": "The name of the preference."
+          },
+          {
+            "name": "defaultValue",
+            "type": "integer",
+            "description": "The default value to use if the preference is unset.",
+            "optional": true
+          }
+        ]
+      }
+    ]
+  }
+]

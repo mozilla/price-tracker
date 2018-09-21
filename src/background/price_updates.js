@@ -7,7 +7,7 @@
  * @module
  */
 
-import {IFRAME_TIMEOUT, PRICE_CHECK_INTERVAL} from 'commerce/config';
+import config from 'commerce/config';
 import store from 'commerce/state';
 import {addPriceFromExtracted, getLatestPriceForProduct} from 'commerce/state/prices';
 import {getAllProducts, getProduct, getProductIdFromExtracted} from 'commerce/state/products';
@@ -30,14 +30,15 @@ export function handleWebRequest(details) {
 /**
  * Find products that are due for price updates and update them.
  */
-export function updatePrices() {
+export async function updatePrices() {
   const state = store.getState();
   const products = getAllProducts(state);
   const now = new Date();
+  const priceCheckInterval = await config.get('priceCheckInterval');
 
   for (const product of products) {
     const priceEntry = getLatestPriceForProduct(state, product.id);
-    if (now - priceEntry.date > PRICE_CHECK_INTERVAL) {
+    if (now - priceEntry.date > priceCheckInterval) {
       fetchLatestPrice(product);
     }
   }
@@ -49,7 +50,7 @@ export function updatePrices() {
  * to updateProductWithExtracted.
  * @param {Product} product
  */
-function fetchLatestPrice(product) {
+async function fetchLatestPrice(product) {
   // Do nothing if there's already a fetch in progress.
   if (document.getElementById(product.id)) {
     return;
@@ -69,7 +70,7 @@ function fetchLatestPrice(product) {
   // Cleanup iframe whether it is finished or not.
   setTimeout(() => {
     document.getElementById(product.id).remove();
-  }, IFRAME_TIMEOUT);
+  }, await config.get('iframeTimeout'));
 }
 
 /**

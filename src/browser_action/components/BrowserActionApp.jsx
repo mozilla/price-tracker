@@ -7,7 +7,7 @@ import pt from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 
-import {SUPPORT_URL} from 'commerce/config';
+import config from 'commerce/config';
 import EmptyOnboarding from 'commerce/browser_action/components/EmptyOnboarding';
 import TrackedProductList from 'commerce/browser_action/components/TrackedProductList';
 import {extractedProductShape, getAllProducts, productShape} from 'commerce/state/products';
@@ -79,8 +79,8 @@ export default class BrowserActionApp extends React.Component {
   /**
    * Open the support page and close the panel when the help icon is clicked.
    */
-  handleClickHelp() {
-    browser.tabs.create({url: SUPPORT_URL});
+  async handleClickHelp() {
+    browser.tabs.create({url: await config.get('supportUrl')});
     window.close();
   }
 

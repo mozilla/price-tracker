@@ -7,11 +7,12 @@ import pt from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 
-import {FIRST_RUN_URL} from 'commerce/config';
 import * as productActions from 'commerce/state/products';
 import {extractedProductShape} from 'commerce/state/products';
 
 import 'commerce/browser_action/components/EmptyOnboarding.css';
+
+const FIRST_RUN_URL = browser.extension.getURL('/first_run/index.html');
 
 /**
  * Component shown when no products are currently being tracked.

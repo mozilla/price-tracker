@@ -7,7 +7,7 @@
  * @module
  */
 
-import {BADGE_DETECT_BACKGROUND, BROWSER_ACTION_URL} from 'commerce/config';
+import config from 'commerce/config';
 import {updateProductWithExtracted} from 'commerce/background/price_updates';
 import {extractedProductShape} from 'commerce/state/products';
 import {validatePropType} from 'commerce/utils';
@@ -21,7 +21,7 @@ import {validatePropType} from 'commerce/utils';
  * @param {MessageSender} sender
  *  The sender for the content script that extracted this product
  */
-export function handleExtractedProductData(extractedProduct, sender) {
+export async function handleExtractedProductData(extractedProduct, sender) {
   // Do nothing if the extracted product is missing fields.
   const result = validatePropType(extractedProduct, extractedProductShape);
   if (result !== undefined) {
@@ -32,7 +32,7 @@ export function handleExtractedProductData(extractedProduct, sender) {
     const tabId = sender.tab.id;
 
     // Update the toolbar icon's URL with the current page's product if we can
-    const url = new URL(BROWSER_ACTION_URL);
+    const url = new URL(await config.get('browserActionUrl'));
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
 
     // Update the toolbar popup while it is open with the current page's product
@@ -44,7 +44,10 @@ export function handleExtractedProductData(extractedProduct, sender) {
     }
 
     browser.browserAction.setPopup({popup: url.href, tabId});
-    browser.browserAction.setBadgeBackgroundColor({color: BADGE_DETECT_BACKGROUND, tabId});
+    browser.browserAction.setBadgeBackgroundColor({
+      color: await config.get('badgeDetectBackground'),
+      tabId,
+    });
     browser.browserAction.setBadgeText({text: '✚', tabId});
   }
 

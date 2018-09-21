@@ -12,7 +12,7 @@ import maxBy from 'lodash.maxby';
 import minBy from 'lodash.minby';
 import pt from 'prop-types';
 
-import {ALERT_ABSOLUTE_THRESHOLD, ALERT_PERCENT_THRESHOLD} from 'commerce/config';
+import config from 'commerce/config';
 import {ADD_PRODUCT, getProductIdFromExtracted} from 'commerce/state/products';
 
 // Types
@@ -172,7 +172,7 @@ export default function reducer(state = initialState(), action) {
  * @param {ExtractedProduct} data
  */
 export function addPriceFromExtracted(data) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const price = priceFromExtracted(data);
     const state = getState();
 
@@ -183,7 +183,7 @@ export function addPriceFromExtracted(data) {
       });
 
       // Check if we need to alert since there's a new price in town.
-      if (shouldTriggerPriceAlert(state, price)) {
+      if (await shouldTriggerPriceAlert(state, price)) {
         dispatch({
           type: ADD_PRICE_ALERT,
           alert: {
@@ -361,7 +361,7 @@ function shouldAddNewPrice(state, price) {
  * @param {Price} price The new price being added
  * @return {boolean} True if we should trigger an alert, false otherwise.
  */
-function shouldTriggerPriceAlert(state, price) {
+async function shouldTriggerPriceAlert(state, price) {
   const productId = price.productId;
 
   // Prices with an active alert should not trigger a new one.
@@ -393,12 +393,12 @@ function shouldTriggerPriceAlert(state, price) {
   // thresholds, trigger an alert.
   const newPrice = new PriceWrapper(price);
   const difference = highPrice.amount.subtract(newPrice.amount);
-  if (difference.getAmount() >= ALERT_ABSOLUTE_THRESHOLD) {
+  if (difference.getAmount() >= await config.get('alertAbsoluteThreshold')) {
     return true;
   }
 
   const percentDifference = difference.getAmount() / highPrice.amount.getAmount();
-  if (percentDifference >= ALERT_PERCENT_THRESHOLD) {
+  if (percentDifference >= await config.get('alertPercentThreshold')) {
     return true;
   }
 

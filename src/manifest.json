@@ -31,5 +31,15 @@
     "notifications",
     "webRequest",
     "webRequestBlocking"
-  ]
+  ],
+  "experiment_apis": {
+    "shoppingPrefs": {
+      "schema": "experiment_apis/shoppingPrefs/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "experiment_apis/shoppingPrefs/api.js",
+        "paths": [["shoppingPrefs"]]
+      }
+    }
+  }
 }
