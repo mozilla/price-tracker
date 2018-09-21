@@ -10,8 +10,7 @@
 * Features: title, image, price
 */
 
-import extractionData from 'commerce/extraction/fallback_extraction_selectors.json';
-import {getPriceString, extractValueFromElement} from 'commerce/utils';
+import extractionData from 'commerce/extraction/fallback_extraction_selectors';
 
 
 const OPEN_GRAPH_PROPERTY_VALUES = {
@@ -24,12 +23,12 @@ const OPEN_GRAPH_PROPERTY_VALUES = {
  * Returns any extraction data found for the vendor based on the URL
  * for the page.
  */
-function getProductAttributeInfo() {
+function getFeatureInfo() {
   const url = window.location.href;
-  for (const [regExpStr, attributeInfo] of Object.entries(extractionData)) {
+  for (const [regExpStr, featureInfo] of Object.entries(extractionData)) {
     const regExp = new RegExp(regExpStr);
     if (regExp.test(url)) {
-      return attributeInfo;
+      return featureInfo;
     }
   }
   return null;
@@ -40,27 +39,23 @@ function getProductAttributeInfo() {
  * selectors if they exist, otherwise from Open Graph <meta> tags.
  */
 export default function extractProduct() {
-  const data = {};
-  const attributeInfo = getProductAttributeInfo();
-  if (attributeInfo) {
-    for (const [productAttribute, tuples] of Object.entries(attributeInfo)) {
-      for (const tuple of tuples) {
-        const [selector, extractUsing] = tuple;
+  const extractedProduct = {};
+  const featureInfo = getFeatureInfo();
+  if (featureInfo) {
+    for (const [feature, routines] of Object.entries(featureInfo)) {
+      for (const routine of routines) {
+        const [selector, extractionMethod] = routine;
         const element = document.querySelector(selector);
         if (element) {
-          if (productAttribute === 'price') {
-            data[productAttribute] = getPriceString(element, extractUsing);
-          } else {
-            data[productAttribute] = extractValueFromElement(element, extractUsing);
-          }
-          if (data[productAttribute]) {
+          extractedProduct[feature] = extractionMethod(element);
+          if (extractedProduct[feature]) {
             break;
           } else {
-            throw new Error(`Element found did not return a valid product ${productAttribute}.`);
+            throw new Error(`Element found did not return a valid product ${feature}.`);
           }
-        } else if (tuple === tuples[tuples.length - 1]) {
+        } else if (routine === routines[routines.length - 1]) {
           // None of the selectors matched an element on the page
-          throw new Error(`No elements found with vendor data for product ${productAttribute}.`);
+          throw new Error(`No elements found with vendor data for product ${feature}.`);
         }
       }
     }
@@ -68,9 +63,9 @@ export default function extractProduct() {
     for (const [key, value] of Object.entries(OPEN_GRAPH_PROPERTY_VALUES)) {
       const metaEle = document.querySelector(`meta[property='${value}']`);
       if (metaEle) {
-        data[key] = metaEle.getAttribute('content');
+        extractedProduct[key] = metaEle.getAttribute('content');
       }
     }
   }
-  return data;
+  return extractedProduct;
 }
