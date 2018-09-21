@@ -92,7 +92,7 @@ export default class BrowserActionApp extends React.Component {
         <div className="title-bar">
           <h1 className="title">Price Watcher List</h1>
           <button className="help-button button-ghost" type="button" onClick={this.handleClickHelp}>
-            <img src={browser.extension.getURL('img/help.svg')} alt="Help" />
+            <img className="icon" src={browser.extension.getURL('img/help.svg')} alt="Help" />
           </button>
         </div>
         {products.length < 1

@@ -42,6 +42,11 @@ a:hover {
   text-align: center;
 }
 
+.button-ghost .icon {
+  -moz-context-properties: fill;
+  fill: var(--grey-90-a80);
+}
+
 .button-ghost:hover {
   background: var(--grey-90-a10);
 }
