@@ -24,14 +24,31 @@ const OPEN_GRAPH_PROPERTY_VALUES = {
  * for the page.
  */
 function getFeatureInfo() {
-  const url = window.location.href;
-  for (const [regExpStr, featureInfo] of Object.entries(extractionData)) {
-    const regExp = new RegExp(regExpStr);
-    if (regExp.test(url)) {
-      return featureInfo;
+  const hostname = new URL(window.location.href).host;
+  for (const [vendorDomainsStr, featureInfo] of Object.entries(extractionData)) {
+    const vendorDomains = vendorDomainsStr.split('_');
+    for (const domain of vendorDomains) {
+      if (hostname.includes(domain)) {
+        return featureInfo;
+      }
     }
   }
   return null;
+}
+
+function findValue(extractors) {
+  for (const [selector, extractionMethod] of extractors) {
+    const element = document.querySelector(selector);
+    if (element) {
+      const value = extractionMethod(element);
+      if (value) {
+        return value;
+      }
+      throw new Error('Element found did not return a valid value for the product feature.');
+    }
+  }
+  // None of the selectors matched an element on the page
+  throw new Error('No elements found with vendor data for the product feature.');
 }
 
 /**
@@ -42,28 +59,14 @@ export default function extractProduct() {
   const extractedProduct = {};
   const featureInfo = getFeatureInfo();
   if (featureInfo) {
-    for (const [feature, routines] of Object.entries(featureInfo)) {
-      for (const routine of routines) {
-        const [selector, extractionMethod] = routine;
-        const element = document.querySelector(selector);
-        if (element) {
-          extractedProduct[feature] = extractionMethod(element);
-          if (extractedProduct[feature]) {
-            break;
-          } else {
-            throw new Error(`Element found did not return a valid product ${feature}.`);
-          }
-        } else if (routine === routines[routines.length - 1]) {
-          // None of the selectors matched an element on the page
-          throw new Error(`No elements found with vendor data for product ${feature}.`);
-        }
-      }
+    for (const [feature, extractors] of Object.entries(featureInfo)) {
+      extractedProduct[feature] = findValue(extractors);
     }
   } else {
-    for (const [key, value] of Object.entries(OPEN_GRAPH_PROPERTY_VALUES)) {
-      const metaEle = document.querySelector(`meta[property='${value}']`);
+    for (const [feature, propertyValue] of Object.entries(OPEN_GRAPH_PROPERTY_VALUES)) {
+      const metaEle = document.querySelector(`meta[property='${propertyValue}']`);
       if (metaEle) {
-        extractedProduct[key] = metaEle.getAttribute('content');
+        extractedProduct[feature] = metaEle.getAttribute('content');
       }
     }
   }

@@ -18,11 +18,12 @@ function fromAttribute(attribute) {
 
 
 /**
- * CSS selector data by site (represented by a regular expression), where each selector is paired
- * with a method that extracts the value from the element returned by that selector.
+ * CSS selector data by site (represented by a string of acceptable hostnames), where each
+ * selector is paired with a method that extracts the value from the element returned by
+ * that selector.
  */
 const fallbackExtractionData = {
-  '^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}amazon\\.com': {
+  'amazon.com_www.amazon.com_smile.amazon.com': {
     title: [
       ['#productTitle', fromProperty('innerText')],
       ['.product-title', fromProperty('innerText')],
@@ -44,7 +45,7 @@ const fallbackExtractionData = {
       ['#ebooksImgBlkFront', fromProperty('src')],
     ],
   },
-  '^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}bestbuy\\.com': {
+  'bestbuy.com_www.bestbuy.com': {
     title: [
       ['.sku-title h1', fromProperty('innerText')],
     ],
@@ -55,7 +56,7 @@ const fallbackExtractionData = {
       ['img.primary-image', fromProperty('src')],
     ],
   },
-  '^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}ebay\\.com': {
+  'ebay.com_www.ebay.com': {
     title: [
       ['#itemTitle', fromProperty('innerText')],
       ['.product-title', fromProperty('innerText')],
@@ -71,7 +72,7 @@ const fallbackExtractionData = {
       ['.vi-image-gallery__image.vi-image-gallery__image--absolute-center', fromProperty('src')],
     ],
   },
-  '^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}homedepot\\.com': {
+  'homedepot.com_www.homedepot.com': {
     title: [
       ['h1.product-title__title', fromProperty('innerText')],
     ],
@@ -83,7 +84,7 @@ const fallbackExtractionData = {
       ['#mainImage', fromProperty('src')],
     ],
   },
-  '^https?:\\/\\/([a-zA-Z0-9]+\\.){0,}walmart\\.com': {
+  'walmart.com_www.walmart.com': {
     title: [
       ['h1.prod-ProductTitle', fromAttribute('content')],
       ['h1.prod-ProductTitle', fromProperty('innerText')],
@@ -98,7 +99,7 @@ const fallbackExtractionData = {
       ['.prod-hero-image-carousel-image', fromProperty('src')],
     ],
   },
-  'www.mkelly.me': {
+  'mkelly.me_www.mkelly.me': {
     title: [
       ['#title', fromProperty('innerText')],
     ],
