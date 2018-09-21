@@ -28,11 +28,20 @@ export function handleExtractedProductData(extractedProduct, sender) {
     return;
   }
 
-  // Update the toolbar icon's URL with the current page's product if we can
   if (sender.tab) {
     const tabId = sender.tab.id;
+
+    // Update the toolbar icon's URL with the current page's product if we can
     const url = new URL(BROWSER_ACTION_URL);
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
+
+    // Update the toolbar popup while it is open with the current page's product
+    if (sender.tab.active) {
+      browser.runtime.sendMessage({
+        subject: 'extracted-product',
+        extractedProduct,
+      });
+    }
 
     browser.browserAction.setPopup({popup: url.href, tabId});
     browser.browserAction.setBadgeBackgroundColor({color: BADGE_DETECT_BACKGROUND, tabId});
