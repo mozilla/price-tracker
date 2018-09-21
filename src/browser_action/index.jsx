@@ -9,6 +9,7 @@ import {Provider} from 'react-redux';
 import BrowserActionApp from 'commerce/browser_action/components/BrowserActionApp';
 import store from 'commerce/state';
 
+import 'commerce/styles/colors.css';
 import 'commerce/browser_action/index.css';
 
 // Pull info about the currently-viewed product if its present.

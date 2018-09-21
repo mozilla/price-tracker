@@ -30,3 +30,6 @@ export const BADGE_ALERT_BACKGROUND = '#00FEFF';
 
 /** Color of the toolbar badge when a product on the current page is trackable. */
 export const BADGE_DETECT_BACKGROUND = '#33F70C';
+
+/** URL for the add-on's page on support.mozilla.org */
+export const SUPPORT_URL = 'https://support.mozilla.org';

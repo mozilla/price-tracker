@@ -1,0 +1,30 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/** Top-level components for the toolbar panel */
+
+.title-bar {
+  border-bottom: 1px solid var(--grey-30);
+  height: 42px;
+  margin: 0;
+  padding: 0 16px;
+  position: relative;
+}
+
+.title-bar .title {
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 41px;
+  margin: 0;
+  text-align: center;
+}
+
+.title-bar .help-button {
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  position: absolute;
+  right: 8px;
+  top: calc(50% - 16px);
+}

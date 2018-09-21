@@ -10,7 +10,7 @@
 
 html,
 body {
-  background: #f1f1f3;
+  background: var(--white-100);
   font: message-box;
   margin: 0;
   padding: 0;
@@ -30,4 +30,31 @@ a {
 a:hover {
   color: #0060df;
   text-decoration: underline;
+}
+
+/** Photon Ghost Button */
+.button-ghost {
+  background: transparent;
+  border-radius: 2px;
+  height: 32px;
+  line-height: 16px;
+  padding: 8px;
+  text-align: center;
+}
+
+.button-ghost .icon {
+  -moz-context-properties: fill;
+  fill: var(--grey-90-a80);
+}
+
+.button-ghost:hover {
+  background: var(--grey-90-a10);
+}
+
+.button-ghost:active {
+  background: var(--grey-90-a20);
+}
+
+.button-ghost:focus {
+  box-shadow: 0 0 0 1px #0a84ff inset, 0 0 0 1px #0a84ff, 0 0 0 4px var(--blue-50-a30);
 }
