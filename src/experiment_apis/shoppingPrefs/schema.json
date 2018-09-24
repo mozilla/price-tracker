@@ -1,7 +1,7 @@
 [
   {
     "namespace": "shoppingPrefs",
-    "description": "Read and write config values.",
+    "description": "Read config values from a preference subtree.",
     "functions": [
       {
         "name": "getBoolPref",
