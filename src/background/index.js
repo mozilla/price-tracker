@@ -9,11 +9,7 @@
  * @module
  */
 
-import {
-  BADGE_ALERT_BACKGROUND,
-  FIRST_RUN_URL,
-  PRICE_CHECK_TIMEOUT_INTERVAL,
-} from 'commerce/config';
+import config from 'commerce/config';
 import {handleExtractedProductData} from 'commerce/background/extraction';
 import {handleNotificationClicked, handlePriceAlerts} from 'commerce/background/price_alerts';
 import {handleWebRequest, updatePrices} from 'commerce/background/price_updates';
@@ -22,7 +18,9 @@ import {loadStateFromStorage} from 'commerce/state/sync';
 
 (async function main() {
   // Set browser action default badge color, which can't be set via manifest
-  browser.browserAction.setBadgeBackgroundColor({color: BADGE_ALERT_BACKGROUND});
+  browser.browserAction.setBadgeBackgroundColor({
+    color: await config.get('badgeAlertBackground'),
+  });
 
   // Setup product extraction listener
   browser.runtime.onMessage.addListener((message, sender) => {
@@ -51,9 +49,9 @@ import {loadStateFromStorage} from 'commerce/state/sync';
   });
 
   // Display first run page if we were just installed
-  browser.runtime.onInstalled.addListener((details) => {
+  browser.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === 'install') {
-      browser.tabs.create({url: FIRST_RUN_URL});
+      browser.tabs.create({url: await config.get('firstRunUrl')});
     }
   });
 
@@ -75,5 +73,5 @@ import {loadStateFromStorage} from 'commerce/state/sync';
   // Update product prices while the extension is running, including once during
   // startup.
   updatePrices();
-  setInterval(updatePrices, PRICE_CHECK_TIMEOUT_INTERVAL);
+  setInterval(updatePrices, await config.get('priceCheckTimeoutInterval'));
 }());

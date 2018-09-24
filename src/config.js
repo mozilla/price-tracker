@@ -4,32 +4,50 @@
 
 /**
  * Config values that are shared between files or otherwise useful to have in
- * a separate file.
+ * a separate file. Config values can be overridden by setting a pref at the
+ * subtree extensions.shopping@mozilla.org.prefName.
  * @module
  */
 
-/** Time to wait between price checks for a product */
-export const PRICE_CHECK_INTERVAL = 1000 * 60 * 60 * 6; // 6 hours
+const DEFAULTS = {
+  /** Time to wait between price checks for a product */
+  priceCheckInterval: 1000 * 60 * 60 * 6, // 6 hours
 
-/** Time to wait between checking if we should fetch new prices */
-export const PRICE_CHECK_TIMEOUT_INTERVAL = 1000 * 60 * 15; // 15 minutes
+  /** Time to wait between checking if we should fetch new prices */
+  priceCheckTimeoutInterval: 1000 * 60 * 15, // 15 minutes
 
-/** Delay before removing iframes created during price checks */
-export const IFRAME_TIMEOUT = 1000 * 60; // 1 minute
+  /** Delay before removing iframes created during price checks */
+  iframeTimeout: 1000 * 60, // 1 minute
 
-// URLs to files within the extension
-export const FIRST_RUN_URL = browser.extension.getURL('/first_run/index.html');
-export const BROWSER_ACTION_URL = browser.extension.getURL('/browser_action/index.html');
+  // URLs to files within the extension
+  browserActionUrl: browser.extension.getURL('/browser_action/index.html'),
 
-// Price alert config
-export const ALERT_PERCENT_THRESHOLD = 0.05;
-export const ALERT_ABSOLUTE_THRESHOLD = 1000;
+  // Price alert config
+  alertPercentThershold: 5, // 5%
+  alertAbsoluteThreshold: 1000, // $10
 
-/** Color of the toolbar badge for showing active price alerts. */
-export const BADGE_ALERT_BACKGROUND = '#00FEFF';
+  /** Color of the toolbar badge for showing active price alerts. */
+  badgeAlertBackground: '#00FEFF',
 
-/** Color of the toolbar badge when a product on the current page is trackable. */
-export const BADGE_DETECT_BACKGROUND = '#33F70C';
+  /** Color of the toolbar badge when a product on the current page is trackable. */
+  badgeDetectBackground: '#33F70C',
 
-/** URL for the add-on's page on support.mozilla.org */
-export const SUPPORT_URL = 'https://support.mozilla.org';
+  /** URL for the add-on's page on support.mozilla.org */
+  supportUrl: 'https://support.mozilla.org',
+};
+
+export default {
+  async get(configName) {
+    const defaultValue = DEFAULTS[configName];
+    switch (typeof defaultValue) {
+      case 'string':
+        return browser.shoppingPrefs.getCharPref(configName, defaultValue);
+      case 'number':
+        return browser.shoppingPrefs.getIntPref(configName, defaultValue);
+      case 'boolean':
+        return browser.shoppingPrefs.getBoolPref(configName, defaultValue);
+      default:
+        throw new Error(`Invalid config type ${typeof defaultValue} for config ${configName}`);
+    }
+  },
+};
