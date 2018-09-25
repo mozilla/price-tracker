@@ -6,7 +6,8 @@ import pt from 'prop-types';
 import React from 'react';
 
 import ProductCard from 'commerce/browser_action/components/ProductCard';
-import {productShape} from 'commerce/state/products';
+import TrackProductButton from 'commerce/browser_action/components/TrackProductButton';
+import {extractedProductShape, productShape} from 'commerce/state/products';
 
 import 'commerce/browser_action/components/TrackedProductList.css';
 
@@ -18,18 +19,27 @@ export default class TrackedProductList extends React.Component {
     // Direct props
     /** List of tracked products to display */
     products: pt.arrayOf(productShape).isRequired,
+    /** Product detected on the current page, if any */
+    extractedProduct: extractedProductShape,
+  }
+
+  static defaultProps = {
+    extractedProduct: null,
   }
 
   render() {
-    const {products} = this.props;
+    const {extractedProduct, products} = this.props;
     return (
-      <ul className="product-list">
-        {products.map(product => (
-          <li className="product-list-item" key={product.id}>
-            <ProductCard product={product} />
-          </li>
-        ))}
-      </ul>
+      <React.Fragment>
+        <TrackProductButton className="menu-item" extractedProduct={extractedProduct} />
+        <ul className="product-list">
+          {products.map(product => (
+            <li className="product-list-item" key={product.id}>
+              <ProductCard product={product} />
+            </li>
+          ))}
+        </ul>
+      </React.Fragment>
     );
   }
 }

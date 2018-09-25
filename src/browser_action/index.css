@@ -91,3 +91,38 @@ a:hover {
 .button.ghost:active {
   background: var(--grey-90-a20);
 }
+
+/** Panel Menu Items */
+
+.menu-item {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--grey-30);
+  color: var(--grey-90);
+  display: flex;
+  font-size: 13px;
+  height: 36px;
+  justify-content: start;
+  line-height: 24px;
+  padding: 6px 16px;
+  width: 100%;
+}
+
+.menu-item:enabled:hover {
+  background: var(--grey-90-a10);
+}
+
+.menu-item:enabled:active {
+  background: var(--grey-90-a20);
+}
+
+.menu-item:disabled * {
+  opacity: 0.4;
+}
+
+.menu-item .icon {
+  height: 16px;
+  margin-inline-end: 10px;
+  width: 16px;
+}
