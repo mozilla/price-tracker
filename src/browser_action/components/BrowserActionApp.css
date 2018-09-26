@@ -5,14 +5,17 @@
 /** Top-level components for the toolbar panel */
 
 .title-bar {
+  align-items: center;
   border-bottom: 1px solid var(--grey-30);
+  display: flex;
   height: 42px;
   margin: 0;
-  padding: 0 16px;
-  position: relative;
+  overflow: hidden;
+  padding: 0 8px;
 }
 
 .title-bar .title {
+  flex: 1;
   font-size: 13px;
   font-weight: bold;
   line-height: 41px;
@@ -20,8 +23,6 @@
   text-align: center;
 }
 
-.title-bar .help {
-  position: absolute;
-  right: 8px;
-  top: calc(50% - 16px);
+.title-bar .button {
+  flex: 0 0 32px;
 }

@@ -84,14 +84,35 @@ export default class BrowserActionApp extends React.Component {
     window.close();
   }
 
+  /**
+   * Open the feedback page and close the panel when the help icon is clicked.
+   */
+  async handleClickFeedback() {
+    browser.tabs.create({url: await config.get('feedbackUrl')});
+    window.close();
+  }
+
   render() {
     const {products} = this.props;
     const {extractedProduct} = this.state;
     return (
       <React.Fragment>
         <div className="title-bar">
+          <button
+            className="ghost feedback button"
+            type="button"
+            onClick={this.handleClickFeedback}
+            title="Feedback"
+          >
+            <img className="icon" src={browser.extension.getURL('img/feedback.svg')} alt="Feedback" />
+          </button>
           <h1 className="title">Price Watcher List</h1>
-          <button className="ghost help button" type="button" onClick={this.handleClickHelp}>
+          <button
+            className="ghost help button"
+            type="button"
+            onClick={this.handleClickHelp}
+            title="Help"
+          >
             <img className="icon" src={browser.extension.getURL('img/help.svg')} alt="Help" />
           </button>
         </div>

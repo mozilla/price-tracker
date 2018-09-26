@@ -34,6 +34,9 @@ const DEFAULTS = {
 
   /** URL for the add-on's page on support.mozilla.org */
   supportUrl: 'https://support.mozilla.org',
+
+  /** URL for the add-on's feedback form */
+  feedbackUrl: 'https://www.mozilla.org',
 };
 
 export default {
