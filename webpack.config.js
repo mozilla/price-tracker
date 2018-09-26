@@ -67,9 +67,6 @@ module.exports = {
       // Experimental APIs, which are not bundled
       {from: 'experiment_apis/**/*.json'},
       {from: 'experiment_apis/**/*.js'},
-
-      // First run page doesn't use JS so it can't bundle CSS
-      {from: 'first_run/*.css'},
     ], {context: 'src/'}),
   ],
   resolve: {
