@@ -4,140 +4,85 @@
 
 /** Cards that display info about a product */
 
-.product-card {
-  position: relative;
-  background: #fdfdfd;
-  border: 1px solid #d3d2d3;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.product-card .latest-price {
-  padding: 5px 15px;
-  position: relative;
-  border-bottom: 1px solid #dfdfdf;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-.product-card .latest-price .close-button,
-.product-card .latest-price .undo-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  right: 5px;
-  top: 5px;
-}
-
-.product-card .latest-price .undo-button {
-  display: flex;
-  align-items: center;
-  color: #3f88f7;
-  font-weight: 700;
-}
-
-.product-card.disabled .latest-price .undo-button {
-  z-index: 1;
-}
-
-.product-card:hover .latest-price .close-button {
-  display: inline-block;
-}
-
-.product-card .latest-price .close-button {
-  display: none;
-}
-
-.product-card .latest-price .close-icon,
-.product-card .latest-price .undo-icon {
-  height: 16px;
-  width: 16px;
-}
-
-/* Needed to assign fill colors for fill="context-fill" SVGs in <img> elements */
-.product-card .latest-price .close-icon,
-.product-card .latest-price .undo-icon {
-  -moz-context-properties: fill;
-}
-
-.product-card .latest-price .close-icon {
-  fill: #0c0c0d;
-  opacity: 0.8;
-}
-
-.product-card .latest-price .undo-icon {
-  margin-right: 5px;
-  fill: #3f88f7;
-}
-
-.product-card .product-info {
+.product {
+  background: var(--white-100);
   cursor: pointer;
   display: grid;
-  gap: 12px;
-  grid-template-columns: 65px auto;
-  grid-template-rows: 65px auto;
-  padding: 15px;
-}
-
-.product-card.disabled .product-info {
-  cursor: default;
-}
-
-.product-card .product-info .image {
-  grid-column: 1;
-  grid-row: 1;
-  border: 1px solid #eee;
-  border-radius: 3px;
-  width: 65px;
-  height: 65px;
+  gap: 8px;
+  grid-template-columns: 20px auto 64px;
+  grid-template-rows: auto 20px;
+  height: 88px;
   overflow: hidden;
+  padding: 12px 16px;
 }
 
-.product-card .product-info .title {
-  font-size: 1.1em;
+.product:hover {
+  background: var(--grey-20);
+}
+
+.product .prependum {
+  grid-column: 1;
+  grid-row: 1 / 3;
+}
+
+.product .prependum .delete {
+  display: none;
+  position: relative;
+  left: -8px;
+  top: -8px;
+}
+
+.product:hover .prependum .delete {
+  display: flex;
+}
+
+.product .title {
+  font-size: 13px;
   font-weight: normal;
   grid-column: 2;
   grid-row: 1;
+  line-height: 18px;
   margin: 0;
+  overflow: hidden;
   padding: 0;
 }
 
-.product-card .product-info .vendor {
-  color: #737373;
-  font-size: 1em;
-  grid-column: 1 / 3;
+.product .details {
+  color: var(--grey-50);
+  font-size: 13px;
+  grid-column: 2;
   grid-row: 2;
 }
 
-.product-card .button {
-  background: #0156da;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  display: block;
-  margin: 0;
-  padding: 12px;
-  text-align: center;
+.product .details .latest-price {
+  color: var(--grey-90);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.product .details .original-price::before {
+  content: "•";
+  margin: 0 5px;
+  font-weight: 400;
+  vertical-align: 2px;
+}
+
+.product .details .original-price {
+  display: none;
+}
+
+.product:hover .details .original-price {
+  display: inline;
+}
+
+.product .details .original-price .amount {
+  text-decoration: line-through;
+}
+
+.product .image {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  object-fit: contain;
   width: 100%;
-}
-
-.product-card .button:hover {
-  background: #2a7ffe;
-}
-
-.product-card .button:active {
-  background: #0141a2;
-}
-
-.opaque-overlay {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  opacity: 0.6;
-  background-color: white;
+  height: 100%;
 }

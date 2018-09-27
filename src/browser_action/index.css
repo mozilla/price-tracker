@@ -11,6 +11,7 @@
 html,
 body {
   background: var(--white-100);
+  color: var(--grey-90);
   font: message-box;
   margin: 0;
   padding: 0;
