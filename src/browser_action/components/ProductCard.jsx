@@ -85,7 +85,7 @@ export default class ProductCard extends React.Component {
           </button>
         </div>
 
-        <h3 className="title">{product.title}</h3>
+        <h3 className="title" title={product.title}>{product.title}</h3>
 
         <div className="details">
           <span className="latest-price">
