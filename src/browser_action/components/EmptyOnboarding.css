@@ -5,19 +5,21 @@
 /** Empty state (when no products are saved) */
 
 .empty-onboarding {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin: 16px;
+  text-align: center;
 }
 
-.empty-onboarding .cta {
-  margin: 0 0 15px;
-  font-size: 1.4em;
-  text-align: center;
-  font-weight: bold;
+.empty-onboarding .hero {
+  height: 123px;
+  width: 142px;
 }
 
 .empty-onboarding .description {
-  margin: 0 15px 15px;
-  font-size: 1.1em;
+  margin: 0;
 }
 
 .empty-onboarding .track.button {

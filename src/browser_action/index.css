@@ -13,6 +13,7 @@ body {
   background: var(--white-100);
   color: var(--grey-90);
   font: message-box;
+  font-size: 13px;
   margin: 0;
   padding: 0;
 }
@@ -21,16 +22,28 @@ body {
   width: 320px;
 }
 
-/** Common element styles */
+/** Links */
 
 a {
-  color: #0a8dff;
+  color: var(--blue-60);
   text-decoration: none;
 }
 
 a:hover {
-  color: #0060df;
+  color: var(--blue-60);
   text-decoration: underline;
+}
+
+a:active {
+  color: var(--blue-70);
+  text-decoration: underline;
+}
+
+a:focus {
+  box-shadow:
+    0 0 0 1px var(--blue-50) inset,
+    0 0 0 1px var(--blue-50),
+    0 0 0 4px var(--blue-50-a30);
 }
 
 /** Buttons */
@@ -59,7 +72,10 @@ a:hover {
 }
 
 .button:focus {
-  box-shadow: 0 0 0 1px #0a84ff inset, 0 0 0 1px #0a84ff, 0 0 0 4px var(--blue-50-a30);
+  box-shadow:
+    0 0 0 1px var(--blue-50) inset,
+    0 0 0 1px var(--blue-50),
+    0 0 0 4px var(--blue-50-a30);
 }
 
 .button:disabled {
