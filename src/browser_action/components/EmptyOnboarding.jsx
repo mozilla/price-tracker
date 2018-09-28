@@ -3,11 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import autobind from 'autobind-decorator';
-import pt from 'prop-types';
 import React from 'react';
-import {connect} from 'react-redux';
 
-import * as productActions from 'commerce/state/products';
+import TrackProductButton from 'commerce/browser_action/components/TrackProductButton';
 import {extractedProductShape} from 'commerce/state/products';
 
 import 'commerce/browser_action/components/EmptyOnboarding.css';
@@ -17,17 +15,11 @@ const FIRST_RUN_URL = browser.extension.getURL('/first_run/index.html');
 /**
  * Component shown when no products are currently being tracked.
  */
-@connect(null, {
-  addProductFromExtracted: productActions.addProductFromExtracted,
-})
 @autobind
 export default class EmptyOnboarding extends React.Component {
   static propTypes = {
     // Direct props
     extractedProduct: extractedProductShape,
-
-    // Dispatch props
-    addProductFromExtracted: pt.func.isRequired,
   }
 
   static defaultProps = {
@@ -45,13 +37,6 @@ export default class EmptyOnboarding extends React.Component {
     window.close();
   }
 
-  /**
-   * Track the current tab's product when the track button is clicked.
-   */
-  handleClickTrack() {
-    this.props.addProductFromExtracted(this.props.extractedProduct);
-  }
-
   render() {
     const {extractedProduct} = this.props;
     return (
@@ -62,15 +47,7 @@ export default class EmptyOnboarding extends React.Component {
           &thinsp;
           <a href={FIRST_RUN_URL} onClick={this.handleClickLearnMore}>Learn more.</a>
         </div>
-        <button
-          type="button"
-          className="button watch"
-          disabled={!extractedProduct}
-          onClick={this.handleClickTrack}
-        >
-          <img className="icon" src={browser.extension.getURL('img/shopping_add.svg')} alt="" />
-          Watch This Product
-        </button>
+        <TrackProductButton className="button" extractedProduct={extractedProduct} />
       </div>
     );
   }

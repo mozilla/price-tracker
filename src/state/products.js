@@ -141,6 +141,17 @@ export function getProduct(state, productId) {
   return state.products.find(product => product.id === productId);
 }
 
+/**
+ * Test if the given extracted product is already being tracked.
+ * @param {ReduxState} state
+ * @param {ExtractedProduct} data
+ * @return {Boolean} True if a product with a matching ID is being tracked
+ */
+export function isProductTracked(state, data) {
+  const productId = getProductIdFromExtracted(data);
+  return state.products.some(product => product.id === productId);
+}
+
 // Helpers
 
 /**
