@@ -48,13 +48,6 @@ import {loadStateFromStorage} from 'commerce/state/sync';
     allFrames: true,
   });
 
-  // Display first run page if we were just installed
-  browser.runtime.onInstalled.addListener(async (details) => {
-    if (details.reason === 'install') {
-      browser.tabs.create({url: await config.get('firstRunUrl')});
-    }
-  });
-
   // Set up web request listener to modify framing headers for background updates
   const webRequestFilter = {
     urls: ['<all_urls>'],

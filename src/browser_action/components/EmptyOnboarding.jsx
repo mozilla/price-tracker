@@ -10,8 +10,6 @@ import {extractedProductShape} from 'commerce/state/products';
 
 import 'commerce/browser_action/components/EmptyOnboarding.css';
 
-const FIRST_RUN_URL = browser.extension.getURL('/first_run/index.html');
-
 /**
  * Component shown when no products are currently being tracked.
  */
@@ -26,17 +24,6 @@ export default class EmptyOnboarding extends React.Component {
     extractedProduct: null,
   }
 
-  /**
-   * Open a new tab and close the popup when Learn More is clicked.
-   */
-  handleClickLearnMore(event) {
-    event.preventDefault();
-    browser.tabs.create({
-      url: FIRST_RUN_URL,
-    });
-    window.close();
-  }
-
   render() {
     const {extractedProduct} = this.props;
     return (
@@ -44,8 +31,6 @@ export default class EmptyOnboarding extends React.Component {
         <h1 className="cta">Get notified when the price drops!</h1>
         <div className="description">
           Firefox can monitor this product and alert you when the price is right!
-          &thinsp;
-          <a href={FIRST_RUN_URL} onClick={this.handleClickLearnMore}>Learn more.</a>
         </div>
         <TrackProductButton className="button" extractedProduct={extractedProduct} />
       </div>
