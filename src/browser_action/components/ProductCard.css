@@ -25,15 +25,24 @@
   grid-row: 1 / 3;
 }
 
+.product .prependum .price-alert {
+  position: relative;
+  left: -2px;
+}
+
 .product .prependum .delete {
   display: none;
   position: relative;
   left: -8px;
-  top: -8px;
+  top: -6px;
 }
 
 .product:hover .prependum .delete {
   display: flex;
+}
+
+.product:hover .prependum .price-alert {
+  display: none;
 }
 
 .product .title {
