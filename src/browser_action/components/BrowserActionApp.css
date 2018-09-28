@@ -9,20 +9,16 @@
   border-bottom: 1px solid var(--grey-30);
   display: flex;
   height: 42px;
+  justify-content: space-between;
   margin: 0;
   overflow: hidden;
   padding: 0 8px;
 }
 
 .title-bar .title {
-  flex: 1;
   font-size: 13px;
   font-weight: bold;
   line-height: 41px;
   margin: 0;
   text-align: center;
-}
-
-.title-bar .button {
-  flex: 0 0 32px;
 }

@@ -102,9 +102,13 @@ export default class BrowserActionApp extends React.Component {
             className="ghost feedback button"
             type="button"
             onClick={this.handleClickFeedback}
-            title="Feedback"
+            title="Send Feedback"
           >
-            <img className="icon" src={browser.extension.getURL('img/feedback.svg')} alt="Feedback" />
+            <img
+              className="icon"
+              src={browser.extension.getURL('img/feedback.svg')}
+              alt="Send Feedback"
+            />
           </button>
           <h1 className="title">Price Watcher List</h1>
           <button
