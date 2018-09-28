@@ -10,7 +10,8 @@
 * Features: title, image, price
 */
 
-import extractionData from 'commerce/extraction/product_extraction_data.json';
+import extractionData from 'commerce/extraction/fallback_extraction_selectors';
+
 
 const OPEN_GRAPH_PROPERTY_VALUES = {
   title: 'og:title',
@@ -22,33 +23,33 @@ const OPEN_GRAPH_PROPERTY_VALUES = {
  * Returns any extraction data found for the vendor based on the URL
  * for the page.
  */
-function getProductAttributeInfo() {
+function getFeatureInfo() {
   const hostname = new URL(window.location.href).host;
-  for (const [vendor, attributeInfo] of Object.entries(extractionData)) {
-    if (hostname.includes(vendor)) {
-      return attributeInfo;
+  for (const siteInfo of extractionData) {
+    for (const domain of siteInfo.domains) {
+      if (hostname.includes(domain)) {
+        return siteInfo.features;
+      }
     }
   }
   return null;
 }
 
-/**
- * Extracts and returns the string value for a given element property or attribute.
- *
- * @param {HTMLElement} element
- * @param {string} extractionProperty
- */
-function extractValueFromElement(element, extractionProperty) {
-  switch (extractionProperty) {
-    case 'content':
-      return element.getAttribute('content');
-    case 'innerText':
-      return element.innerText;
-    case 'src':
-      return element.src;
-    default:
-      throw new Error(`Unrecognized extraction property or attribute '${extractionProperty}'.`);
+function findValue(extractors) {
+  for (const [selector, extractionMethod] of extractors) {
+    const element = document.querySelector(selector);
+    if (element) {
+      const value = extractionMethod(element);
+      if (value) {
+        return value;
+      }
+      // eslint-disable-next-line no-console
+      console.warn('Element found did not return a valid value for the product feature.');
+    }
   }
+  // eslint-disable-next-line no-console
+  console.warn('No elements found with vendor data for the product feature.');
+  return null;
 }
 
 /**
@@ -56,33 +57,19 @@ function extractValueFromElement(element, extractionProperty) {
  * selectors if they exist, otherwise from Open Graph <meta> tags.
  */
 export default function extractProduct() {
-  const data = {};
-  const attributeInfo = getProductAttributeInfo();
-  if (attributeInfo) {
-    for (const [productAttribute, extractor] of Object.entries(attributeInfo)) {
-      const {selectors, extractUsing} = extractor;
-      for (const selector of selectors) {
-        const element = document.querySelector(selector);
-        if (element) {
-          data[productAttribute] = extractValueFromElement(element, extractUsing);
-          if (data[productAttribute]) {
-            break;
-          } else {
-            throw new Error(`Element found did not return a valid product ${productAttribute}.`);
-          }
-        } else if (selector === selectors[selectors.length - 1]) {
-          // None of the selectors matched an element on the page
-          throw new Error(`No elements found with vendor data for product ${productAttribute}.`);
-        }
-      }
+  const extractedProduct = {};
+  const featureInfo = getFeatureInfo();
+  if (featureInfo) {
+    for (const [feature, extractors] of Object.entries(featureInfo)) {
+      extractedProduct[feature] = findValue(extractors);
     }
   } else {
-    for (const [key, value] of Object.entries(OPEN_GRAPH_PROPERTY_VALUES)) {
-      const metaEle = document.querySelector(`meta[property='${value}']`);
+    for (const [feature, propertyValue] of Object.entries(OPEN_GRAPH_PROPERTY_VALUES)) {
+      const metaEle = document.querySelector(`meta[property='${propertyValue}']`);
       if (metaEle) {
-        data[key] = metaEle.getAttribute('content');
+        extractedProduct[feature] = metaEle.getAttribute('content');
       }
     }
   }
-  return data;
+  return extractedProduct;
 }
