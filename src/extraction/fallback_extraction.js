@@ -25,11 +25,10 @@ const OPEN_GRAPH_PROPERTY_VALUES = {
  */
 function getFeatureInfo() {
   const hostname = new URL(window.location.href).host;
-  for (const [vendorDomainsStr, featureInfo] of Object.entries(extractionData)) {
-    const vendorDomains = vendorDomainsStr.split('_');
-    for (const domain of vendorDomains) {
+  for (const siteInfo of extractionData) {
+    for (const domain of siteInfo.domains) {
       if (hostname.includes(domain)) {
-        return featureInfo;
+        return siteInfo.features;
       }
     }
   }
@@ -44,11 +43,13 @@ function findValue(extractors) {
       if (value) {
         return value;
       }
-      throw new Error('Element found did not return a valid value for the product feature.');
+      // eslint-disable-next-line no-console
+      console.warn('Element found did not return a valid value for the product feature.');
     }
   }
-  // None of the selectors matched an element on the page
-  throw new Error('No elements found with vendor data for the product feature.');
+  // eslint-disable-next-line no-console
+  console.warn('No elements found with vendor data for the product feature.');
+  return null;
 }
 
 /**

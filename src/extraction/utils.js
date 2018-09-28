@@ -3,19 +3,25 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /**
- * Converts a price element (from Fathom extraction) or string (from fallback extraction) into
- * a numerical price value in subunits (like cents); e.g. <span>$10.00</span> and "$10.00" both
- * return 1000. If string parsing fails, returns NaN.
- * @param {HTMLElement|string} price
+ * Converts an array of price tokens into a numerical price value in subunits.
+ * E.g. ["$10.00"] and ["$", "10", "00", "/each"] both return 1000.
+ * If string parsing fails, returns NaN.
+ * @param {Array.String} The price token strings extracted from the page
  * @returns {Number} the price in subunits
  */
-export function getPriceInSubunits(price) {
-  let priceUnits = [];
-  if (typeof price === 'string') {
-    priceUnits = getPriceUnitsFromStr(price);
-  } else {
-    priceUnits = getPriceUnitsFromArr(Array.from(price.childNodes));
-  }
+export function parsePrice(tokens) {
+  const priceUnits = (
+    tokens
+      // Split tokens by $ and . to get the numbers between them
+      .flatMap(token => token.split(/[.$]/))
+      // Filter out any tokens that do not contain a digit
+      .filter(token => /\d/g.test(token))
+      // Remove any non-digit characters for each token in the list
+      .map(token => token.replace(/\D/g, ''))
+      // Convert price token strings to integers
+      .map(token => parseInt(token, 10))
+  );
+
   // Convert units and subunits to a single integer value in subunits
   switch (priceUnits.length) {
     case 1:
@@ -25,45 +31,4 @@ export function getPriceInSubunits(price) {
     default:
       return NaN;
   }
-}
-
-/**
- * Extracts price units from textContent from text and/or DOM nodes
- * @param {Array} Array of DOM nodes
- * @returns {Array.Number}
- */
-function getPriceUnitsFromArr(arr) {
-  return cleanPriceTokens(arr.flatMap(token => splitString(token.textContent)));
-}
-
-/**
- * Extracts price units from a string
- * @param {String}
- * @returns {Array.Number}
- */
-function getPriceUnitsFromStr(str) {
-  return cleanPriceTokens(splitString(str));
-}
-
-/**
- * Filters and cleans string tokens
- * @param {Array.String}
- * @returns {Array.Number}
- */
-function cleanPriceTokens(tokens) {
-  // Filter out any tokens that do not contain a digit
-  const priceTokens = tokens.filter(token => /\d/g.test(token));
-
-  // Remove any non-digit characters for each token in the list
-  const cleanedPriceTokens = priceTokens.map(token => token.replace(/\D/g, ''));
-
-  // Convert price token strings to integers
-  return cleanedPriceTokens.map(token => parseInt(token, 10));
-}
-
-/**
- * Separates a string into an array of substrings using '$' and '.' as separators
- */
-function splitString(str) {
-  return str.split(/[.$]/);
 }
