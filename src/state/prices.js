@@ -327,6 +327,23 @@ export function getPriceAlertForPrice(state, priceId) {
   return state.priceAlerts.find(alert => alert.priceId === priceId);
 }
 
+/**
+ * Sort a given list of products by the oldest logged price, most-recent first.
+ * @param {ReduxState} state
+ * @param {Product[]} products
+ * @return {Product[]}
+ */
+export function getSortedProductsByOldestPrice(state, products) {
+  return (
+    [...products]
+      .map(product => [product, getOldestPriceForProduct(state, product.id)])
+      .sort(
+        ([, priceA], [, priceB]) => priceB.amount.getAmount() - priceA.amount.getAmount(),
+      )
+      .map(([product]) => product)
+  );
+}
+
 // Helpers
 
 /**
