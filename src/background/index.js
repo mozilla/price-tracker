@@ -55,7 +55,7 @@ import {loadStateFromStorage} from 'commerce/state/sync';
     js: [
       {file: 'extraction.bundle.js'},
     ],
-    runAt: 'document_idle',
+    runAt: 'document_end',
     allFrames: true,
   });
 

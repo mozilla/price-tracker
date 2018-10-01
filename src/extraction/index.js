@@ -4,7 +4,8 @@
 
 /**
  * Content script injected into tabs to attempt extracting information about a
- * product from the webpage.
+ * product from the webpage. Set to run at "document_end" after the page has
+ * been parsed but before all resources have been loaded.
  */
 
 import config from 'commerce/config/content';
@@ -21,15 +22,17 @@ async function attemptExtraction() {
     || extractProductWithFallback()
   );
 
-  await browser.runtime.sendMessage({
-    from: 'content',
-    subject: 'ready',
-    extractedProduct: {
-      ...extractedProduct,
-      url: document.location.href,
-      date: (new Date()).toISOString(),
-    },
-  });
+  if (extractedProduct) {
+    await browser.runtime.sendMessage({
+      from: 'content',
+      subject: 'ready',
+      extractedProduct: {
+        ...extractedProduct,
+        url: document.location.href,
+        date: (new Date()).toISOString(),
+      },
+    });
+  }
 }
 
 (async function main() {
@@ -51,10 +54,9 @@ async function attemptExtraction() {
     return;
   }
 
-  // Make sure the page has finished loading, as JS could alter the DOM.
-  if (document.readyState === 'complete') {
+  // Extract immediately, and again if the readyState changes.
+  attemptExtraction();
+  document.addEventListener('readystatechange', () => {
     attemptExtraction();
-  } else {
-    window.addEventListener('load', attemptExtraction);
-  }
+  });
 }());
