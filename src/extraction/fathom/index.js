@@ -10,8 +10,8 @@
  * Features: title, image, price
  */
 
-import defaultCoefficients from 'commerce/extraction/fathom_default_coefficients.json';
-import RulesetFactory from 'commerce/extraction/ruleset_factory';
+import defaultCoefficients from 'commerce/extraction/fathom/coefficients.json';
+import RulesetFactory from 'commerce/extraction/fathom/ruleset_factory';
 import {parsePrice} from 'commerce/extraction/utils';
 
 // Minimum score to be considered the "correct" feature element extracted by Fathom

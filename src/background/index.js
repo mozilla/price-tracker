@@ -53,7 +53,7 @@ import {loadStateFromStorage} from 'commerce/state/sync';
   window.registeredContentScript = browser.contentScripts.register({
     matches: ['<all_urls>'],
     js: [
-      {file: 'product_info.bundle.js'},
+      {file: 'extraction.bundle.js'},
     ],
     runAt: 'document_idle',
     allFrames: true,

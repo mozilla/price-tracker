@@ -3,23 +3,24 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /**
- * Note that this page is defined in the background script to run at
- * "document_idle", which is after all DOM content has been loaded.
+ * Content script injected into tabs to attempt extracting information about a
+ * product from the webpage.
  */
 
 import config from 'commerce/config/content';
-import extractProductWithFathom from 'commerce/extraction/fathom_extraction';
-import extractProductWithFallback from 'commerce/extraction/fallback_extraction';
+import extractProductWithFathom from 'commerce/extraction/fathom';
+import extractProductWithFallback from 'commerce/extraction/fallback';
 
 /**
  * Checks to see if any product information for the page was found,
  * and if so, sends it to the background script.
  */
-async function getProductInfo() {
+async function attemptExtraction() {
   const extractedProduct = (
     extractProductWithFathom(window.document)
     || extractProductWithFallback()
   );
+
   await browser.runtime.sendMessage({
     from: 'content',
     subject: 'ready',
@@ -52,8 +53,8 @@ async function getProductInfo() {
 
   // Make sure the page has finished loading, as JS could alter the DOM.
   if (document.readyState === 'complete') {
-    getProductInfo();
+    attemptExtraction();
   } else {
-    window.addEventListener('load', getProductInfo);
+    window.addEventListener('load', attemptExtraction);
   }
 }());

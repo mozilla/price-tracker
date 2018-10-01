@@ -10,7 +10,7 @@
 * Features: title, image, price
 */
 
-import extractionData from 'commerce/extraction/fallback_extraction_selectors';
+import extractionData from 'commerce/extraction/fallback/selectors';
 
 
 const OPEN_GRAPH_PROPERTY_VALUES = {
