@@ -10,6 +10,10 @@
 
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const GenerateJsonPlugin = require('generate-json-webpack-plugin');
+
+const packageData = require('./package.json');
+const manifest = require('./src/manifest.json');
 
 const BUILD_DIR = path.resolve(__dirname, 'build');
 
@@ -62,12 +66,25 @@ module.exports = {
       {from: '**/*.svg'},
       {from: '**/*.png'},
       {from: '**/*.html'},
-      {from: 'manifest.json'},
 
       // Experimental APIs, which are not bundled
       {from: 'experiment_apis/**/*.json'},
       {from: 'experiment_apis/**/*.js'},
     ], {context: 'src/'}),
+
+    // Process and emit manifest.json, replacing any values that start with $
+    // with the corresponding key from package.json.
+    new GenerateJsonPlugin('manifest.json', manifest, (key, value) => {
+      if (typeof value === 'string' && value.startsWith('$')) {
+        const parts = value.slice(1).split('.');
+        let object = packageData;
+        while (parts.length > 0) {
+          object = object[parts.pop()];
+        }
+        return object;
+      }
+      return value;
+    }),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
