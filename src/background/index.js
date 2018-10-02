@@ -10,6 +10,8 @@
  */
 
 import config from 'commerce/config';
+import {handleConfigMessage} from 'commerce/config/background';
+import {CONFIG_MESSAGE_TYPE} from 'commerce/config/content';
 import {handleExtractedProductData} from 'commerce/background/extraction';
 import {handleNotificationClicked, handlePriceAlerts} from 'commerce/background/price_alerts';
 import {handleWebRequest, updatePrices} from 'commerce/background/price_updates';
@@ -26,6 +28,15 @@ import {loadStateFromStorage} from 'commerce/state/sync';
   browser.runtime.onMessage.addListener((message, sender) => {
     if (message.from === 'content' && message.subject === 'ready') {
       handleExtractedProductData(message.extractedProduct, sender);
+    }
+  });
+
+  // Setup config listener; returns for onMessage listeners can't be consistent
+  // as returning a value prevents other listeners from returning values.
+  /* eslint-disable consistent-return */
+  browser.runtime.onMessage.addListener(async (message, sender) => {
+    if (message.type === CONFIG_MESSAGE_TYPE) {
+      return handleConfigMessage(message, sender);
     }
   });
 
