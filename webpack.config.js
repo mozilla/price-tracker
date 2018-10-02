@@ -13,7 +13,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GenerateJsonPlugin = require('generate-json-webpack-plugin');
 
 const packageData = require('./package.json');
-const manifest = require('./src/manifest.json');
+const manifestTemplate = require('./src/manifest.json');
 
 const BUILD_DIR = path.resolve(__dirname, 'build');
 
@@ -74,7 +74,7 @@ module.exports = {
 
     // Process and emit manifest.json, replacing any values that start with $
     // with the corresponding key from package.json.
-    new GenerateJsonPlugin('manifest.json', manifest, (key, value) => {
+    new GenerateJsonPlugin('manifest.json', manifestTemplate, (key, value) => {
       if (typeof value === 'string' && value.startsWith('$')) {
         const parts = value.slice(1).split('.');
         let object = packageData;

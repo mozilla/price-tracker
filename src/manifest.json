@@ -5,7 +5,7 @@
   "description": "",
   "applications": {
     "gecko": {
-      "id": "commerce@mozilla.org"
+      "id": "shopping-testpilot@mozilla.org"
     }
   },
   "icons": {
