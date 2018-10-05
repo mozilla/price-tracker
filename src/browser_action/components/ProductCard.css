@@ -32,9 +32,16 @@
 
 .product .prependum .delete {
   display: none;
+}
+
+.product .prependum .button {
   position: relative;
   left: -8px;
   top: -8px;
+}
+
+.product .prependum .delete {
+  display: none;
 }
 
 .product:hover .prependum .delete {
@@ -121,4 +128,33 @@
   object-fit: contain;
   width: 100%;
   height: 100%;
+}
+
+.product.undo {
+  grid-template-columns: 20px auto;
+  grid-template-rows: 20px;
+  height: 40px;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.product.undo .prependum {
+  grid-row: 1;
+}
+
+/* For text-overflow: ellipsis to have the right font color, the parent container's
+ * font color must be set to the ellipsis color.
+ */
+.product.undo > span {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  color: var(--grey-40);
+}
+
+.product.undo .undo-label {
+  color: var(--grey-90);
+}
+
+.de-emphasized::before {
+  content: '\00a0';
 }
