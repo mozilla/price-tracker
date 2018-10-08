@@ -16,6 +16,7 @@ import {handleExtractedProductData} from 'commerce/background/extraction';
 import {handleNotificationClicked, handlePriceAlerts} from 'commerce/background/price_alerts';
 import {handleWebRequest, updatePrices} from 'commerce/background/price_updates';
 import store from 'commerce/state';
+import {checkMigrations} from 'commerce/state/migrations';
 import {loadStateFromStorage} from 'commerce/state/sync';
 
 (async function main() {
@@ -73,6 +74,10 @@ import {loadStateFromStorage} from 'commerce/state/sync';
 
   // Make sure the store is loaded before we check prices.
   await store.dispatch(loadStateFromStorage());
+
+  // Now that the state is loaded, check for migrations and apply them if
+  // necessary.
+  store.dispatch(checkMigrations());
 
   // Update product prices while the extension is running, including once during
   // startup.

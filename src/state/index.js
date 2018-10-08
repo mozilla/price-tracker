@@ -14,6 +14,7 @@
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
 
+import migrations from 'commerce/state/migrations';
 import prices from 'commerce/state/prices';
 import products from 'commerce/state/products';
 import sync, {loadStateFromStorage, saveStateToStorage} from 'commerce/state/sync';
@@ -24,7 +25,7 @@ import sync, {loadStateFromStorage, saveStateToStorage} from 'commerce/state/syn
  * @type {object}
  */
 
-const REDUCERS = [sync, prices, products];
+const REDUCERS = [sync, migrations, prices, products];
 
 /**
  * Build the initial app state in a similar way to combineReducers by calling
@@ -48,11 +49,7 @@ function rootReducer(state = initialState(), action = {}) {
   // Runs each reducer against the state/action in sequence from top to bottom.
   // The modified state returned by each reducer is passed to the next one in
   // sequence.
-  return [
-    sync,
-    prices,
-    products,
-  ].reduce(
+  return REDUCERS.reduce(
     (reducedState, reducer) => reducer(reducedState, action),
     state,
   );
