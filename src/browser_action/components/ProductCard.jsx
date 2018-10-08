@@ -8,8 +8,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import {
+  getActivePriceAlertForProduct,
   getLatestPriceForProduct,
   getOldestPriceForProduct,
+  priceAlertShape,
   priceWrapperShape,
 } from 'commerce/state/prices';
 import {productShape} from 'commerce/state/products';
@@ -24,6 +26,7 @@ import 'commerce/browser_action/components/ProductCard.css';
   (state, props) => ({
     latestPrice: getLatestPriceForProduct(state, props.product.id),
     originalPrice: getOldestPriceForProduct(state, props.product.id),
+    activePriceAlert: getActivePriceAlertForProduct(state, props.product.id),
   }),
   {
     setDeletionFlag: productActions.setDeletionFlag,
@@ -38,9 +41,14 @@ export default class ProductCard extends React.Component {
     // State props
     latestPrice: priceWrapperShape.isRequired,
     originalPrice: priceWrapperShape.isRequired,
+    activePriceAlert: priceAlertShape,
 
     // Dispatch props
     setDeletionFlag: pt.func.isRequired,
+  }
+
+  static defaultProps = {
+    activePriceAlert: null,
   }
 
   /**
@@ -62,7 +70,7 @@ export default class ProductCard extends React.Component {
   }
 
   render() {
-    const {latestPrice, originalPrice, product} = this.props;
+    const {activePriceAlert, latestPrice, originalPrice, product} = this.props;
 
     // TODO: Update this to a proper undo state
     if (product.isDeleted) {
@@ -77,6 +85,14 @@ export default class ProductCard extends React.Component {
     return (
       <div className="product" onClick={this.handleClick}>
         <div className="prependum">
+          {activePriceAlert && (
+            <img
+              className="icon price-alert"
+              src={browser.extension.getURL('img/price_alert.svg')}
+              alt="Price alert"
+              title="Price alert"
+            />
+          )}
           <button type="button" className="ghost button delete" onClick={this.handleClickDelete}>
             <img
               className="icon"

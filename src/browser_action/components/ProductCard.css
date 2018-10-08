@@ -25,6 +25,11 @@
   grid-row: 1 / 3;
 }
 
+.product .prependum .icon {
+  height: 16px;
+  width: 16px;
+}
+
 .product .prependum .delete {
   display: none;
   position: relative;
@@ -34,6 +39,10 @@
 
 .product:hover .prependum .delete {
   display: flex;
+}
+
+.product:hover .prependum .price-alert {
+  display: none;
 }
 
 .product .title {
