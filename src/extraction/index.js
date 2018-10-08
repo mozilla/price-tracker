@@ -10,18 +10,42 @@
 
 import config from 'commerce/config/content';
 import extractProductWithFathom from 'commerce/extraction/fathom';
-import extractProductWithFallback from 'commerce/extraction/fallback';
+import extractProductWithFallback from 'commerce/extraction/selector';
+import extractProductWithOpenGraph from 'commerce/extraction/open_graph';
+
+/**
+ * Extraction methods are given the document object for the page, and must
+ * return either a valid ExtractedProduct, or null if a valid product could not
+ * be found.
+ */
+const EXTRACTION_METHODS = [
+  extractProductWithFathom,
+  extractProductWithFallback,
+  extractProductWithOpenGraph,
+];
+
+/**
+ * Perform product extraction, trying each method from EXTRACTION_METHODS in
+ * order until one of them returns a truthy result.
+ * @return {ExtractedProduct|null}
+ */
+function extractProduct() {
+  for (const extract of EXTRACTION_METHODS) {
+    const extractedProduct = extract(window.document);
+    if (extractedProduct) {
+      return extractedProduct;
+    }
+  }
+
+  return null;
+}
 
 /**
  * Checks to see if any product information for the page was found,
  * and if so, sends it to the background script.
  */
 async function attemptExtraction() {
-  const extractedProduct = (
-    extractProductWithFathom(window.document)
-    || extractProductWithFallback()
-  );
-
+  const extractedProduct = extractProduct();
   if (extractedProduct) {
     await browser.runtime.sendMessage({
       from: 'content',
