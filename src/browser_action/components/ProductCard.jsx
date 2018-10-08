@@ -89,10 +89,12 @@ export default class ProductCard extends React.Component {
         <h3 className="title" title={product.title}>{product.title}</h3>
 
         <div className="details">
-          <span className={`latest-price ${priceDifference < 0 && 'price-decrease'}`}>
+          <span className={`latest-price ${priceDifference < 0 ? 'price-decrease' : ''}`}>
             {latestPrice.amount.toFormat('$0.00')}
           </span>
-          <PriceDifference difference={priceDifference} />
+          {priceDifference !== 0 && (
+            <PriceDifference difference={priceDifference} />
+          )}
           <span className="original-price">
             was <span className="amount">{originalPrice.amount.toFormat('$0.00')}</span>
           </span>
