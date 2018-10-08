@@ -10,6 +10,7 @@
 import Dinero from 'dinero.js';
 import maxBy from 'lodash.maxby';
 import minBy from 'lodash.minby';
+import orderBy from 'lodash.orderby';
 import pt from 'prop-types';
 
 import config from 'commerce/config';
@@ -334,14 +335,9 @@ export function getPriceAlertForPrice(state, priceId) {
  * @return {Product[]}
  */
 export function getSortedProductsByOldestPrice(state, products) {
-  return (
-    [...products]
-      .map(product => [product, getOldestPriceForProduct(state, product.id)])
-      .sort(
-        ([, priceA], [, priceB]) => priceB.amount.getAmount() - priceA.amount.getAmount(),
-      )
-      .map(([product]) => product)
-  );
+  return orderBy(products, [
+    product => getOldestPriceForProduct(state, product.id).date,
+  ], ['desc']);
 }
 
 // Helpers
