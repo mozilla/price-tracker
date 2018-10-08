@@ -75,6 +75,19 @@ class PriceWrapper {
   equals(price) {
     return this.amount.equalsTo(price.amount);
   }
+
+  /**
+   * Calculate the percent difference between this price and another.
+   * A positive result indicates that the new price is higher than this
+   * one, and vice versa.
+   * @param {Price} price
+   * @return {number}
+   *  The difference in percentage points from this price to the given one.
+   */
+  percentDifference(price) {
+    const difference = price.amount.subtract(this.amount);
+    return Math.round((difference.getAmount() / this.amount.getAmount()) * 100);
+  }
 }
 
 // Actions
