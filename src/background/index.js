@@ -21,7 +21,7 @@ import {loadStateFromStorage} from 'commerce/state/sync';
 import telemetry from 'commerce/background/telemetry';
 
 (async function main() {
-  telemetry.init();
+  telemetry.registerProbes();
 
   // Set browser action default badge color, which can't be set via manifest
   browser.browserAction.setBadgeBackgroundColor({
