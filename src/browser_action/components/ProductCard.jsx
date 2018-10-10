@@ -16,6 +16,7 @@ import {
 } from 'commerce/state/prices';
 import {productShape} from 'commerce/state/products';
 import * as productActions from 'commerce/state/products';
+import {recordEvent} from 'commerce/background/telemetry';
 
 import 'commerce/browser_action/components/ProductCard.css';
 
@@ -37,6 +38,7 @@ export default class ProductCard extends React.Component {
   static propTypes = {
     // Direct props
     product: productShape.isRequired,
+    index: pt.number.isRequired,
 
     // State props
     latestPrice: priceWrapperShape.isRequired,
@@ -57,16 +59,32 @@ export default class ProductCard extends React.Component {
    */
   handleClick() {
     browser.tabs.create({url: this.props.product.url});
+    this.recordClickEvent('open_external_page', 'ui_element', {element: 'product_card'});
     window.close();
   }
 
   handleClickDelete(event) {
     event.stopPropagation();
     this.props.setDeletionFlag(this.props.product.id, true);
+    this.recordClickEvent('delete_product', 'delete_button');
   }
 
   handleClickUndo() {
     this.props.setDeletionFlag(this.props.product.id, false);
+    this.recordClickEvent('undo_delete_product', 'undo_button');
+  }
+
+  recordClickEvent(method, object, extra = {}) {
+    const {activePriceAlert, latestPrice, originalPrice, product, index} = this.props;
+    recordEvent(method, object, null, {
+      ...extra,
+      price: latestPrice.amount.getAmount().toString(),
+      // activePriceAlert is undefined if this product has never had a price alert
+      price_alert: activePriceAlert ? activePriceAlert.active.toString() : 'false',
+      price_orig: originalPrice.amount.getAmount().toString(),
+      product_index: index.toString(),
+      product_key: product.key,
+    });
   }
 
   render() {

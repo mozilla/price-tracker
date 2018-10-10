@@ -12,12 +12,14 @@ import store from 'commerce/state';
 import {
   deactivateAlert,
   getActivePriceAlerts,
+  getLatestPriceForProduct,
   getOldestPriceForProduct,
   getPrice,
   getPriceAlertForPrice,
   showPriceAlert,
 } from 'commerce/state/prices';
 import {getProduct} from 'commerce/state/products';
+import {recordEvent} from 'commerce/background/telemetry';
 
 /**
  * Update the extension UI based on the current state of active price alerts.
@@ -74,6 +76,16 @@ export function handleNotificationClicked(notificationId) {
   if (alert) {
     const product = getProduct(state, alert.productId);
     browser.tabs.create({url: product.url});
+
+    const latestPrice = getLatestPriceForProduct(state, product.id);
+    const originalPrice = getOldestPriceForProduct(state, product.id);
+    recordEvent('open_external_page', 'ui_element', null, {
+      element: 'system_notification',
+      price: latestPrice.amount.getAmount().toString(),
+      price_alert: alert.active.toString(),
+      price_orig: originalPrice.amount.getAmount().toString(),
+      product_key: product.key,
+    });
 
     // Mark the alert as inactive if necessary, since it was followed.
     if (alert.active) {

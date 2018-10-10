@@ -12,6 +12,7 @@ import EmptyOnboarding from 'commerce/browser_action/components/EmptyOnboarding'
 import TrackedProductList from 'commerce/browser_action/components/TrackedProductList';
 import {extractedProductShape, getAllProducts, productShape} from 'commerce/state/products';
 import * as syncActions from 'commerce/state/sync';
+import {recordEvent, getBadgeType} from 'commerce/background/telemetry';
 
 import 'commerce/browser_action/components/BrowserActionApp.css';
 
@@ -32,6 +33,7 @@ export default class BrowserActionApp extends React.Component {
   static propTypes = {
     // Direct props
     extractedProduct: extractedProductShape, // Product detected on the current page, if any
+    tabId: pt.number,
 
     // State props
     products: pt.arrayOf(productShape).isRequired,
@@ -42,6 +44,7 @@ export default class BrowserActionApp extends React.Component {
 
   static defaultProps = {
     extractedProduct: null,
+    tabId: null,
   }
 
   constructor(props) {
@@ -51,8 +54,13 @@ export default class BrowserActionApp extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.loadStateFromStorage();
+
+    // Record 'open_popup' event
+    recordEvent('open_popup', 'toolbar_button', null, {
+      badge_type: await getBadgeType(this.props.tabId),
+    });
 
     browser.runtime.onMessage.addListener((message) => {
       if (message.subject === 'extracted-product') {
@@ -66,6 +74,7 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickHelp() {
     browser.tabs.create({url: await config.get('supportUrl')});
+    recordEvent('open_external_page', 'ui_element', null, {element: 'help_button'});
     window.close();
   }
 
@@ -74,6 +83,7 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickFeedback() {
     browser.tabs.create({url: await config.get('feedbackUrl')});
+    recordEvent('open_external_page', 'ui_element', null, {element: 'feedback_button'});
     window.close();
   }
 

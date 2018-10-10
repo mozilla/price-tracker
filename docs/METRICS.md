@@ -137,7 +137,7 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
 
 `extra_keys` are keys in the [optional `extra` object field](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format) for telemetry events. All `extra_keys` and their values are strings.
 
-- `'badge_type'`: Indicates what, if any, badge was present on the browserAction toolbar button. One of 'add', 'price_alert', or 'none'.
+- `'badge_type'`: Indicates what, if any, badge was present on the browserAction toolbar button. One of 'add', 'price_alert', or 'none'. A value of 'unknown' is possible if the badge text is unrecognized.
 - `'extraction_id'`: A unique identifier to associate an extraction attempt to an extraction completion event for a given page.
 - `'is_bg_update'`: 'true' if the extraction is associated with a background price check; otherwise 'false'.
 - `method`: The extraction method that was successful, if any. One of: 'fathom', 'fallback' or 'neither'. A value of 'neither' means that extraction failed.

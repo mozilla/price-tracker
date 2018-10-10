@@ -8,6 +8,8 @@
  */
 
 import {shouldCollectTelemetry} from 'commerce/privacy';
+import store from 'commerce/state';
+import {getAllProducts} from 'commerce/state/products';
 
 const CATEGORY = 'extension.price_alerts';
 
@@ -167,6 +169,25 @@ export async function recordEvent(method, object, value, extra) {
     method,
     object,
     value,
-    extra,
+    {
+      ...extra,
+      // Add extra_keys that are appended to every event
+      tracked_prods: getAllProducts(store.getState()).length.toString(),
+    },
   );
+}
+
+export async function getBadgeType(tabId) {
+  const badgeText = await browser.browserAction.getBadgeText(tabId ? {tabId} : {});
+  switch (true) {
+    case (badgeText === ''):
+      return 'none';
+    case (badgeText === '✚'):
+      return 'add';
+    case (/\d+/.test(badgeText)):
+      return 'price_alert';
+    default:
+      console.warn(`Unexpected badge text ${badgeText}.`); // eslint-disable-line no-console
+      return 'unknown';
+  }
 }

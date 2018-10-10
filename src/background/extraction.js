@@ -40,6 +40,7 @@ export async function handleExtractedProductData(message, sender) {
     // Update the toolbar icon's URL with the current page's product if we can
     const url = new URL(await config.get('browserActionUrl'));
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
+    url.searchParams.set('tabId', JSON.stringify(tabId));
 
     // Update the toolbar popup while it is open with the current page's product
     if (sender.tab.active) {
