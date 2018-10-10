@@ -10,14 +10,7 @@
 * Features: title, image, price
 */
 
-import extractionData from 'commerce/extraction/fallback_extraction_selectors';
-
-
-const OPEN_GRAPH_PROPERTY_VALUES = {
-  title: 'og:title',
-  image: 'og:image',
-  price: 'og:price:amount',
-};
+import extractionData from 'commerce/extraction/selector/selectors';
 
 /**
  * Returns any extraction data found for the vendor based on the URL
@@ -54,22 +47,23 @@ function findValue(extractors) {
 
 /**
  * Returns any product information available on the page from CSS
- * selectors if they exist, otherwise from Open Graph <meta> tags.
+ * selectors if they exist.
  */
 export default function extractProduct() {
-  const extractedProduct = {};
   const featureInfo = getFeatureInfo();
   if (featureInfo) {
+    const extractedProduct = {};
     for (const [feature, extractors] of Object.entries(featureInfo)) {
-      extractedProduct[feature] = findValue(extractors);
-    }
-  } else {
-    for (const [feature, propertyValue] of Object.entries(OPEN_GRAPH_PROPERTY_VALUES)) {
-      const metaEle = document.querySelector(`meta[property='${propertyValue}']`);
-      if (metaEle) {
-        extractedProduct[feature] = metaEle.getAttribute('content');
+      const featureValue = findValue(extractors);
+      if (!featureValue) {
+        return null;
       }
+
+      extractedProduct[feature] = featureValue;
     }
+
+    return extractedProduct;
   }
-  return extractedProduct;
+
+  return null;
 }

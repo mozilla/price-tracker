@@ -21,7 +21,7 @@ module.exports = {
   target: 'web',
   entry: {
     background: './src/background/index',
-    product_info: './src/product_info',
+    extraction: './src/extraction',
     browser_action: './src/browser_action/index',
   },
   output: {
