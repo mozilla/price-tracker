@@ -6,10 +6,33 @@
  * Product extraction via Open Graph tags.
  */
 
+import {parsePrice} from 'commerce/extraction/utils';
+
 const OPEN_GRAPH_PROPERTY_VALUES = {
   title: 'og:title',
   image: 'og:image',
   price: 'og:price:amount',
+};
+
+/** How product information is extracted depends on the feature */
+const FEATURE_DEFAULTS = {
+  getValueFromElement(element) {
+    return element.getAttribute('content');
+  },
+};
+const PRODUCT_FEATURES = {
+  image: {
+    ...FEATURE_DEFAULTS,
+  },
+  title: {
+    ...FEATURE_DEFAULTS,
+  },
+  price: {
+    ...FEATURE_DEFAULTS,
+    getValueFromElement(element) {
+      return parsePrice([element.getAttribute('content')]);
+    },
+  },
 };
 
 /**
@@ -26,7 +49,7 @@ export default function extractProduct() {
       return null;
     }
 
-    extractedProduct[feature] = metaEle.getAttribute('content');
+    extractedProduct[feature] = PRODUCT_FEATURES[feature].getValueFromElement(metaEle);
   }
 
   return extractedProduct;
