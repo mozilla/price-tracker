@@ -82,15 +82,13 @@ While some of these questions may be partially answerable by this extension, ans
 
 ## Sample Pings
 
-We will be sending pings using [Scalar](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/scalars.html) and [Event Telemetry](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html) via the [WebExtensions Telemetry API](https://bugzilla.mozilla.org/show_bug.cgi?id=1280234).
-
-Each scalar will exist as part of the `main` ping under `payload.processes.dynamic.scalars` as a key-value pair in the `scalars` object. The data types for values are one of the scalar types (number, string or boolean).
+We will be sending pings using [Event Telemetry](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html) via the [WebExtensions Telemetry API](https://bugzilla.mozilla.org/show_bug.cgi?id=1280234).
 
 Each event will exist as part of the `main` ping under `payload.processes.dynamic.events` as an array in the `events` array. The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
 
-The telemetry category for both scalars and events is `'extension.pricealerts'`. Note: Scalar telemetry category names [do not allow underscores](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/scalars.html#scalar-limitations).
+The telemetry category for events is `'extension.price_alerts'`.
 
-Below is a sample ping for the `supported_sites` scalar and `badge_toolbar_button` event.
+Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site` events.
 
 ```javascript
 {
@@ -101,18 +99,26 @@ Below is a sample ping for the `supported_sites` scalar and `badge_toolbar_butto
     "processes": {
       // ...
       "dynamic": {
-        "scalars": {
-          "extension.pricealerts.supported_sites": 5
-        },
+        // ...
         "events": [
           [
-            1634,
-            "extension.pricealerts",
+            2079,
+            "extension.price_alerts",
             "badge_toolbar_button",
             "toolbar_button",
             null,
             {
               "badge_type": "add",
+              "tracked_prods": "5"
+            }
+          ],
+          [
+            2081,
+            "extension.price_alerts",
+            "visit_supported_site",
+            "supported_site",
+            null,
+            {
               "tracked_prods": "5"
             }
           ]
@@ -154,17 +160,19 @@ Below is a sample ping for the `supported_sites` scalar and `badge_toolbar_butto
   - `'walmart_link'`: Sends the user to Walmart.
 
 
-## Collection (Scalars)
+## Collection (User Events)
 
-### `supported_sites`
+### `visit_supported_site`
 
-Increments when the user navigates to a Supported Site.
+Fired when the user navigates to a Supported Site.
 
 #### Payload properties
-Note: The key below is the scalar name prepended with the telemetry category, separated by a `'.'`.
-- `'extension.pricealerts.supported_sites'`: Number; the current count for the number of times the user has visited a Supported Site during the session.
-
-## Collection (User Events)
+- `methods`: String
+  - `'visit_supported_site'`
+- `objects`: String
+  - `'supported_site'`
+- `extra_keys`: Object
+  - `'tracked_prods'`
 
 ### `open_popup`
 

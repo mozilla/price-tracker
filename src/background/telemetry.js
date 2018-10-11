@@ -3,23 +3,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /**
- * Registers and records telemetry scalars and events throughout the extension.
+ * Registers and records telemetry events throughout the extension.
  * @module
  */
 
-// Scalar category names can't have underscores
-const CATEGORY = 'extension.pricealerts';
-
-const SCALARS = {
-  // Incremented when the user navigates to a supported site (e.g. Amazon)
-  supported_sites: {
-    kind: 'count',
-    record_on_release: true,
-  },
-};
+const CATEGORY = 'extension.price_alerts';
 
 const EVENTS = {
   // User Events
+  // User visits a supported site
+  visit_supported_site: {
+    methods: ['visit_supported_site'],
+    objects: ['supported_site'],
+    extra_keys: ['tracked_prods'],
+  },
+
   // User clicks toolbar button to open the popup
   open_popup: {
     methods: ['open_popup'],
@@ -153,8 +151,7 @@ const EVENTS = {
   },
 };
 
-export async function registerProbes() {
-  await browser.telemetry.registerScalars(CATEGORY, SCALARS);
+export async function registerEvents() {
   await browser.telemetry.registerEvents(CATEGORY, EVENTS);
 }
 
@@ -168,15 +165,5 @@ export async function recordEvent(method, object, value, extra) {
     object,
     value,
     extra,
-  );
-}
-
-export async function scalarAdd(scalarName, value) {
-  if (!browser.telemetry.canUpload()) {
-    return;
-  }
-  await browser.telemetry.scalarAdd(
-    `${CATEGORY}.${scalarName}`,
-    value,
   );
 }
