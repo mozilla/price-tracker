@@ -22,6 +22,7 @@ export const productShape = pt.shape({
   url: pt.string.isRequired,
   image: pt.string.isRequired,
   isDeleted: pt.bool.isRequired,
+  vendorFaviconUrl: pt.string.isRequired,
 });
 
 /**
@@ -35,6 +36,7 @@ export const extractedProductShape = pt.shape({
   image: pt.string.isRequired,
   price: pt.number.isRequired,
   date: pt.string.isRequired,
+  vendorFaviconUrl: pt.string,
 });
 
 
@@ -184,6 +186,7 @@ export function getProductFromExtracted(data) {
     title: data.title,
     url: data.url,
     image: data.image,
+    vendorFaviconUrl: data.vendorFaviconUrl || '',
     isDeleted: false,
   };
 }

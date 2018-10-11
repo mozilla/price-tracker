@@ -112,6 +112,9 @@ export default class ProductCard extends React.Component {
         <h3 className="title" title={product.title}>{product.title}</h3>
 
         <div className="details">
+          {product.vendorFaviconUrl && (
+            <img className="vendor-favicon" src={product.vendorFaviconUrl} alt="" />
+          )}
           <span className={`latest-price ${priceDifference < 0 ? 'price-decrease' : ''}`}>
             {latestPrice.amount.toFormat('$0.00')}
           </span>

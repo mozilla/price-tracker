@@ -66,6 +66,13 @@
   grid-row: 2;
 }
 
+.product .details .vendor-favicon {
+  height: 16px;
+  margin-inline-end: 8px;
+  width: 16px;
+  vertical-align: -3px;
+}
+
 .product .details .latest-price {
   color: var(--grey-90);
   font-size: 16px;
