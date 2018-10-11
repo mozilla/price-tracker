@@ -18,10 +18,10 @@ import {handleWebRequest, updatePrices} from 'commerce/background/price_updates'
 import store from 'commerce/state';
 import {checkMigrations} from 'commerce/state/migrations';
 import {loadStateFromStorage} from 'commerce/state/sync';
-import telemetry from 'commerce/background/telemetry';
+import {registerProbes} from 'commerce/background/telemetry';
 
 (async function main() {
-  telemetry.registerProbes();
+  registerProbes();
 
   // Set browser action default badge color, which can't be set via manifest
   browser.browserAction.setBadgeBackgroundColor({
