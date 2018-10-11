@@ -9,6 +9,7 @@ A summary of the metrics the Price Alerts extension will record.
 ## Definitions
 
 * **Extraction**: The process of extracting the necessary product information from a Product Page using one of two methods: Fathom or fallback (CSS selectors or Open Graph attributes).
+* **Feature Engagement**: Any active measure the user took to engage with the feature. Key measures include: opening the popup (`open_popup`) or clicking on an alert (`open_external_page` with `element` value of `'product_card'` or `'system_notification'`).
 * **Fathom**: A [JavaScript framework](https://github.com/erikrose/fathom) used to extract product information from a Product Page.
 * **Price Alert**: An alert that occurs when a tracked product's price _decreases_ below a certain absolute or percentage threshold. For the MVP, the default thresholds are specified in `./src/config.js`.
 * **Product Card**: A product list item in the list of tracked products for which the user has opted to receive Price Alerts displayed on the browserAction popup. Each Product Card displays the product title, image and price among other information.
@@ -29,13 +30,12 @@ Note: For any questions related to general user shopping behavior, the data abou
 - How often are products detected on supported product pages? (#125)
 - How often is Fathom recognizing products on a page? (#125)
 - On which sites do users report the most problems?
-- How often do product prices change, irrespective of user action?
 - How many Price Alerts are received?
 
 #### Do people use it?
 - At what threshold do users respond to price changes?
 - How many products are users tracking?
-  - Does number of tracked items track to feature engagement?
+  - Does number of tracked items track to Feature Engagement?
 - Are alerts annoying to users?
 - Can users be compelled to report positive experiences as well as negative ones?
 
@@ -50,7 +50,7 @@ Note: For any questions related to general user shopping behavior, the data abou
 - How often do users set Price Alerts?
 - How often do users respond to Price Alerts?
 - Do alerts cause users to re-engage with our shopping feature?
-- At what price changes do users re-engage with saved products?
+  - At what price changes do users re-engage with saved products?
 - How often do users keep alerts?
 - How often do they delete them?
 - What are users' tolerance for inaccuracy?
@@ -141,9 +141,9 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
 - `'extraction_id'`: A unique identifier to associate an extraction attempt to an extraction completion event for a given page.
 - `'is_bg_update'`: 'true' if the extraction is associated with a background price check; otherwise 'false'.
 - `method`: The extraction method that was successful, if any. One of: 'fathom', 'fallback' or 'neither'. A value of 'neither' means that extraction failed.
-- `'price'`: The price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`).
+- `'price'`: The price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
 - `'price_alert'`: 'true' if the product has an active Price Alert; otherwise 'false'.
-- `'price_orig'`: The original price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`).
+- `'price_orig'`: The original price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
 - `'product_index'`: The index of the product in the product listing. The top most list item is index '0'. The list is sorted by date added, descending (#113).
 - `'product_key'`: A unique identifier for the product relative to other products for a given user. This key is _not_ unique to the product across all users.
 - `'tracked_prods'`: The number of products the user is tracking.
@@ -375,7 +375,7 @@ All data collection occurs through Firefox telemetry, and standard telemetry opt
 
 No telemetry will be sent from the extension in the following additional cases:
 - [Do Not Track](https://support.mozilla.org/en-US/kb/how-do-i-turn-do-not-track-feature) is enabled
-  - Preference: `privacy.donottrackheader.enabled` 
+  - Preference: `privacy.donottrackheader.enabled`
 - [Tracking Protection](https://support.mozilla.org/en-US/kb/tracking-protection) is enabled
   - Preference: `privacy.trackingprotection.enabled`
 - The user is in a [Private Browsing](https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history?redirectlocale=en-US&redirectslug=Private+Browsing)  window
