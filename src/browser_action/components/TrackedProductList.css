@@ -4,6 +4,10 @@
 
 /** Listing of currently-tracked products */
 
+.menu-item.track {
+  border-bottom: 1px solid var(--grey-30);
+}
+
 .product-list {
   margin: 0;
   padding: 0;

@@ -114,15 +114,23 @@ a:focus {
   align-items: center;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--grey-30);
   color: var(--grey-90);
   display: flex;
   font-size: 13px;
+  gap: 10px;
   height: 36px;
   justify-content: start;
   line-height: 24px;
   padding: 6px 16px;
   width: 100%;
+  white-space: nowrap;
+}
+
+.menu-item .sublabel {
+  color: var(--grey-40);
+  min-width: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .menu-item:enabled:hover {
@@ -139,6 +147,5 @@ a:focus {
 
 .menu-item .icon {
   height: 16px;
-  margin-inline-end: 10px;
   width: 16px;
 }

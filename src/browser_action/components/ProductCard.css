@@ -30,10 +30,6 @@
   width: 16px;
 }
 
-.product .prependum .delete {
-  display: none;
-}
-
 .product .prependum .button {
   position: relative;
   left: -8px;
@@ -128,33 +124,4 @@
   object-fit: contain;
   width: 100%;
   height: 100%;
-}
-
-.product.undo {
-  grid-template-columns: 20px auto;
-  grid-template-rows: 20px;
-  height: 40px;
-  white-space: nowrap;
-}
-
-.product.undo .undo-label-wrapper {
-  display: flex;
-  overflow: hidden;
-  color: var(--grey-40);
-}
-
-/* For text-overflow: ellipsis to have the right font color, the parent container's
- * font color must be set to the ellipsis color.
- */
-.product.undo .title-wrapper {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.product.undo .undo-label {
-  color: var(--grey-90);
-}
-
-.product.undo .title::before {
-  content: '\00a0';
 }
