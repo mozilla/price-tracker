@@ -74,20 +74,23 @@ export default class ProductCard extends React.Component {
 
     if (product.isDeleted) {
       return (
-        <div className="product undo">
+        <div className="product undo" onClick={this.handleClickUndo}>
           <div className="prependum">
-            <button type="button" className="ghost button" onClick={this.handleClickUndo}>
-              <img
-                className="icon"
-                src={browser.extension.getURL('/img/undo.svg')}
-                alt="Keep tracking product"
-              />
-            </button>
+            <img
+              className="icon"
+              src={browser.extension.getURL('/img/undo.svg')}
+              alt="Keep tracking product"
+            />
           </div>
-          <span>
+          <div className="undo-label-wrapper">
             <span className="undo-label">Undo Delete</span>
-            <span className="de-emphasized" title={product.title}>({product.title})</span>
-          </span>
+            <span className="title-wrapper">
+              <span className="title" title={product.title}>({product.title}</span>
+            </span>
+            {/* This closing parenthesis has to be outside of the span.title element,
+            so that it shows up even for long titles that are truncated by an ellipsis */}
+            )
+          </div>
         </div>
       );
     }
