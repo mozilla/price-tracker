@@ -48,8 +48,7 @@ async function attemptExtraction() {
   const extractedProduct = extractProduct();
   if (extractedProduct) {
     await browser.runtime.sendMessage({
-      from: 'content',
-      subject: 'ready',
+      type: 'extracted-product',
       extractedProduct: {
         ...extractedProduct,
         url: document.location.href,

@@ -10,6 +10,6 @@ import config from 'commerce/config';
  * @module
  */
 
-export async function handleConfigMessage(message) {
-  return config.get(message.name);
+export async function handleConfigMessage({name}) {
+  return config.get(name);
 }
