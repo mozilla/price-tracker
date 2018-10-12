@@ -135,26 +135,26 @@
   grid-template-rows: 20px;
   height: 40px;
   white-space: nowrap;
-  cursor: default;
 }
 
-.product.undo .prependum {
-  grid-row: 1;
+.product.undo .undo-label-wrapper {
+  display: flex;
+  overflow: hidden;
+  color: var(--grey-40);
 }
 
 /* For text-overflow: ellipsis to have the right font color, the parent container's
  * font color must be set to the ellipsis color.
  */
-.product.undo > span {
-  overflow:hidden;
+.product.undo .title-wrapper {
+  overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--grey-40);
 }
 
 .product.undo .undo-label {
   color: var(--grey-90);
 }
 
-.de-emphasized::before {
+.product.undo .title::before {
   content: '\00a0';
 }
