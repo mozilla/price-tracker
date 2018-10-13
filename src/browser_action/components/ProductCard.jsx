@@ -72,12 +72,19 @@ export default class ProductCard extends React.Component {
   render() {
     const {activePriceAlert, latestPrice, originalPrice, product} = this.props;
 
-    // TODO: Update this to a proper undo state
     if (product.isDeleted) {
       return (
-        <div className="product">
-          <button type="button" onClick={this.handleClickUndo}>Undo Delete</button>
-        </div>
+        <button type="button" className="menu-item undo" onClick={this.handleClickUndo}>
+          <img
+            className="icon"
+            src={browser.extension.getURL('/img/undo.svg')}
+            alt="Keep tracking product"
+          />
+          <span>Undo Delete</span>
+          <span className="sublabel title" title={product.title}>
+            {product.title}
+          </span>
+        </button>
       );
     }
 

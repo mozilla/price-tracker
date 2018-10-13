@@ -30,11 +30,14 @@
   width: 16px;
 }
 
-.product .prependum .delete {
-  display: none;
+.product .prependum .button {
   position: relative;
   left: -8px;
   top: -8px;
+}
+
+.product .prependum .delete {
+  display: none;
 }
 
 .product:hover .prependum .delete {
