@@ -12,6 +12,7 @@ import config from 'commerce/config/content';
 import extractProductWithFathom from 'commerce/extraction/fathom';
 import extractProductWithFallback from 'commerce/extraction/selector';
 import extractProductWithOpenGraph from 'commerce/extraction/open_graph';
+import {shouldExtract} from 'commerce/privacy';
 
 /**
  * Extraction methods are given the document object for the page, and must
@@ -64,6 +65,11 @@ async function attemptExtraction() {
   const isInIframe = window !== window.top;
   const isBackgroundUpdate = window.location.hash === '#moz-commerce-background';
   if (isInIframe && !isBackgroundUpdate) {
+    return;
+  }
+
+  // Check privacy settings to determine if we should extract.
+  if (!(await shouldExtract())) {
     return;
   }
 

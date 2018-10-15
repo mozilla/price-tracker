@@ -16,6 +16,8 @@ import {removeMarkedProducts} from 'commerce/state/products';
 
 import 'commerce/browser_action/components/BrowserActionApp.css';
 
+import {recordEvent} from 'commerce/background/telemetry';
+
 /**
  * Base component for the entire panel. Handles loading state and whether to
  * display the empty state.
@@ -55,6 +57,7 @@ export default class BrowserActionApp extends React.Component {
   }
 
   componentDidMount() {
+    recordEvent();
     this.props.loadStateFromStorage();
     window.addEventListener('unload', this.handleUnload);
 

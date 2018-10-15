@@ -30,6 +30,7 @@
     "storage",
     "unlimitedStorage",
     "notifications",
+    "privacy",
     "webRequest",
     "webRequestBlocking",
     "telemetry"
