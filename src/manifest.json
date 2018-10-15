@@ -30,7 +30,8 @@
     "unlimitedStorage",
     "notifications",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "telemetry"
   ],
   "experiment_apis": {
     "shoppingPrefs": {

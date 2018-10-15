@@ -63,7 +63,7 @@ const CONFIG = {
   browserActionUrl: new StringValue(browser.extension.getURL('/browser_action/index.html')),
 
   // Price alert config
-  alertPercentThershold: new IntValue(5), // 5%
+  alertPercentThreshold: new IntValue(5), // 5%
   alertAbsoluteThreshold: new IntValue(1000), // $10
 
   /** Color of the toolbar badge for showing active price alerts. */
