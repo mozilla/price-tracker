@@ -32,3 +32,53 @@ jobs:
           path: web-ext-artifacts
       - store_artifacts:
           path: gecko.log
+      - persist_to_workspace:
+          root: web-ext-artifacts
+          paths:
+            - "*.zip"
+
+  deploy:
+    docker:
+      - image: circleci/python:2.7-node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: web-ext-artifacts
+      - run:
+          name: Store XPI name in environment variable
+          command: |
+            echo 'export XPI_NAME=firefox_shopping-${CIRCLE_TAG:1}' >> $BASH_ENV
+      - run:
+          name: Install dependencies
+          command: |
+            pipenv install
+      - run:
+          name: Sign XPI
+          command: |
+            curl -v \
+              -F "input=@web-ext-artifacts/${XPI_NAME}.zip" \
+              -o "web-ext-artifacts/${XPI_NAME}-signed.xpi" \
+              -H "Authorization: ${AUTOGRAPH_EDGE_TOKEN}" \
+              ${AUTOGRAPH_EDGE_URL}
+      - run:
+          name: Upload XPI to S3
+          command: .circleci/deploy_addon.sh
+      - store_artifacts:
+          path: web-ext-artifacts
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build: # runs for every branch/PR + tag
+          filters:
+            tags:
+              only: /.*/
+      - deploy: # runs only for tags starting with v
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/

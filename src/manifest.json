@@ -1,11 +1,11 @@
 {
   "manifest_version": 2,
-  "name": "moz-commerce",
-  "version": "0.1.0",
+  "name": "Firefox Shopping",
+  "version": "$version",
   "description": "",
   "applications": {
     "gecko": {
-      "id": "commerce@mozilla.org"
+      "id": "shopping-testpilot@mozilla.org"
     }
   },
   "icons": {
