@@ -115,13 +115,16 @@ export default class ProductCard extends React.Component {
           {product.vendorFaviconUrl && (
             <img className="vendor-favicon" src={product.vendorFaviconUrl} alt="" />
           )}
-          <span className={`latest-price ${priceDifference < 0 ? 'price-decrease' : ''}`}>
+          <span
+            className={`latest-price ${priceDifference < 0 ? 'price-decrease' : ''}`}
+            title={latestPrice.amount.toFormat('$0.00')}
+          >
             {latestPrice.amount.toFormat('$0.00')}
           </span>
           {priceDifference !== 0 && (
             <PriceDifference difference={priceDifference} />
           )}
-          <span className="original-price">
+          <span className="original-price" title={originalPrice.amount.toFormat('$0.00')}>
             was <span className="amount">{originalPrice.amount.toFormat('$0.00')}</span>
           </span>
         </div>
