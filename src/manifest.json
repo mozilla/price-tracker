@@ -5,7 +5,8 @@
   "description": "",
   "applications": {
     "gecko": {
-      "id": "shopping-testpilot@mozilla.org"
+      "id": "shopping-testpilot@mozilla.org",
+      "update_url": "https://testpilot.firefox.com/files/shopping-testpilot@mozilla.org/updates.json"
     }
   },
   "icons": {
