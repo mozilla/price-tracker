@@ -5,7 +5,7 @@
 # Adapted from clouserw's script for publishing add-ons to Test Pilot from
 # Jenkins.
 
-set -e
+set -xe
 
 ADDON_ID="shopping-testpilot@mozilla.org"
 ADDON_VERSION=${CIRCLE_TAG}
