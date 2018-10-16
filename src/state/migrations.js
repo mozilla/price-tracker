@@ -31,6 +31,16 @@ const MIGRATIONS = [
   function initialExample(state) {
     return state;
   },
+
+  function addProductVendorFaviconUrl(state) {
+    return {
+      ...state,
+      products: state.products.map(product => ({
+        ...product,
+        vendorFaviconUrl: '',
+      })),
+    };
+  },
 ];
 
 // Actions

@@ -17,11 +17,17 @@ import {validatePropType} from 'commerce/utils';
  * with normal page navigation, this is also run when the prices are being
  * updated in the background.
  *
- * @param {ExtractedProduct} extracted
+ * @param {ExtractedProduct} contentExtractedProduct
  * @param {MessageSender} sender
  *  The sender for the content script that extracted this product
  */
-export async function handleExtractedProductData(extractedProduct, sender) {
+export async function handleExtractedProductData(contentExtractedProduct, sender) {
+  // Fetch the favicon, which the content script cannot do itself.
+  const extractedProduct = {
+    ...contentExtractedProduct,
+    vendorFaviconUrl: sender.tab.favIconUrl,
+  };
+
   // Do nothing if the extracted product is missing fields.
   const result = validatePropType(extractedProduct, extractedProductShape);
   if (result !== undefined) {
