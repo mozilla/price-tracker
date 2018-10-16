@@ -8,7 +8,7 @@
 set -xe
 
 ADDON_ID="shopping-testpilot@mozilla.org"
-ADDON_VERSION=${CIRCLE_TAG}
+ADDON_VERSION=${CIRCLE_TAG:1}
 ADDON_FILE="web-ext-artifacts/firefox_shopping-${ADDON_VERSION}-signed.xpi"
 test -f $ADDON_FILE
 
