@@ -5,7 +5,7 @@
 # Adapted from clouserw's script for publishing add-ons to Test Pilot from
 # Jenkins.
 
-set -xe
+set -e
 
 ADDON_ID="shopping-testpilot@mozilla.org"
 ADDON_VERSION=${CIRCLE_TAG:1}
@@ -23,7 +23,7 @@ TYPE='"x-content-type-options": "nosniff"'
 HASH="$(sha256sum $ADDON_FILE|cut -d' ' -f1)"
 
 # headers just for latest
-LATEST="\"x-target-digest\": \"sha256:$HASH\", \"location\": \"/files/$ADDON_ID/$ADDON_FILE\""
+LATEST="\"x-target-digest\": \"sha256:$HASH\", \"location\": \"/files/$ADDON_ID/signed-addon.xpi\""
 
 # latest is an empty file with headers
 : > latest
