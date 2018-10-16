@@ -25,7 +25,7 @@ export async function handleExtractedProductData(message, sender) {
   // Fetch the favicon, which the content script cannot do itself.
   const extractedProduct = {
     ...message.extractedProduct,
-    vendorFaviconUrl: sender.tab.favIconUrl,
+    vendorFaviconUrl: sender.tab ? sender.tab.favIconUrl : '',
   };
 
   // Do nothing if the extracted product is missing fields.
