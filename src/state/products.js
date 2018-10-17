@@ -24,7 +24,7 @@ export const productShape = pt.shape({
   image: pt.string.isRequired,
   isDeleted: pt.bool.isRequired,
   vendorFaviconUrl: pt.string.isRequired,
-  key: pt.string.isRequired,
+  anonId: pt.string.isRequired,
 });
 
 /**
@@ -59,7 +59,10 @@ function initialState() {
 export default function reducer(state = initialState(), action) {
   switch (action.type) {
     case ADD_PRODUCT: {
-      const newProduct = getProductFromExtracted(action.extractedProductData);
+      const newProduct = getProductFromExtracted({
+        ...action.extractedProductData,
+        anonId: action.anonId,
+      });
       return {
         ...state,
         products: state.products.concat([newProduct]),
@@ -90,22 +93,19 @@ export default function reducer(state = initialState(), action) {
 // Action Creators
 
 /**
- * Add a new product to the store, adding an additional key with a random UUID (v4) value
- * to help track this product for this user in telemetry.
+ * Add a new product to the store.
  * @param {ExtractedProduct} data
  */
 export function addProductFromExtracted(data) {
-  return ((dispatch) => {
+  return (dispatch) => {
     const uuid = uuidv4();
     dispatch({
       type: ADD_PRODUCT,
-      extractedProductData: {
-        ...data,
-        key: uuid,
-      },
+      extractedProductData: data,
+      anonId: uuid,
     });
     return uuid;
-  });
+  };
 }
 
 /**
@@ -198,6 +198,6 @@ export function getProductFromExtracted(data) {
     image: data.image,
     vendorFaviconUrl: data.vendorFaviconUrl || '',
     isDeleted: false,
-    key: data.key,
+    anonId: data.anonId,
   };
 }

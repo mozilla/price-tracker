@@ -20,12 +20,6 @@ if (extractedProductJSON) {
   appProps.extractedProduct = JSON.parse(extractedProductJSON);
 }
 
-// Pull tabId if present; only available via the url when there's a currently-viewed product
-const tabIdJSON = url.searchParams.get('tabId');
-if (tabIdJSON) {
-  appProps.tabId = JSON.parse(tabIdJSON);
-}
-
 ReactDOM.render(
   <Provider store={store}>
     <BrowserActionApp {...appProps} />

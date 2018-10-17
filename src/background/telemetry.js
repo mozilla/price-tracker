@@ -159,9 +159,45 @@ export async function registerEvents() {
   await browser.telemetry.registerEvents(CATEGORY, EVENTS);
 }
 
-export async function recordEvent(method, object, value, extra) {
+/**
+ * Add all-event and event-specific extra keys.
+ * @param {string} method The event method; this is unique for each event
+ * @param {Object} extraBase The base extra object for the method to append
+ * @returns {Object} The appended extra object
+ */
+async function getAdditionalExtraKeys(method, extraBase) {
+  const extra = {
+    ...extraBase,
+    tracked_prods: getAllProducts(store.getState()).length,
+  };
+
+  switch (method) {
+    case 'open_popup':
+      return {
+        ...extra,
+        badge_type: await getBadgeType(await getTabId()),
+      };
+    case 'open_external_page':
+    case 'delete_product':
+    case 'undo_delete_product':
+    case 'add_product':
+      return extra;
+    default:
+      console.warn(`Unknown method type ${method}.`); // eslint-disable-line no-console
+      return extra;
+  }
+}
+
+export async function recordEvent(method, object, value, extraBase = {}) {
   if (!browser.telemetry.canUpload() || !(await shouldCollectTelemetry())) {
     return;
+  }
+
+  const extra = await getAdditionalExtraKeys(method, extraBase);
+
+  // Convert all extra key values to strings as required by event telemetry
+  for (const [extraKey, extraValue] of Object.entries(extra)) {
+    extra[extraKey] = extraValue.toString();
   }
 
   await browser.telemetry.recordEvent(
@@ -169,11 +205,18 @@ export async function recordEvent(method, object, value, extra) {
     method,
     object,
     value,
-    {
-      ...extra,
-      // Add extra_keys that are appended to every event
-      tracked_prods: getAllProducts(store.getState()).length.toString(),
-    },
+    extra,
+  );
+}
+
+// Get the tabId for the current focused tab in currently focused window.
+async function getTabId() {
+  const windowId = (await browser.windows.getCurrent()).id;
+  return (
+    (await browser.tabs.query({
+      windowId,
+      active: true,
+    }))[0].id
   );
 }
 

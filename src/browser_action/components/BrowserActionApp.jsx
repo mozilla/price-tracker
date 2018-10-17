@@ -33,7 +33,6 @@ export default class BrowserActionApp extends React.Component {
   static propTypes = {
     // Direct props
     extractedProduct: extractedProductShape, // Product detected on the current page, if any
-    tabId: pt.number,
 
     // State props
     products: pt.arrayOf(productShape).isRequired,
@@ -44,7 +43,6 @@ export default class BrowserActionApp extends React.Component {
 
   static defaultProps = {
     extractedProduct: null,
-    tabId: null,
   }
 
   constructor(props) {
@@ -57,9 +55,13 @@ export default class BrowserActionApp extends React.Component {
   async componentDidMount() {
     this.props.loadStateFromStorage();
 
-    // Record 'open_popup' event
-    recordEvent('open_popup', 'toolbar_button', null, {
-      badge_type: await getBadgeType(this.props.tabId),
+    // Record open_popup event in background script
+    browser.runtime.sendMessage({
+      type: 'browser_action_popup',
+      data: {
+        method: 'open_popup',
+        object: 'toolbar_button',
+      },
     });
 
     browser.runtime.onMessage.addListener((message) => {
@@ -74,7 +76,16 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickHelp() {
     browser.tabs.create({url: await config.get('supportUrl')});
-    recordEvent('open_external_page', 'ui_element', null, {element: 'help_button'});
+    // Record open_external_page event in background script
+    browser.runtime.sendMessage({
+      type: 'browser_action_popup',
+      data: {
+        method: 'open_external_page',
+        object: 'ui_element',
+        value: null,
+        extra: {element: 'help_button'},
+      },
+    });
     window.close();
   }
 
@@ -83,7 +94,16 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickFeedback() {
     browser.tabs.create({url: await config.get('feedbackUrl')});
-    recordEvent('open_external_page', 'ui_element', null, {element: 'feedback_button'});
+    // Record open_external_page event in background script
+    browser.runtime.sendMessage({
+      type: 'browser_action_popup',
+      data: {
+        method: 'open_external_page',
+        object: 'ui_element',
+        value: null,
+        extra: {element: 'feedback_button'},
+      },
+    });
     window.close();
   }
 

@@ -77,14 +77,15 @@ export function handleNotificationClicked(notificationId) {
     const product = getProduct(state, alert.productId);
     browser.tabs.create({url: product.url});
 
+    // Record open_external_page event
     const latestPrice = getLatestPriceForProduct(state, product.id);
     const originalPrice = getOldestPriceForProduct(state, product.id);
     recordEvent('open_external_page', 'ui_element', null, {
       element: 'system_notification',
-      price: latestPrice.amount.getAmount().toString(),
-      price_alert: alert.active.toString(),
-      price_orig: originalPrice.amount.getAmount().toString(),
-      product_key: product.key,
+      price: latestPrice.amount.getAmount(),
+      price_alert: alert.active,
+      price_orig: originalPrice.amount.getAmount(),
+      product_key: product.anonId,
     });
 
     // Mark the alert as inactive if necessary, since it was followed.

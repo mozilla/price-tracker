@@ -8,7 +8,6 @@ import React from 'react';
 import TrackProductButton from 'commerce/browser_action/components/TrackProductButton';
 import config from 'commerce/config';
 import {extractedProductShape} from 'commerce/state/products';
-import {recordEvent} from 'commerce/background/telemetry';
 
 import 'commerce/browser_action/components/EmptyOnboarding.css';
 
@@ -50,8 +49,16 @@ export default class EmptyOnboarding extends React.Component {
     if (event.target.href) {
       event.preventDefault();
       browser.tabs.create({url: event.target.href});
-      const element = `${event.target.id}_link`;
-      recordEvent('open_external_page', 'ui_element', null, {element});
+      // Record open_external_page event in background script
+      browser.runtime.sendMessage({
+        type: 'browser_action_popup',
+        data: {
+          method: 'open_external_page',
+          object: 'ui_element',
+          value: null,
+          extra: {element: `${event.target.dataset.id}_link`},
+        },
+      });
       window.close();
     }
   }
@@ -72,14 +79,14 @@ export default class EmptyOnboarding extends React.Component {
         */}
         <p className="description">
           Add products you want to buy from
-          {' '}<a id="amazon" href="https://www.amazon.com">Amazon</a>,
-          {' '}<a id="best_buy" href="https://www.bestbuy.com/">Best Buy</a>,
-          {' '}<a id="ebay" href="https://www.ebay.com/">eBay</a>,
-          {' '}<a id="home_depot" href="https://www.homedepot.com/">Home Depot</a>, and
-          {' '}<a id="walmart" href="https://www.walmart.com/">Walmart</a>
+          {' '}<a data-id="amazon" href="https://www.amazon.com">Amazon</a>,
+          {' '}<a data-id="best_buy" href="https://www.bestbuy.com/">Best Buy</a>,
+          {' '}<a data-id="ebay" href="https://www.ebay.com/">eBay</a>,
+          {' '}<a data-id="home_depot" href="https://www.homedepot.com/">Home Depot</a>, and
+          {' '}<a data-id="walmart" href="https://www.walmart.com/">Walmart</a>
           {' '}to your Price Watcher list, and Firefox will notify you if the price drops.
         </p>
-        <a id="learn_more" href={learnMoreHref} className="learn-more">Learn More</a>
+        <a data-id="learn_more" href={learnMoreHref} className="learn-more">Learn More</a>
         <TrackProductButton className="button" extractedProduct={extractedProduct} />
       </div>
     );

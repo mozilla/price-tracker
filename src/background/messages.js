@@ -19,12 +19,25 @@
 import {handleConfigMessage} from 'commerce/config/background';
 import {handleBrowserActionOpened} from 'commerce/background/browser_action';
 import {handleExtractedProductData} from 'commerce/background/extraction';
+import {recordEvent} from 'commerce/background/telemetry';
+
+// if (message.from === 'browser_action_popup' && message.data.method) {
+//   recordEvent(message.data.method, message.data.object, message.data.value, message.data.extra);
+// }
 
 // sendMessage/onMessage handlers
 
 export const messageHandlers = new Map([
   ['extracted-product', handleExtractedProductData],
   ['config', handleConfigMessage],
+  ['browser_action_popup', (message) => {
+    recordEvent(
+      message.data.method,
+      message.data.object,
+      message.data.value,
+      message.data.extra,
+    );
+  }],
 ]);
 
 export async function handleMessage(message, sender) {

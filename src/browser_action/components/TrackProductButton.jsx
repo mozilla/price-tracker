@@ -48,7 +48,7 @@ export default class TrackProductButton extends React.Component {
     const {extractedProduct} = this.props;
     const uuid = this.props.addProductFromExtracted(extractedProduct);
     recordEvent('add_product', 'add_button', null, {
-      price: extractedProduct.price.toString(),
+      price: extractedProduct.price,
       product_key: uuid,
     });
   }
