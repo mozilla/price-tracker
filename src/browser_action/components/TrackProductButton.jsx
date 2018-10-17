@@ -15,7 +15,7 @@ import {extractedProductShape, isProductTracked} from 'commerce/state/products';
  */
 @connect(
   (state, {extractedProduct}) => ({
-    isTracked: extractedProduct && isProductTracked(state, extractedProduct),
+    isTracked: extractedProduct ? isProductTracked(state, extractedProduct) : false,
   }),
   {
     addProductFromExtracted: productActions.addProductFromExtracted,
