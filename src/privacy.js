@@ -20,13 +20,15 @@ export async function shouldExtract() {
  * @return {boolean}
  */
 export async function shouldCollectTelemetry() {
-  // Privacy controls disable telemetry
-  if (await arePrivacyControlsActive()) {
+  if (await trackingProtectionEnabled()) {
     return false;
   }
 
-  // Content scripts in private browsing windows don't collect telemetry.
-  if (browser.extension.inIncognitoContext) {
+  if (doNotTrackEnabled()) {
+    return false;
+  }
+
+  if (await cookiesBlocked()) {
     return false;
   }
 
@@ -38,35 +40,39 @@ export async function shouldCollectTelemetry() {
  * @return {boolean}
  */
 export async function shouldUpdatePrices() {
-  // Privacy controls disable price updates
-  if (await arePrivacyControlsActive()) {
+  if (await trackingProtectionEnabled()) {
+    return false;
+  }
+
+  if (doNotTrackEnabled()) {
+    return false;
+  }
+
+  if (await cookiesBlocked()) {
     return false;
   }
 
   return true;
 }
 
-/**
- * Helper for checking privacy flags that are used in multiple feature flags.
- */
-async function arePrivacyControlsActive() {
-  // Tracking  Protection
-  if ((await browser.privacy.websites.trackingProtectionMode.get({})).value === 'always') {
-    return true;
-  }
+async function trackingProtectionEnabled() {
+  const result = await browser.privacy.websites.trackingProtectionMode.get({});
+  return result.value === 'always';
+}
 
-  // Do Not Track
-  if (navigator.doNotTrack === '1') {
-    return true;
-  }
+function doNotTrackEnabled() {
+  return navigator.doNotTrack === '1';
+}
 
-  // Cookie blocking
+async function cookiesBlocked() {
   if (browser.privacy.websites.cookieConfig) {
     const {behavior} = (await browser.privacy.websites.cookieConfig.get({})).value;
     if (!['allow_all', 'allow_visited'].includes(behavior)) {
       return true;
     }
+
+    return false;
   }
 
-  return false;
+  return true;
 }
