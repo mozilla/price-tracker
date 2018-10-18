@@ -7,6 +7,8 @@
  * @module
  */
 
+import {shouldCollectTelemetry} from 'commerce/privacy';
+
 const CATEGORY = 'extension.price_alerts';
 
 const EVENTS = {
@@ -156,9 +158,10 @@ export async function registerEvents() {
 }
 
 export async function recordEvent(method, object, value, extra) {
-  if (!browser.telemetry.canUpload()) {
+  if (!browser.telemetry.canUpload() || !(await shouldCollectTelemetry())) {
     return;
   }
+
   await browser.telemetry.recordEvent(
     CATEGORY,
     method,

@@ -9,6 +9,7 @@
 
 import config from 'commerce/config';
 import store from 'commerce/state';
+import {shouldUpdatePrices} from 'commerce/privacy';
 import {addPriceFromExtracted, getLatestPriceForProduct} from 'commerce/state/prices';
 import {getAllProducts, getProduct, getProductIdFromExtracted} from 'commerce/state/products';
 
@@ -31,6 +32,10 @@ export function handleWebRequest(details) {
  * Find products that are due for price updates and update them.
  */
 export async function updatePrices() {
+  if (!(await shouldUpdatePrices())) {
+    return;
+  }
+
   const state = store.getState();
   const products = getAllProducts(state);
   const now = new Date();
