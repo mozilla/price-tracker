@@ -8,10 +8,8 @@
  * @module
  */
 
-export const CONFIG_MESSAGE_TYPE = 'config';
-
 export default {
   async get(configName) {
-    return browser.runtime.sendMessage({type: CONFIG_MESSAGE_TYPE, name: configName});
+    return browser.runtime.sendMessage({type: 'config', name: configName});
   },
 };
