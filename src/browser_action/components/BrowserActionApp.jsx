@@ -12,7 +12,7 @@ import EmptyOnboarding from 'commerce/browser_action/components/EmptyOnboarding'
 import TrackedProductList from 'commerce/browser_action/components/TrackedProductList';
 import {extractedProductShape, getAllProducts, productShape} from 'commerce/state/products';
 import * as syncActions from 'commerce/state/sync';
-import {recordEvent, getBadgeType} from 'commerce/background/telemetry';
+import recordEvent from 'commerce/config/browser_action';
 
 import 'commerce/browser_action/components/BrowserActionApp.css';
 
@@ -55,20 +55,13 @@ export default class BrowserActionApp extends React.Component {
   async componentDidMount() {
     this.props.loadStateFromStorage();
 
-    // Record open_popup event in background script
-    browser.runtime.sendMessage({
-      type: 'browser_action_popup',
-      data: {
-        method: 'open_popup',
-        object: 'toolbar_button',
-      },
-    });
-
     browser.runtime.onMessage.addListener((message) => {
       if (message.subject === 'extracted-product') {
         this.setState({extractedProduct: message.extractedProduct});
       }
     });
+
+    recordEvent('open_popup', 'toolbar_button');
   }
 
   /**
@@ -76,16 +69,7 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickHelp() {
     browser.tabs.create({url: await config.get('supportUrl')});
-    // Record open_external_page event in background script
-    browser.runtime.sendMessage({
-      type: 'browser_action_popup',
-      data: {
-        method: 'open_external_page',
-        object: 'ui_element',
-        value: null,
-        extra: {element: 'help_button'},
-      },
-    });
+    recordEvent('open_external_page', 'ui_element', null, {element: 'help_button'});
     window.close();
   }
 
@@ -94,16 +78,7 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickFeedback() {
     browser.tabs.create({url: await config.get('feedbackUrl')});
-    // Record open_external_page event in background script
-    browser.runtime.sendMessage({
-      type: 'browser_action_popup',
-      data: {
-        method: 'open_external_page',
-        object: 'ui_element',
-        value: null,
-        extra: {element: 'feedback_button'},
-      },
-    });
+    recordEvent('open_external_page', 'ui_element', null, {element: 'feedback_button'});
     window.close();
   }
 

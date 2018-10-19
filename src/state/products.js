@@ -59,10 +59,10 @@ function initialState() {
 export default function reducer(state = initialState(), action) {
   switch (action.type) {
     case ADD_PRODUCT: {
-      const newProduct = getProductFromExtracted({
-        ...action.extractedProductData,
-        anonId: action.anonId,
-      });
+      const newProduct = getProductFromExtracted(
+        {...action.extractedProductData},
+        action.anonId,
+      );
       return {
         ...state,
         products: state.products.concat([newProduct]),
@@ -190,7 +190,7 @@ export function getProductIdFromExtracted(data) {
  * @param {ExtractedProduct} data
  * @return {Product} Product that can be stored in the state
  */
-export function getProductFromExtracted(data) {
+export function getProductFromExtracted(data, anonId) {
   return {
     id: getProductIdFromExtracted(data),
     title: data.title,
@@ -198,6 +198,6 @@ export function getProductFromExtracted(data) {
     image: data.image,
     vendorFaviconUrl: data.vendorFaviconUrl || '',
     isDeleted: false,
-    anonId: data.anonId,
+    anonId,
   };
 }

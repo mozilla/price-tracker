@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 
 import * as productActions from 'commerce/state/products';
 import {extractedProductShape, isProductTracked} from 'commerce/state/products';
-import {recordEvent} from 'commerce/background/telemetry';
+import recordEvent from 'commerce/config/browser_action';
 
 /**
  * Button that tracks a product extracted from the current page when clicked.

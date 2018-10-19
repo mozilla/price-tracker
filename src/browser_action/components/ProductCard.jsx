@@ -16,6 +16,7 @@ import {
 } from 'commerce/state/prices';
 import {productShape} from 'commerce/state/products';
 import * as productActions from 'commerce/state/products';
+import recordEvent from 'commerce/config/browser_action';
 
 import 'commerce/browser_action/components/ProductCard.css';
 
@@ -76,22 +77,14 @@ export default class ProductCard extends React.Component {
   // Record click event in background script
   recordClickEvent(method, object, extra = {}) {
     const {activePriceAlert, latestPrice, originalPrice, product, index} = this.props;
-    browser.runtime.sendMessage({
-      type: 'browser_action_popup',
-      data: {
-        method,
-        object,
-        value: null,
-        extra: {
-          ...extra,
-          price: latestPrice.amount.getAmount(),
-          // activePriceAlert is undefined if this product has never had a price alert
-          price_alert: activePriceAlert ? activePriceAlert.active : false,
-          price_orig: originalPrice.amount.getAmount(),
-          product_index: index,
-          product_key: product.anonId,
-        },
-      },
+    recordEvent(method, object, null, {
+      ...extra,
+      price: latestPrice.amount.getAmount(),
+      // activePriceAlert is undefined if this product has never had a price alert
+      price_alert: activePriceAlert ? activePriceAlert.active : false,
+      price_orig: originalPrice.amount.getAmount(),
+      product_index: index,
+      product_key: product.anonId,
     });
   }
 

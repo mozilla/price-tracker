@@ -159,41 +159,16 @@ export async function registerEvents() {
   await browser.telemetry.registerEvents(CATEGORY, EVENTS);
 }
 
-/**
- * Add all-event and event-specific extra keys.
- * @param {string} method The event method; this is unique for each event
- * @param {Object} extraBase The base extra object for the method to append
- * @returns {Object} The appended extra object
- */
-async function getAdditionalExtraKeys(method, extraBase) {
-  const extra = {
-    ...extraBase,
-    tracked_prods: getAllProducts(store.getState()).length,
-  };
-
-  switch (method) {
-    case 'open_popup':
-      return {
-        ...extra,
-        badge_type: await getBadgeType(await getTabId()),
-      };
-    case 'open_external_page':
-    case 'delete_product':
-    case 'undo_delete_product':
-    case 'add_product':
-      return extra;
-    default:
-      console.warn(`Unknown method type ${method}.`); // eslint-disable-line no-console
-      return extra;
-  }
-}
-
 export async function recordEvent(method, object, value, extraBase = {}) {
   if (!browser.telemetry.canUpload() || !(await shouldCollectTelemetry())) {
     return;
   }
 
-  const extra = await getAdditionalExtraKeys(method, extraBase);
+  // Append extra keys that are sent with all events
+  const extra = {
+    ...extraBase,
+    tracked_prods: getAllProducts(store.getState()).length,
+  };
 
   // Convert all extra key values to strings as required by event telemetry
   for (const [extraKey, extraValue] of Object.entries(extra)) {
@@ -209,7 +184,7 @@ export async function recordEvent(method, object, value, extraBase = {}) {
   );
 }
 
-// Get the tabId for the current focused tab in currently focused window.
+// Get the tabId for the currently focused tab in the currently focused window.
 async function getTabId() {
   const windowId = (await browser.windows.getCurrent()).id;
   return (
@@ -220,7 +195,8 @@ async function getTabId() {
   );
 }
 
-export async function getBadgeType(tabId) {
+export async function getBadgeType() {
+  const tabId = await getTabId();
   const badgeText = await browser.browserAction.getBadgeText(tabId ? {tabId} : {});
   switch (true) {
     case (badgeText === ''):
