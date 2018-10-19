@@ -41,16 +41,11 @@ export async function updatePrices() {
   const products = getAllProducts(state);
   const now = new Date();
   const priceCheckInterval = await config.get('priceCheckInterval');
-
   const delay = await config.get('iframeTimeout');
   for (const product of products) {
     const priceEntry = getLatestPriceForProduct(state, product.id);
     if (now - priceEntry.date > priceCheckInterval) {
-      fetchLatestPrice(product);
-      // Don't load another iframe until the previous one has been removed.
-      await wait(delay); // eslint-disable-line no-await-in-loop
-      // Cleanup previous product's iframe whether it is finished or not.
-      document.getElementById(product.id).remove();
+      await fetchLatestPrice(product, delay); // eslint-disable-line no-await-in-loop
     }
   }
 }
@@ -61,7 +56,7 @@ export async function updatePrices() {
  * to updateProductWithExtracted.
  * @param {Product} product
  */
-async function fetchLatestPrice(product) {
+async function fetchLatestPrice(product, delay) {
   // Do nothing if there's already a fetch in progress.
   if (document.getElementById(product.id)) {
     return;
@@ -77,6 +72,11 @@ async function fetchLatestPrice(product) {
   iframe.height = 950;
   iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
   document.body.appendChild(iframe);
+
+  // Don't load another iframe until the previous one has been removed.
+  await wait(delay);
+  // Cleanup product's iframe whether it is finished or not.
+  document.getElementById(product.id).remove();
 }
 
 /**
