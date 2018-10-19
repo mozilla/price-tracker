@@ -95,6 +95,7 @@ class PriceWrapper {
 
 const ADD_PRICE = 'commerce/prices/ADD_PRICE';
 const ADD_PRICE_ALERT = 'commerce/prices/ADD_PRICE_ALERT';
+const DEACTIVATE_ALL_PRICE_ALERTS = 'commerce/prices/DEACTIVATE_ALL_PRICE_ALERTS';
 const DEACTIVATE_PRICE_ALERT = 'commerce/prices/DEACTIVATE_PRICE_ALERT';
 const SHOW_PRICE_ALERT = 'commerce/prices/SHOW_PRICE_ALERT';
 
@@ -173,6 +174,15 @@ export default function reducer(state = initialState(), action) {
       };
     }
 
+    case DEACTIVATE_ALL_PRICE_ALERTS: {
+      return {
+        ...state,
+        priceAlerts: state.priceAlerts.map(
+          alert => ({...alert, active: false}),
+        ),
+      };
+    }
+
     default: {
       return state;
     }
@@ -223,6 +233,10 @@ export function deactivateAlert(alert) {
     type: DEACTIVATE_PRICE_ALERT,
     priceId: alert.priceId,
   };
+}
+
+export function deactivateAllAlerts() {
+  return {type: DEACTIVATE_ALL_PRICE_ALERTS};
 }
 
 // Selectors

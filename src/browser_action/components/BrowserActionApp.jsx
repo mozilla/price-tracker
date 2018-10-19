@@ -12,7 +12,6 @@ import EmptyOnboarding from 'commerce/browser_action/components/EmptyOnboarding'
 import TrackedProductList from 'commerce/browser_action/components/TrackedProductList';
 import {extractedProductShape, getAllProducts, productShape} from 'commerce/state/products';
 import * as syncActions from 'commerce/state/sync';
-import {removeMarkedProducts} from 'commerce/state/products';
 
 import 'commerce/browser_action/components/BrowserActionApp.css';
 
@@ -26,7 +25,6 @@ import 'commerce/browser_action/components/BrowserActionApp.css';
   }),
   {
     loadStateFromStorage: syncActions.loadStateFromStorage,
-    removeMarkedProducts,
   },
 )
 @autobind
@@ -40,7 +38,6 @@ export default class BrowserActionApp extends React.Component {
 
     // Dispatch props
     loadStateFromStorage: pt.func.isRequired,
-    removeMarkedProducts: pt.func.isRequired,
   }
 
   static defaultProps = {
@@ -56,24 +53,12 @@ export default class BrowserActionApp extends React.Component {
 
   componentDidMount() {
     this.props.loadStateFromStorage();
-    window.addEventListener('unload', this.handleUnload);
 
     browser.runtime.onMessage.addListener((message) => {
       if (message.subject === 'extracted-product') {
         this.setState({extractedProduct: message.extractedProduct});
       }
     });
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('unload', this.handleUnload);
-  }
-
-  /**
-   * When the popup closes, delete any products from the store marked for removal.
-   */
-  handleUnload() {
-    this.props.removeMarkedProducts();
   }
 
   /**

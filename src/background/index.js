@@ -10,7 +10,7 @@
  */
 
 import config from 'commerce/config';
-import handleMessage from 'commerce/background/messages';
+import {handleConnect, handleMessage} from 'commerce/background/messages';
 import {handleNotificationClicked, handlePriceAlerts} from 'commerce/background/price_alerts';
 import {handleWebRequest, updatePrices} from 'commerce/background/price_updates';
 import store from 'commerce/state';
@@ -26,8 +26,9 @@ import {registerEvents} from 'commerce/background/telemetry';
     color: await config.get('badgeAlertBackground'),
   });
 
-  // Register centralized message handler
+  // Register centralized message handlers
   browser.runtime.onMessage.addListener(handleMessage);
+  browser.runtime.onConnect.addListener(handleConnect);
 
   // Display price alerts when they are inserted into the state.
   // This includes the initial load from extension storage below.

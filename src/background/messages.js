@@ -17,17 +17,36 @@
  */
 
 import {handleConfigMessage} from 'commerce/config/background';
+import {handleBrowserActionOpened} from 'commerce/background/browser_action';
 import {handleExtractedProductData} from 'commerce/background/extraction';
 
-export const handlers = new Map([
+// sendMessage/onMessage handlers
+
+export const messageHandlers = new Map([
   ['extracted-product', handleExtractedProductData],
   ['config', handleConfigMessage],
 ]);
 
-export default async function handleMessage(message, sender) {
-  if (handlers.has(message.type)) {
-    return handlers.get(message.type)(message, sender);
+export async function handleMessage(message, sender) {
+  if (messageHandlers.has(message.type)) {
+    return messageHandlers.get(message.type)(message, sender);
   }
 
   return undefined;
+}
+
+// connect/port handlers
+
+export const portMessageHandlers = new Map([
+  ['browser-action-opened', handleBrowserActionOpened],
+]);
+
+export function handleConnect(port) {
+  port.onMessage.addListener((portMessage) => {
+    if (portMessageHandlers.has(portMessage.type)) {
+      return portMessageHandlers.get(portMessage.type)(portMessage, port);
+    }
+
+    return undefined;
+  });
 }
