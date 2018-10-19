@@ -16,13 +16,14 @@ import RulesetFactory from './ruleset_factory';
  */
 const trainees = new Map();
 
-trainees.set(
-    // A ruleset that finds the full-screen, content-blocking overlays that
-    // often go behind modal popups
-    'image',
-    {coeffs: [8, 2, 17, 15, 13, 33, 5, 5, 7, 2],
-     rulesetMaker: coeffs => (new RulesetFactory(coeffs)).makeRuleset()
-    }
-);
+const commonRuleset = {
+    coeffs: [8, 2, 17, 15, 13, 33, 5, 5, 7, 2],
+    viewportSize: {width: 1680, height: 950},
+    rulesetMaker: coeffs => (new RulesetFactory(coeffs)).makeRuleset()
+};
+
+trainees.set('image', commonRuleset);
+trainees.set('title', commonRuleset);
+trainees.set('price', commonRuleset);
 
 export default trainees;
