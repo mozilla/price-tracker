@@ -41,7 +41,7 @@ def main(firefox_bin):
     click.echo('== Building test bundle with Webpack')
     bundle_handle, bundle_path = mkstemp()
     try:
-        webpack_config_path = os.path.join(ROOT, 'webpack.config.test.js')
+        webpack_config_path = os.path.join(ROOT, 'webpack.test.js')
         check_call([
             'webpack',
             '--bail',
