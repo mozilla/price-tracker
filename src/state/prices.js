@@ -14,7 +14,12 @@ import orderBy from 'lodash.orderby';
 import pt from 'prop-types';
 
 import config from 'commerce/config';
-import {ADD_PRODUCT, getProductIdFromExtracted} from 'commerce/state/products';
+import {
+  ADD_PRODUCT,
+  getProduct,
+  getProductIdFromExtracted,
+  REMOVE_MARKED_PRODUCTS,
+} from 'commerce/state/products';
 
 // Types
 
@@ -122,6 +127,17 @@ export default function reducer(state = initialState(), action) {
       return {
         ...state,
         prices: state.prices.concat([action.price]),
+      };
+    }
+
+    // Delete related prices when deleting products.
+    case REMOVE_MARKED_PRODUCTS: {
+      return {
+        ...state,
+        prices: state.prices.filter((price) => {
+          const product = getProduct(state, price.productId);
+          return product && !product.isDeleted;
+        }),
       };
     }
 
