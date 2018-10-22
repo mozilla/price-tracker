@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Firefox Shopping",
+  "name": "Price Scout",
   "version": "$version",
   "description": "",
   "applications": {
@@ -22,7 +22,7 @@
       "16": "img/shopping_list.svg",
       "32": "img/shopping_list.svg"
     },
-    "default_title": "Tracked Products",
+    "default_title": "Price Scout",
     "default_popup": "browser_action/index.html"
   },
   "permissions": [

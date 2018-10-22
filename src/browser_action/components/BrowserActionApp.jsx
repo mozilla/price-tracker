@@ -95,7 +95,7 @@ export default class BrowserActionApp extends React.Component {
               alt="Send Feedback"
             />
           </button>
-          <h1 className="title">Price Watcher List</h1>
+          <h1 className="title">Price Scout</h1>
           <button
             className="ghost help button"
             type="button"

@@ -1,6 +1,6 @@
-# Commerce WebExtension
+# Price Scout
 
-This repo contains the WebExtension for the Commerce project.
+Price Scout is a Firefox extension that tracks price changes to help you find the best time to buy.
 
 ## Developer Setup
 
@@ -11,8 +11,8 @@ Prerequisites:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/mozilla/webext-commerce.git
-   cd webext-commerce
+   git clone https://github.com/mozilla/price-scout.git
+   cd price-scout
    ```
 2. Install dependencies:
 
@@ -50,7 +50,7 @@ With these installed, you can set up the test suite:
 2. Save the path to your Firefox binary with `npm`:
 
    ```sh
-   npm config set webext-commerce:firefox_bin <PATH_TO_FIREFOX_BINARY>
+   npm config set price-scout:firefox_bin <PATH_TO_FIREFOX_BINARY>
    ```
 
 After this, you can run `pipenv run test` to run the automated test suite.
