@@ -34,6 +34,8 @@ export function handleWebRequest(details) {
  */
 export async function updatePrices() {
   if (!(await shouldUpdatePrices())) {
+    // Need to continue checking even if shouldUpdatePrices returns false
+    setTimeout(updatePrices, await config.get('priceCheckTimeoutInterval'));
     return;
   }
 
@@ -48,6 +50,7 @@ export async function updatePrices() {
       await fetchLatestPrice(product, delay); // eslint-disable-line no-await-in-loop
     }
   }
+  setTimeout(updatePrices, await config.get('priceCheckTimeoutInterval'));
 }
 
 /**
@@ -76,7 +79,7 @@ async function fetchLatestPrice(product, delay) {
   // Don't load another iframe until the previous one has been removed.
   await wait(delay);
   // Cleanup product's iframe whether it is finished or not.
-  document.getElementById(product.id).remove();
+  iframe.remove();
 }
 
 /**

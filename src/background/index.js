@@ -71,5 +71,4 @@ import {registerEvents} from 'commerce/telemetry/extension';
   // Update product prices while the extension is running, including once during
   // startup.
   updatePrices();
-  setInterval(updatePrices, await config.get('priceCheckTimeoutInterval'));
 }());
