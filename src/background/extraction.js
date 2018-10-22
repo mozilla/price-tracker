@@ -41,12 +41,16 @@ export async function handleExtractedProductData(message, sender) {
     const url = new URL(await config.get('browserActionUrl'));
     url.searchParams.set('extractedProduct', JSON.stringify(extractedProduct));
 
-    // Update the toolbar popup while it is open with the current page's product
+    // Update the toolbar popup if it is open with the current page's product
     if (sender.tab.active) {
-      browser.runtime.sendMessage({
-        subject: 'extracted-product',
-        extractedProduct,
-      });
+      try {
+        await browser.runtime.sendMessage({
+          subject: 'extracted-product',
+          extractedProduct,
+        });
+      } catch (error) {
+        // Popup must be closed
+      }
     }
 
     browser.browserAction.setPopup({popup: url.href, tabId});
