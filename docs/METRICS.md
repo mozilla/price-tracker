@@ -14,7 +14,7 @@ A summary of the metrics the Price Alerts extension will record.
 * **Price Alert**: An alert that occurs when a tracked product's price _decreases_ below a certain absolute or percentage threshold. For the MVP, the default thresholds are specified in `./src/config.js`.
 * **Product Card**: A product list item in the list of tracked products for which the user has opted to receive Price Alerts displayed on the browserAction popup. Each Product Card displays the product title, image and price among other information.
 * **Product Page**: A webpage ([example](https://www.amazon.com/LEGO-Fantastic-Beasts-Grindelwald-Grindelwalds/dp/B07BKQXCZR/ref=sr_1_3_sspa?s=toys-and-games&ie=UTF8&qid=1538418041&sr=1-3-spons&keywords=legos&psc=1)) displaying a single product that the user could purchase online.
-* **Supported Sites**: For the initial launch (a.k.a. MVP, Minimum Viable Product) of this extension, we are limiting the sites supported by this feature to [five websites](https://github.com/mozilla/webext-commerce/issues/36#issuecomment-409641491): Amazon, Ebay, Walmart, Home Depot and Best Buy.
+* **Supported Sites**: For the initial launch (a.k.a. MVP, Minimum Viable Product) of this extension, we are limiting the sites supported by this feature to [five websites](https://github.com/mozilla/price-scout/issues/36#issuecomment-409641491): Amazon, Ebay, Walmart, Home Depot and Best Buy.
 * **Survey**: a short survey collecting user feedback.
 * **Onboarding Popup**: The popup displayed when the user has zero products tracked, including the first time the popup is opened.
 
