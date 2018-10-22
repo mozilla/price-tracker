@@ -14,13 +14,15 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GenerateJsonPlugin = require('generate-json-webpack-plugin');
 
-const packageData = require('./package.json');
-const manifestTemplate = require('./src/manifest.json');
+const packageData = require('../package.json');
+const manifestTemplate = require('../src/manifest.json');
 
-const BUILD_DIR = path.resolve(__dirname, 'build');
+const ROOT_DIR = path.resolve(__dirname, '..');
+const BUILD_DIR = path.resolve(ROOT_DIR, 'build');
 
 module.exports = {
   target: 'web',
+  context: ROOT_DIR,
   entry: {
     background: './src/background/index',
     extraction: './src/extraction',
@@ -87,7 +89,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      commerce: path.resolve(__dirname, 'src'),
+      commerce: path.resolve(ROOT_DIR, 'src'),
     },
   },
 };
