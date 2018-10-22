@@ -16,7 +16,7 @@ import {handleWebRequest, updatePrices} from 'commerce/background/price_updates'
 import store from 'commerce/state';
 import {checkMigrations} from 'commerce/state/migrations';
 import {loadStateFromStorage} from 'commerce/state/sync';
-import {registerEvents} from 'commerce/background/telemetry';
+import {registerEvents} from 'commerce/telemetry/extension';
 
 (async function main() {
   registerEvents();

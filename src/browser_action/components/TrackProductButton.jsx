@@ -9,6 +9,7 @@ import {connect} from 'react-redux';
 
 import * as productActions from 'commerce/state/products';
 import {extractedProductShape, isProductTracked} from 'commerce/state/products';
+import {recordEvent} from 'commerce/telemetry/extension';
 
 /**
  * Button that tracks a product extracted from the current page when clicked.
@@ -43,8 +44,13 @@ export default class TrackProductButton extends React.Component {
   /**
    * Track the current tab's product when the track button is clicked.
    */
-  handleClickTrack() {
-    this.props.addProductFromExtracted(this.props.extractedProduct);
+  async handleClickTrack() {
+    const {extractedProduct} = this.props;
+    const uuid = this.props.addProductFromExtracted(extractedProduct);
+    await recordEvent('add_product', 'add_button', null, {
+      price: extractedProduct.price,
+      product_key: uuid,
+    });
   }
 
   render() {

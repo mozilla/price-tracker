@@ -44,9 +44,9 @@ export default class TrackedProductList extends React.Component {
       <React.Fragment>
         <TrackProductButton className="menu-item" extractedProduct={extractedProduct} />
         <ul className="product-list">
-          {sortedProducts.map(product => (
+          {sortedProducts.map((product, index) => (
             <li className="product-list-item" key={product.id}>
-              <ProductCard product={product} />
+              <ProductCard product={product} index={index} />
             </li>
           ))}
         </ul>

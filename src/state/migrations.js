@@ -9,6 +9,8 @@
  * @module
  */
 
+import uuidv4 from 'uuid/v4';
+
 /**
  * List of data migrations to run. The order of this list MUST NOT BE MODIFIED!
  * Add new migrations to the end of the list.
@@ -38,6 +40,16 @@ const MIGRATIONS = [
       products: state.products.map(product => ({
         ...product,
         vendorFaviconUrl: '',
+      })),
+    };
+  },
+
+  function addProductKey(state) {
+    return {
+      ...state,
+      products: state.products.map(product => ({
+        ...product,
+        anonId: uuidv4(),
       })),
     };
   },

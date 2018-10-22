@@ -8,6 +8,7 @@
  */
 
 import pt from 'prop-types';
+import uuidv4 from 'uuid/v4';
 
 // Types
 
@@ -23,6 +24,7 @@ export const productShape = pt.shape({
   image: pt.string.isRequired,
   isDeleted: pt.bool.isRequired,
   vendorFaviconUrl: pt.string.isRequired,
+  anonId: pt.string.isRequired,
 });
 
 /**
@@ -57,7 +59,10 @@ function initialState() {
 export default function reducer(state = initialState(), action) {
   switch (action.type) {
     case ADD_PRODUCT: {
-      const newProduct = getProductFromExtracted(action.extractedProductData);
+      const newProduct = getProductFromExtracted(
+        {...action.extractedProductData},
+        action.anonId,
+      );
       return {
         ...state,
         products: state.products.concat([newProduct]),
@@ -92,9 +97,14 @@ export default function reducer(state = initialState(), action) {
  * @param {ExtractedProduct} data
  */
 export function addProductFromExtracted(data) {
-  return {
-    type: ADD_PRODUCT,
-    extractedProductData: data,
+  return (dispatch) => {
+    const uuid = uuidv4();
+    dispatch({
+      type: ADD_PRODUCT,
+      extractedProductData: data,
+      anonId: uuid,
+    });
+    return uuid;
   };
 }
 
@@ -180,7 +190,7 @@ export function getProductIdFromExtracted(data) {
  * @param {ExtractedProduct} data
  * @return {Product} Product that can be stored in the state
  */
-export function getProductFromExtracted(data) {
+export function getProductFromExtracted(data, anonId) {
   return {
     id: getProductIdFromExtracted(data),
     title: data.title,
@@ -188,5 +198,6 @@ export function getProductFromExtracted(data) {
     image: data.image,
     vendorFaviconUrl: data.vendorFaviconUrl || '',
     isDeleted: false,
+    anonId,
   };
 }

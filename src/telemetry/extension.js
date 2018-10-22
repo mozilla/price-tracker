@@ -8,6 +8,8 @@
  */
 
 import {shouldCollectTelemetry} from 'commerce/privacy';
+import store from 'commerce/state';
+import {getAllProducts} from 'commerce/state/products';
 
 const CATEGORY = 'extension.price_alerts';
 
@@ -157,9 +159,20 @@ export async function registerEvents() {
   await browser.telemetry.registerEvents(CATEGORY, EVENTS);
 }
 
-export async function recordEvent(method, object, value, extra) {
+export async function recordEvent(method, object, value, extraBase = {}) {
   if (!browser.telemetry.canUpload() || !(await shouldCollectTelemetry())) {
     return;
+  }
+
+  // Append extra keys that are sent with all events
+  const extra = {
+    ...extraBase,
+    tracked_prods: getAllProducts(store.getState()).length,
+  };
+
+  // Convert all extra key values to strings as required by event telemetry
+  for (const [extraKey, extraValue] of Object.entries(extra)) {
+    extra[extraKey] = extraValue.toString();
   }
 
   await browser.telemetry.recordEvent(
@@ -169,4 +182,33 @@ export async function recordEvent(method, object, value, extra) {
     value,
     extra,
   );
+}
+
+// Get the tabId for the currently focused tab in the currently focused window.
+async function getActiveTabId() {
+  const windowId = (await browser.windows.getCurrent()).id;
+  return (
+    (await browser.tabs.query({
+      windowId,
+      active: true,
+    }))[0].id
+  );
+}
+
+export async function getBadgeType() {
+  const activeTabId = await getActiveTabId();
+  const badgeText = await browser.browserAction.getBadgeText(
+    activeTabId ? {tabId: activeTabId} : {},
+  );
+  switch (true) {
+    case (badgeText === ''):
+      return 'none';
+    case (badgeText === '✚'):
+      return 'add';
+    case (/\d+/.test(badgeText)):
+      return 'price_alert';
+    default:
+      console.warn(`Unexpected badge text ${badgeText}.`); // eslint-disable-line no-console
+      return 'unknown';
+  }
 }

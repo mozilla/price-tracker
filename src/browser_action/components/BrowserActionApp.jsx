@@ -12,6 +12,7 @@ import EmptyOnboarding from 'commerce/browser_action/components/EmptyOnboarding'
 import TrackedProductList from 'commerce/browser_action/components/TrackedProductList';
 import {extractedProductShape, getAllProducts, productShape} from 'commerce/state/products';
 import * as syncActions from 'commerce/state/sync';
+import {recordEvent, getBadgeType} from 'commerce/telemetry/extension';
 
 import 'commerce/browser_action/components/BrowserActionApp.css';
 
@@ -51,7 +52,7 @@ export default class BrowserActionApp extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.loadStateFromStorage();
 
     browser.runtime.onMessage.addListener((message) => {
@@ -59,6 +60,8 @@ export default class BrowserActionApp extends React.Component {
         this.setState({extractedProduct: message.extractedProduct});
       }
     });
+
+    await recordEvent('open_popup', 'toolbar_button', null, {badge_type: await getBadgeType()});
   }
 
   /**
@@ -66,6 +69,7 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickHelp() {
     browser.tabs.create({url: await config.get('supportUrl')});
+    await recordEvent('open_external_page', 'ui_element', null, {element: 'help_button'});
     window.close();
   }
 
@@ -74,6 +78,7 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickFeedback() {
     browser.tabs.create({url: await config.get('feedbackUrl')});
+    await recordEvent('open_external_page', 'ui_element', null, {element: 'feedback_button'});
     window.close();
   }
 
