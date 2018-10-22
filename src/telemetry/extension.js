@@ -185,7 +185,7 @@ export async function recordEvent(method, object, value, extraBase = {}) {
 }
 
 // Get the tabId for the currently focused tab in the currently focused window.
-async function getTabId() {
+async function getActiveTabId() {
   const windowId = (await browser.windows.getCurrent()).id;
   return (
     (await browser.tabs.query({
@@ -196,8 +196,10 @@ async function getTabId() {
 }
 
 export async function getBadgeType() {
-  const tabId = await getTabId();
-  const badgeText = await browser.browserAction.getBadgeText(tabId ? {tabId} : {});
+  const activeTabId = await getActiveTabId();
+  const badgeText = await browser.browserAction.getBadgeText(
+    activeTabId ? {tabId: activeTabId} : {},
+  );
   switch (true) {
     case (badgeText === ''):
       return 'none';

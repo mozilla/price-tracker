@@ -19,7 +19,7 @@ import {
   showPriceAlert,
 } from 'commerce/state/prices';
 import {getProduct} from 'commerce/state/products';
-import {recordEvent} from 'commerce/background/telemetry';
+import {recordEvent} from 'commerce/telemetry/extension';
 
 /**
  * Update the extension UI based on the current state of active price alerts.
@@ -70,7 +70,7 @@ export function handlePriceAlerts() {
  *  The ID assigned to the notification. This is equal to the priceId of the
  *  alert that triggered the notification.
  */
-export function handleNotificationClicked(notificationId) {
+export async function handleNotificationClicked(notificationId) {
   const state = store.getState();
   const alert = getPriceAlertForPrice(state, notificationId);
   if (alert) {
@@ -80,7 +80,7 @@ export function handleNotificationClicked(notificationId) {
     // Record open_external_page event
     const latestPrice = getLatestPriceForProduct(state, product.id);
     const originalPrice = getOldestPriceForProduct(state, product.id);
-    recordEvent('open_external_page', 'ui_element', null, {
+    await recordEvent('open_external_page', 'ui_element', null, {
       element: 'system_notification',
       price: latestPrice.amount.getAmount(),
       price_alert: alert.active,

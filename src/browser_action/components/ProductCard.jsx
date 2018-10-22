@@ -16,7 +16,7 @@ import {
 } from 'commerce/state/prices';
 import {productShape} from 'commerce/state/products';
 import * as productActions from 'commerce/state/products';
-import recordEvent from 'commerce/config/browser_action';
+import {recordEvent} from 'commerce/telemetry/extension';
 
 import 'commerce/browser_action/components/ProductCard.css';
 
@@ -57,27 +57,27 @@ export default class ProductCard extends React.Component {
    * Open the product's webpage in a new tab when it is clicked.
    * @param {Product} product
    */
-  handleClick() {
+  async handleClick() {
     browser.tabs.create({url: this.props.product.url});
-    this.recordClickEvent('open_external_page', 'ui_element', {element: 'product_card'});
+    await this.recordClickEvent('open_external_page', 'ui_element', {element: 'product_card'});
     window.close();
   }
 
-  handleClickDelete(event) {
+  async handleClickDelete(event) {
     event.stopPropagation();
     this.props.setDeletionFlag(this.props.product.id, true);
-    this.recordClickEvent('delete_product', 'delete_button');
+    await this.recordClickEvent('delete_product', 'delete_button');
   }
 
-  handleClickUndo() {
+  async handleClickUndo() {
     this.props.setDeletionFlag(this.props.product.id, false);
-    this.recordClickEvent('undo_delete_product', 'undo_button');
+    await this.recordClickEvent('undo_delete_product', 'undo_button');
   }
 
   // Record click event in background script
-  recordClickEvent(method, object, extra = {}) {
+  async recordClickEvent(method, object, extra = {}) {
     const {activePriceAlert, latestPrice, originalPrice, product, index} = this.props;
-    recordEvent(method, object, null, {
+    await recordEvent(method, object, null, {
       ...extra,
       price: latestPrice.amount.getAmount(),
       // activePriceAlert is undefined if this product has never had a price alert

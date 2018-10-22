@@ -8,7 +8,7 @@ import React from 'react';
 import TrackProductButton from 'commerce/browser_action/components/TrackProductButton';
 import config from 'commerce/config';
 import {extractedProductShape} from 'commerce/state/products';
-import recordEvent from 'commerce/config/browser_action';
+import {recordEvent} from 'commerce/telemetry/extension';
 
 import 'commerce/browser_action/components/EmptyOnboarding.css';
 
@@ -46,11 +46,11 @@ export default class EmptyOnboarding extends React.Component {
   /**
    * Open a new tab and close the popup when links are clicked.
    */
-  handleClick(event) {
+  async handleClick(event) {
     if (event.target.href) {
       event.preventDefault();
       browser.tabs.create({url: event.target.href});
-      recordEvent('open_external_page', 'ui_element', null, {element: `${event.target.dataset.telemetryId}_link`});
+      await recordEvent('open_external_page', 'ui_element', null, {element: `${event.target.dataset.telemetryId}_link`});
       window.close();
     }
   }

@@ -16,12 +16,8 @@
  * @module
  */
 
-<<<<<<< HEAD
 import {handleConfigMessage} from 'commerce/config/background';
 import {handleBrowserActionOpened} from 'commerce/background/browser_action';
-=======
-import {handleConfigMessage, handleTelemetryMessage} from 'commerce/config/background';
->>>>>>> Incorporate more of Osmose's feedback
 import {handleExtractedProductData} from 'commerce/background/extraction';
 
 // sendMessage/onMessage handlers
@@ -29,7 +25,6 @@ import {handleExtractedProductData} from 'commerce/background/extraction';
 export const messageHandlers = new Map([
   ['extracted-product', handleExtractedProductData],
   ['config', handleConfigMessage],
-  ['telemetry', handleTelemetryMessage],
 ]);
 
 export async function handleMessage(message, sender) {
