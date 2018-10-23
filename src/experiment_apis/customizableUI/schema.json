@@ -1,0 +1,19 @@
+[
+  {
+    "namespace": "customizableUI",
+    "events": [
+      {
+        "name": "onWidgetRemoved",
+        "type": "function",
+        "description": "Fired when a widget is removed from the browser chrome",
+        "parameters": [
+          {
+            "name": "widgetId",
+            "description": "The unique identifier for the widget",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -212,3 +212,27 @@ export async function getBadgeType() {
       return 'unknown';
   }
 }
+
+export async function handleWidgetRemoved(widgetId) {
+  const addonId = (await browser.management.getSelf()).id;
+  // widgetId replaces '@' and '.' in the addonId with _
+  const modifiedAddonId = addonId.replace(/[@.+]/g, '_');
+  if (`${modifiedAddonId}-browser-action` === widgetId) {
+    await recordEvent('hide_toolbar_button', 'toolbar_button', null, {
+      badge_type: await getBadgeType(),
+    });
+  }
+}
+
+/**
+ * Log telemetry events sent from content scripts.
+ * @param {object} message
+ */
+export async function handleTelemetryMessage(message) {
+  return recordEvent(
+    message.method,
+    message.object,
+    message.value,
+    message.extra,
+  );
+}

@@ -19,12 +19,14 @@
 import {handleConfigMessage} from 'commerce/config/background';
 import {handleBrowserActionOpened} from 'commerce/background/browser_action';
 import {handleExtractedProductData} from 'commerce/background/extraction';
+import {handleTelemetryMessage} from 'commerce/telemetry/extension';
 
 // sendMessage/onMessage handlers
 
 export const messageHandlers = new Map([
   ['extracted-product', handleExtractedProductData],
   ['config', handleConfigMessage],
+  ['telemetry', handleTelemetryMessage],
 ]);
 
 export async function handleMessage(message, sender) {
