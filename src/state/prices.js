@@ -64,6 +64,9 @@ export const priceAlertShape = pt.shape({
 
   /** Shown is true if the notification for the alert has been displayed */
   shown: pt.bool.isRequired,
+
+  /** The "high price" at the time this alert triggered */
+  highPriceAmount: pt.number.isRequired,
 });
 
 /**
@@ -222,20 +225,62 @@ export function addPriceFromExtracted(data) {
         price,
       });
 
-      // Check if we need to alert since there's a new price in town.
-      if (await shouldTriggerPriceAlert(state, price)) {
-        dispatch({
-          type: ADD_PRICE_ALERT,
-          alert: {
-            productId: price.productId,
-            priceId: price.id,
-            date: price.date,
-          },
-        });
-      }
+      // Potentially trigger an alert since there's a new price in town.
+      dispatch(triggerPriceAlert(price));
     }
   };
 }
+
+/**
+ * Trigger a price alert if the given new price has dropped enough.
+ * @param {Price} price The new price being added
+ */
+export function triggerPriceAlert(price) {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const productId = price.productId;
+
+    // Prices with an active alert should not trigger a new one.
+    if (getActivePriceAlertForProduct(state, productId)) {
+      return;
+    }
+
+    // The first price should never trigger an alert.
+    const prices = getPricesForProduct(state, productId);
+    if (prices.length < 1) {
+      return;
+    }
+
+    // If the difference between the high price and new price is below both alert
+    // thresholds, do not trigger an alert.
+    const highPrice = getHighPrice(state, prices, productId);
+    const newPrice = new PriceWrapper(price);
+
+    const difference = highPrice.amount.subtract(newPrice.amount);
+    const belowAbsoluteThreshold = (
+      difference.getAmount() < await config.get('alertAbsoluteThreshold')
+    );
+    const percentDifference = difference.getAmount() / highPrice.amount.getAmount();
+    const belowPercentThreshold = (
+      percentDifference < await config.get('alertPercentThreshold')
+    );
+
+    if (belowPercentThreshold && belowAbsoluteThreshold) {
+      return;
+    }
+
+    dispatch({
+      type: ADD_PRICE_ALERT,
+      alert: {
+        productId: price.productId,
+        priceId: price.id,
+        highPriceAmount: highPrice.amount.getAmount(),
+        date: price.date,
+      },
+    });
+  };
+}
+
 
 export function showPriceAlert(alert) {
   return {
@@ -411,52 +456,24 @@ function shouldAddNewPrice(state, price) {
 }
 
 /**
- * Determine whether to trigger a price alert due to the given new price being
- * detected.
+ * Find the previous "high price".
+ * A high price is, semantically, the price that there's been an interesting
+ * drop from to warrant alerting the user. Practically, it is the highest
+ * price since the previous price alert.
  * @param {ReduxState} state
- * @param {Price} price The new price being added
- * @return {boolean} True if we should trigger an alert, false otherwise.
+ * @param {PriceWrapper[]} prices
+ * @param {string} productId
+ * @return {PriceWrapper}
  */
-async function shouldTriggerPriceAlert(state, price) {
-  const productId = price.productId;
-
-  // Prices with an active alert should not trigger a new one.
-  if (getActivePriceAlertForProduct(state, productId)) {
-    return false;
-  }
-
-  // The first price should never trigger an alert.
-  let prices = getPricesForProduct(state, productId);
-  if (prices.length < 1) {
-    return false;
-  }
-
-  // Find the previous "high price".
-  // A high price is, semantically, the price that there's been an interesting
-  // drop from to warrant alerting the user. Practically, it is the highest
-  // price since the previous price alert.
+function getHighPrice(state, prices, productId) {
+  let pricesSinceLastAlert = prices;
 
   // Filter the prices we're searching to only those since the previous alert.
   const previousPriceAlert = getLatestPriceAlertForProduct(state, productId);
   if (previousPriceAlert) {
     // The alert's price might be the high price, so we use >= to compare.
     const alertDate = new Date(previousPriceAlert.date);
-    prices = prices.filter(p => p.date >= alertDate);
+    pricesSinceLastAlert = pricesSinceLastAlert.filter(p => p.date >= alertDate);
   }
-  const highPrice = maxBy(prices, p => p.amount.getAmount());
-
-  // If the difference between the high price and new price exceeds alert
-  // thresholds, trigger an alert.
-  const newPrice = new PriceWrapper(price);
-  const difference = highPrice.amount.subtract(newPrice.amount);
-  if (difference.getAmount() >= await config.get('alertAbsoluteThreshold')) {
-    return true;
-  }
-
-  const percentDifference = difference.getAmount() / highPrice.amount.getAmount();
-  if (percentDifference >= await config.get('alertPercentThreshold')) {
-    return true;
-  }
-
-  return false;
+  return maxBy(pricesSinceLastAlert, p => p.amount.getAmount());
 }
