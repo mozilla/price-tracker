@@ -66,9 +66,7 @@ async function fetchLatestPrice(product, delay) {
   }
 
   const iframe = document.createElement('iframe');
-  const url = new URL(product.url);
-  url.hash = 'moz-commerce-background';
-  iframe.src = url.href;
+  iframe.src = product.url;
   iframe.id = product.id;
   // Desktop viewport dimensions (in px) on which Fathom proximity rules are based
   iframe.width = 1680;
