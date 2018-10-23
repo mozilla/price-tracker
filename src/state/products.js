@@ -46,7 +46,7 @@ export const extractedProductShape = pt.shape({
 
 export const ADD_PRODUCT = 'commerce/products/ADD_PRODUCT'; // Used by price duck
 const SET_DELETION_FLAG = 'commerce/products/SET_DELETION_FLAG';
-const REMOVE_MARKED_PRODUCTS = 'commerce/products/REMOVE_MARKED_PRODUCTS';
+export const REMOVE_MARKED_PRODUCTS = 'commerce/products/REMOVE_MARKED_PRODUCTS';
 
 // Reducer
 
