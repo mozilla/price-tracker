@@ -15,7 +15,7 @@ jobs:
       - run:
           name: Build extension
           command: |
-            npm run build
+            npm run build:prod
       - run:
           name: Run linting checks
           command: |

@@ -3,26 +3,26 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /**
- * Webpack configuration for building the webextension.
+ * Webpack configuration for building the webextension that applies to all
+ * environments.
  */
 
 /* eslint-env node */
+/* eslint-disable import/no-extraneous-dependencies */
 
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GenerateJsonPlugin = require('generate-json-webpack-plugin');
 
-const packageData = require('./package.json');
-const manifestTemplate = require('./src/manifest.json');
+const packageData = require('../package.json');
+const manifestTemplate = require('../src/manifest.json');
 
-const BUILD_DIR = path.resolve(__dirname, 'build');
+const ROOT_DIR = path.resolve(__dirname, '..');
+const BUILD_DIR = path.resolve(ROOT_DIR, 'build');
 
-// FIXME(osmose): This file is optimized for development. At some point we
-// should add optimizations for production-ready code bundling.
 module.exports = {
-  mode: 'development',
-  devtool: 'inline-source-map',
   target: 'web',
+  context: ROOT_DIR,
   entry: {
     background: './src/background/index',
     extraction: './src/extraction',
@@ -89,7 +89,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      commerce: path.resolve(__dirname, 'src'),
+      commerce: path.resolve(ROOT_DIR, 'src'),
     },
   },
 };
