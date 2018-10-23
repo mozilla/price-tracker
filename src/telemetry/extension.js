@@ -223,3 +223,16 @@ export async function handleWidgetRemoved(widgetId) {
     });
   }
 }
+
+/**
+ * Log telemetry events sent from content scripts.
+ * @param {object} message
+ */
+export async function handleTelemetryMessage(message) {
+  return recordEvent(
+    message.method,
+    message.object,
+    message.value,
+    message.extra,
+  );
+}

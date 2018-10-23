@@ -11,11 +11,9 @@
 export default async function recordEvent(method, object, value = null, extra = null) {
   await browser.runtime.sendMessage({
     type: 'telemetry',
-    data: {
-      method,
-      object,
-      value,
-      extra,
-    },
+    method,
+    object,
+    value,
+    extra,
   });
 }
