@@ -37,6 +37,14 @@
     "telemetry"
   ],
   "experiment_apis": {
+    "customizableUI": {
+      "schema": "experiment_apis/customizableUI/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "experiment_apis/customizableUI/api.js",
+        "paths": [["customizableUI"]]
+      }
+    },
     "shoppingPrefs": {
       "schema": "experiment_apis/shoppingPrefs/schema.json",
       "parent": {

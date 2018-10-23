@@ -261,16 +261,7 @@ Fired when the user clicks an undo button in a Product Card in the browserAction
 
 ### `uninstall`
 
-Fired when the user uninstalls the extension.
-
-#### Payload properties
-
-- `methods`: String
-  - `'uninstall'`
-- `objects`: String
-  - `'uninstall'`
-- `extra_keys`: Object
-  - `'tracked_prods'`
+See Appendix A.
 
 ### `hide_toolbar_button`
 
@@ -381,3 +372,48 @@ No telemetry will be sent from the extension in the following additional cases:
 - The user is in a [Private Browsing](https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history?redirectlocale=en-US&redirectslug=Private+Browsing)  window
   - Preference: `browser.privatebrowsing.autostart`
   - [`windows.Window`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/Window) property: `window.incognito`
+
+
+## Appendices
+
+### Appendix A: `uninstall`
+
+Fired when the user uninstalls the extension.
+
+This event, along with all other add-on lifecycle events, is recorded by the Addons Manager's event telemetry in Firefox. It will exist as part of the `main` ping under `payload.processes.parent.events` as an array in the `events` array. This event will be fired under the `addonsManager` telemetry category.
+
+#### Sample Ping
+
+Note: This is a sample ping. The exact value for the extension ID may differ, though the other values are correct.
+
+```javascript
+{
+  "type": "main",
+  // ...
+  "payload": {
+    // ...
+    "processes": {
+      // ...
+      "parent": {
+        // ...
+        "events": [
+          [
+            9792,
+            "addonsManager",
+            "uninstall",
+            "extension",
+            "shopping-testpilot@mozilla.org", // the extension ID
+            {
+              "source": "testpilot"
+              // ...
+            }
+          ]
+        ]
+      }
+      // ...
+    }
+    // ...
+  }
+  // ...
+}
+```

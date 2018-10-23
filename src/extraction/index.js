@@ -13,6 +13,7 @@ import extractProductWithFathom from 'commerce/extraction/fathom';
 import extractProductWithFallback from 'commerce/extraction/selector';
 import extractProductWithOpenGraph from 'commerce/extraction/open_graph';
 import {shouldExtract} from 'commerce/privacy';
+import recordEvent from 'commerce/telemetry/content';
 
 /**
  * Extraction methods are given the document object for the page, and must
@@ -87,6 +88,11 @@ async function attemptExtraction() {
   const allowAll = allowList.length === 1 && allowList[0] === '*';
   if (!allowAll && !isBackgroundUpdate && !allowList.includes(url.host)) {
     return;
+  }
+
+  // Record visit_supported_site event
+  if (!isBackgroundUpdate) {
+    await recordEvent('visit_supported_site', 'supported_site');
   }
 
   // Extract immediately, and again if the readyState changes.

@@ -16,7 +16,7 @@ import {handleWebRequest, updatePrices} from 'commerce/background/price_updates'
 import store from 'commerce/state';
 import {checkMigrations} from 'commerce/state/migrations';
 import {loadStateFromStorage} from 'commerce/state/sync';
-import {registerEvents} from 'commerce/telemetry/extension';
+import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension';
 
 (async function main() {
   registerEvents();
@@ -36,6 +36,9 @@ import {registerEvents} from 'commerce/telemetry/extension';
 
   // Open the product page when an alert notification is clicked.
   browser.notifications.onClicked.addListener(handleNotificationClicked);
+
+  // Record hide_toolbar_button event when the toolbar button is hidden.
+  browser.customizableUI.onWidgetRemoved.addListener(handleWidgetRemoved);
 
   // Enable content scripts now that the background listener is registered.
   // Store the return value globally to avoid destroying it, which would
