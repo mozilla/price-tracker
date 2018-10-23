@@ -41,6 +41,17 @@ function extractProduct() {
   return null;
 }
 
+async function sendProductToBackground(extractedProduct) {
+  return browser.runtime.sendMessage({
+    type: 'extracted-product',
+    extractedProduct: {
+      ...extractedProduct,
+      url: document.location.href,
+      date: (new Date()).toISOString(),
+    },
+  });
+}
+
 /**
  * Checks to see if any product information for the page was found,
  * and if so, sends it to the background script.
@@ -48,15 +59,10 @@ function extractProduct() {
 async function attemptExtraction() {
   const extractedProduct = extractProduct();
   if (extractedProduct) {
-    await browser.runtime.sendMessage({
-      type: 'extracted-product',
-      extractedProduct: {
-        ...extractedProduct,
-        url: document.location.href,
-        date: (new Date()).toISOString(),
-      },
-    });
+    await sendProductToBackground(extractedProduct);
   }
+
+  return extractedProduct;
 }
 
 (async function main() {
@@ -84,8 +90,15 @@ async function attemptExtraction() {
   }
 
   // Extract immediately, and again if the readyState changes.
-  attemptExtraction();
-  document.addEventListener('readystatechange', () => {
-    attemptExtraction();
+  let extractedProduct = await attemptExtraction();
+  document.addEventListener('readystatechange', async () => {
+    extractedProduct = await attemptExtraction();
+  });
+
+  // Re-send the extracted product to the background script if requested
+  browser.runtime.onMessage.addListener(async (message) => {
+    if (message.type === 'resend-product' && extractedProduct) {
+      await sendProductToBackground(extractedProduct);
+    }
   });
 }());

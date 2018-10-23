@@ -61,6 +61,21 @@ import {registerEvents} from 'commerce/telemetry/extension';
     ['blocking', 'responseHeaders'],
   );
 
+  // Workaround for bug 1493470: Resend product info when subframe loads
+  // accidentally clear the browser action URL.
+  // TODO(osmose): Remove once Firefox 64 hits the release channel.
+  browser.webRequest.onCompleted.addListener((details) => {
+    if (details.tabId) {
+      browser.tabs.sendMessage(details.tabId, {type: 'resend-product'});
+    }
+  }, {
+    urls: [
+      '*://*.walmart.com/*',
+      '*://*.homedepot.com/*',
+    ],
+    types: ['sub_frame'],
+  });
+
   // Make sure the store is loaded before we check prices.
   await store.dispatch(loadStateFromStorage());
 
