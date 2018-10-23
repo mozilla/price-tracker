@@ -11,6 +11,8 @@
 
 import uuidv4 from 'uuid/v4';
 
+import {getOldestPriceForProduct} from 'commerce/state/prices';
+
 /**
  * List of data migrations to run. The order of this list MUST NOT BE MODIFIED!
  * Add new migrations to the end of the list.
@@ -51,6 +53,22 @@ const MIGRATIONS = [
         ...product,
         anonId: uuidv4(),
       })),
+    };
+  },
+
+  /**
+   * Set high prices for existing alerts as the original price.
+   */
+  function addHighPriceAmount(state) {
+    return {
+      ...state,
+      priceAlerts: state.priceAlerts.map((alert) => {
+        const oldestPrice = getOldestPriceForProduct(state, alert.productId);
+        return {
+          ...alert,
+          highPriceAmount: oldestPrice.amount.getAmount(),
+        };
+      }),
     };
   },
 ];
