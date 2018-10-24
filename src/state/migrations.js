@@ -71,6 +71,16 @@ const MIGRATIONS = [
       }),
     };
   },
+
+  function removeVendorFaviconUrl(state) {
+    return {
+      ...state,
+      products: state.products.map((product) => {
+        const {vendorFaviconUrl, ...newProduct} = product;
+        return newProduct;
+      }),
+    };
+  },
 ];
 
 // Actions

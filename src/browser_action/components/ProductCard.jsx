@@ -16,6 +16,7 @@ import {
 } from 'commerce/state/prices';
 import {productShape} from 'commerce/state/products';
 import * as productActions from 'commerce/state/products';
+import {getVendor, vendorShape} from 'commerce/state/vendors';
 import {recordEvent} from 'commerce/telemetry/extension';
 
 import 'commerce/browser_action/components/ProductCard.css';
@@ -28,6 +29,7 @@ import 'commerce/browser_action/components/ProductCard.css';
     latestPrice: getLatestPriceForProduct(state, props.product.id),
     originalPrice: getOldestPriceForProduct(state, props.product.id),
     activePriceAlert: getActivePriceAlertForProduct(state, props.product.id),
+    vendor: getVendor(state, props.product.url),
   }),
   {
     setDeletionFlag: productActions.setDeletionFlag,
@@ -44,6 +46,7 @@ export default class ProductCard extends React.Component {
     latestPrice: priceWrapperShape.isRequired,
     originalPrice: priceWrapperShape.isRequired,
     activePriceAlert: priceAlertShape,
+    vendor: vendorShape,
 
     // Dispatch props
     setDeletionFlag: pt.func.isRequired,
@@ -51,6 +54,7 @@ export default class ProductCard extends React.Component {
 
   static defaultProps = {
     activePriceAlert: null,
+    vendor: null,
   }
 
   /**
@@ -89,7 +93,7 @@ export default class ProductCard extends React.Component {
   }
 
   render() {
-    const {activePriceAlert, latestPrice, originalPrice, product} = this.props;
+    const {activePriceAlert, latestPrice, originalPrice, product, vendor} = this.props;
 
     if (product.isDeleted) {
       return (
@@ -131,8 +135,8 @@ export default class ProductCard extends React.Component {
         <h3 className="title" title={product.title}>{product.title}</h3>
 
         <div className="details">
-          {product.vendorFaviconUrl && (
-            <img className="vendor-favicon" src={product.vendorFaviconUrl} alt="" />
+          {vendor && vendor.faviconUrl && (
+            <img className="vendor-favicon" src={vendor.faviconUrl} alt="" />
           )}
           <span
             className={`latest-price ${priceDifference < 0 ? 'price-decrease' : ''}`}

@@ -21,6 +21,7 @@ import {
   showPriceAlert,
 } from 'commerce/state/prices';
 import {getProduct} from 'commerce/state/products';
+import {getVendor} from 'commerce/state/vendors';
 import {recordEvent} from 'commerce/telemetry/extension';
 
 /**
@@ -48,6 +49,8 @@ export function handlePriceAlerts() {
     const product = getProduct(state, alert.productId);
     const originalPrice = getOldestPriceForProduct(state, alert.productId);
     const highPriceAmount = Dinero({amount: alert.highPriceAmount});
+    const vendor = getVendor(state, product.url);
+    const vendorName = vendor ? vendor.name : new URL(product.url).hostname;
 
     // Display notification
     const original = originalPrice.amount.toFormat('$0.00');
@@ -56,7 +59,7 @@ export function handlePriceAlerts() {
     browser.notifications.create(alert.priceId, {
       type: 'basic',
       title: `Price Alert: ${product.title}`,
-      message: `Placeholder · Originally ${original}, high of ${high}, now ${now}`,
+      message: `${vendorName} · Originally ${original}, high of ${high}, now ${now}`,
     });
 
     // Update state now that we've shown it
