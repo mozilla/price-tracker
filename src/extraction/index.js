@@ -70,7 +70,9 @@ async function attemptExtraction() {
   // If we're in an iframe, don't bother extracting a product EXCEPT if we were
   // started by the background script for a price check.
   const isInIframe = window !== window.top;
-  const isBackgroundUpdate = window.location.hash === '#moz-commerce-background';
+  const isBackgroundUpdate = window.top.location.href.startsWith(
+    browser.runtime.getURL('/'), // URL is unique per-install / hard to forge
+  );
   if (isInIframe && !isBackgroundUpdate) {
     return;
   }
