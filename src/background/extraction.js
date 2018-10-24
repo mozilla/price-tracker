@@ -21,13 +21,7 @@ import {validatePropType} from 'commerce/utils';
  * @param {MessageSender} sender
  *  The sender for the content script that extracted this product
  */
-export async function handleExtractedProductData(message, sender) {
-  // Fetch the favicon, which the content script cannot do itself.
-  const extractedProduct = {
-    ...message.extractedProduct,
-    vendorFaviconUrl: sender.tab ? sender.tab.favIconUrl : '',
-  };
-
+export async function handleExtractedProductData({extractedProduct}, sender) {
   // Do nothing if the extracted product is missing fields.
   const result = validatePropType(extractedProduct, extractedProductShape);
   if (result !== undefined) {
