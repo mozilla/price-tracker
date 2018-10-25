@@ -104,24 +104,11 @@ export default class RulesetFactory {
    */
   isAboveTheFold(fnode, featureCoeff) {
     const viewportHeight = window.innerHeight;
-    const top = fnode.element.getBoundingClientRect().top;
-    const upperHeightLimit = viewportHeight * 2;
+    const imageTop = fnode.element.getBoundingClientRect().top;
 
-    // If the node is below the fold by more than a viewport's length,
-    // return a low score.
-    if (top >= upperHeightLimit) {
-      return ZEROISH * featureCoeff;
-    }
-
-    // If the node is above the fold, return a high score.
-    if (top <= viewportHeight) {
-      return ONEISH * featureCoeff;
-    }
-
-    // Otherwise, scale the score linearly between the fold and a viewport's
-    // length below it.
-    const slope = (ONEISH - ZEROISH) / (viewportHeight - upperHeightLimit);
-    return (slope * (top - upperHeightLimit) + ZEROISH) * featureCoeff;
+    // Stop giving additional bonus for anything closer than 200px to the top
+    // of the viewport. Those are probably usually headers.
+    return trapezoid(imageTop, viewportHeight * 2, 200) ** featureCoeff;
   }
 
   /**
@@ -333,4 +320,31 @@ export default class RulesetFactory {
   getHighestScoringImage(fnode) {
     return fnode._ruleset.get('image')[0].element; // eslint-disable-line no-underscore-dangle
   }
+}
+
+/**
+ * Scale a number to the range [ZEROISH, ONEISH].
+ *
+ * For a rising trapezoid, the result is ZEROISH until the input reaches
+ * zeroAt, then increases linearly until oneAt, at which it becomes ONEISH. To
+ * make a falling trapezoid, where the result is ONEISH to the left and ZEROISH
+ * to the right, use a zeroAt greater than oneAt.
+ */
+function trapezoid(number, zeroAt, oneAt) {
+    const isRising = zeroAt < oneAt;
+    if (isRising) {
+        if (number <= zeroAt) {
+            return ZEROISH;
+        } else if (number >= oneAt) {
+            return ONEISH;
+        }
+    } else {
+        if (number >= zeroAt) {
+            return ZEROISH;
+        } else if (number <= oneAt) {
+            return ONEISH;
+        }
+    }
+    const slope = (ONEISH - ZEROISH) / (oneAt - zeroAt);
+    return slope * (number - zeroAt) + ZEROISH;
 }
