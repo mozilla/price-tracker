@@ -8,5 +8,6 @@
   "isNearbyImageXAxisPriceCoeff": 5,
   "isNearbyImageYAxisTitleCoeff": 5,
   "largerFontSizeCoeff": 7,
-  "largerImageCoeff": 2
+  "largerImageCoeff": 2,
+  "isChildOfCartClassedNodeCoeff": 0.8
 }

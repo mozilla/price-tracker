@@ -34,6 +34,7 @@ export default class RulesetFactory {
       this.isNearbyImageYAxisTitleCoeff,
       this.largerFontSizeCoeff,
       this.largerImageCoeff,
+      this.isChildOfCartClassedNodeCoeff,
     ] = coefficients;
   }
 
@@ -170,6 +171,27 @@ export default class RulesetFactory {
   }
 
   /**
+   * Score based on whether the node has a parent element with a class name
+   * starting with the word "cart". Helps avoid products in shopping carts.
+   */
+  isChildOfCartClassedNode(fnode) {
+    let cartParentCount = 0;
+    let element = fnode.element;
+    for (let k = 0; (k < 8) && element && element.className; k++) {
+      if (element.className.includes('cart')) {
+        cartParentCount++;
+      }
+      element = element.parentNode;
+    }
+
+    if (cartParentCount > 0) {
+      return cartParentCount * this.isChildOfCartClassedNodeCoeff;
+    }
+
+    return DEFAULT_SCORE;
+  }
+
+  /**
    * Scores fnode whose innerText matches a priceish RegExp pattern
    */
   hasPriceishPattern(fnode) {
@@ -279,6 +301,8 @@ export default class RulesetFactory {
       rule(type('imageish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldImageCoeff))),
       // better score for larger images
       rule(type('imageish'), score(this.largerImage.bind(this))),
+      // worse score for being inside a shopping cart
+      rule(type('imageish'), score(this.isChildOfCartClassedNode.bind(this))),
       // return image element(s) with max score
       rule(type('imageish').max(), out('image')),
 
@@ -289,6 +313,8 @@ export default class RulesetFactory {
       rule(dom('h1').when(this.isEligibleTitle.bind(this)), type('titleish')),
       // better score based on y-axis proximity to max scoring image element
       rule(type('titleish'), score(this.isNearbyImageYAxisTitle.bind(this))),
+      // worse score for being inside a shopping cart
+      rule(type('titleish'), score(this.isChildOfCartClassedNode.bind(this))),
       // return title element(s) with max score
       rule(type('titleish').max(), out('title')),
 
@@ -311,6 +337,8 @@ export default class RulesetFactory {
       rule(type('priceish'), score(this.isNearbyImageXAxisPrice.bind(this))),
       // check if innerText has a priceish pattern
       rule(type('priceish'), score(this.hasPriceishPattern.bind(this))),
+      // worse score for being inside a shopping cart
+      rule(type('priceish'), score(this.isChildOfCartClassedNode.bind(this))),
       // return price element(s) with max score
       rule(type('priceish').max(), out('price')),
     );
