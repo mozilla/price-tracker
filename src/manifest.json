@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Price Scout",
+  "name": "Price Wise",
   "version": "$version",
   "description": "",
   "applications": {
@@ -22,7 +22,7 @@
       "16": "img/shopping_list.svg",
       "32": "img/shopping_list.svg"
     },
-    "default_title": "Price Scout",
+    "default_title": "Price Wise",
     "default_popup": "browser_action/index.html"
   },
   "permissions": [
