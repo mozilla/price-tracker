@@ -184,7 +184,7 @@ export default class RulesetFactory {
      * a decimal point and exactly two after, where the two digits after the decimal point
      * are at the end of the string
      */
-    const regExp = /\${0,1}\d+\.\d{2}$/;
+    const regExp = /\$?\d+\.\d{2}$/;
     if (regExp.test(text)) {
       return this.hasPriceishPatternCoeff;
     }
