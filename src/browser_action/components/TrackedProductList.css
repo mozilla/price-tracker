@@ -9,9 +9,16 @@
 }
 
 .product-list {
-  margin: 0;
-  padding: 0;
   list-style-type: none;
+  margin: 0;
+
+  /*
+    max popup height - (titlebar height + track button height) = max list height
+    600px - (42px + 36px) = 522px
+   */
+  max-height: 522px;
+  overflow-y: auto;
+  padding: 0;
 }
 
 .product-list .product-list-item {
