@@ -34,7 +34,7 @@ export default class RulesetFactory {
       this.isNearbyImageYAxisTitleCoeff,
       this.largerFontSizeCoeff,
       this.largerImageCoeff,
-    ] = coefficients;
+    ] = [0, 0, 0, 0, coefficients[0], 0, 0, 0, 0, coefficients[1]];
   }
 
   /**
@@ -42,11 +42,14 @@ export default class RulesetFactory {
    */
   largerImage(fnode) {
     const domRect = fnode.element.getBoundingClientRect();
-    const area = (domRect.width) * (domRect.height);
-    if (area === 0) {
-      return DEFAULT_SCORE;
-    }
-    return area * this.largerImageCoeff;
+    const area = domRect.width * domRect.height;
+
+    // Assume no product images as small as 80px^2. No further bonus over
+    // 1000^2. For one thing, that's getting into background image territory
+    // (though we should have distinct penalties for that sort of thing if we
+    // care). More importantly, clamp the upper bound of the score so we don't
+    // overcome other bonuses and penalties.
+    return trapezoid(area, 80 ** 2, 1000 ** 2) ** this.largerImageCoeff;
   }
 
   /**
