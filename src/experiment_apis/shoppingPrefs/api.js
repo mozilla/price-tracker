@@ -6,7 +6,7 @@
 this.shoppingPrefs = class extends ExtensionAPI {
   getAPI() {
     const {Services} = ChromeUtils.import('resource://gre/modules/Services.jsm', {});
-    const branch = Services.prefs.getBranch('extensions.shopping@mozilla.org.');
+    const branch = Services.prefs.getBranch('extensions.shopping-testpilot@mozilla.org.');
     return {
       shoppingPrefs: {
         async getBoolPref(prefName, defaultValue) {
