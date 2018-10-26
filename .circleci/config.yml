@@ -47,7 +47,7 @@ jobs:
       - run:
           name: Store XPI name in environment variable
           command: |
-            echo 'export XPI_NAME=firefox_shopping-${CIRCLE_TAG:1}' >> $BASH_ENV
+            echo 'export XPI_NAME=price_wise-${CIRCLE_TAG:1}' >> $BASH_ENV
       - run:
           name: Install dependencies
           command: |
