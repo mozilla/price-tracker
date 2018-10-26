@@ -9,7 +9,7 @@ set -e
 
 ADDON_ID="shopping-testpilot@mozilla.org"
 ADDON_VERSION=${CIRCLE_TAG:1}
-ADDON_FILE="web-ext-artifacts/firefox_shopping-${ADDON_VERSION}-signed.xpi"
+ADDON_FILE="web-ext-artifacts/price_wise-${ADDON_VERSION}-signed.xpi"
 test -f $ADDON_FILE
 
 MAX_AGE=30 # We can up this at some point, but keeping it low while we work out the kinks
