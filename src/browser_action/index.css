@@ -15,11 +15,12 @@ body {
   font: message-box;
   font-size: 13px;
   margin: 0;
+  max-height: 600px;
   padding: 0;
 }
 
 #browser-action-app {
-  width: 320px;
+  min-width: 320px;
 }
 
 /** Links */
