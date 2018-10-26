@@ -16,6 +16,7 @@ body {
   font-size: 13px;
   margin: 0;
   max-height: 600px;
+  overflow: auto;
   padding: 0;
 }
 
