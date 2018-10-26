@@ -1,6 +1,6 @@
-# Price Scout
+# Price Wise
 
-Price Scout is a Firefox extension that tracks price changes to help you find the best time to buy.
+Price Wise is a Firefox extension that tracks price changes to help you find the best time to buy.
 
 ## Developer Setup
 
@@ -11,8 +11,8 @@ Prerequisites:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/mozilla/price-scout.git
-   cd price-scout
+   git clone https://github.com/mozilla/price-wise.git
+   cd price-wise
    ```
 2. Install dependencies:
 
@@ -50,7 +50,7 @@ With these installed, you can set up the test suite:
 2. Save the path to your Firefox binary with `npm`:
 
    ```sh
-   npm config set price-scout:firefox_bin <PATH_TO_FIREFOX_BINARY>
+   npm config set price-wise:firefox_bin <PATH_TO_FIREFOX_BINARY>
    ```
 
 After this, you can run `pipenv run test` to run the automated test suite.
