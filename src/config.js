@@ -6,7 +6,7 @@
 /**
  * Config values that are shared between files or otherwise useful to have in
  * a separate file. Config values can be overridden by setting a pref at the
- * subtree extensions.shopping@mozilla.org.prefName.
+ * subtree extensions.shopping-testpilot@mozilla.org.prefName.
  *
  * Content scripts cannot access the preference API, and thus cannot use this
  * module to get config values. Use commerce/config/content instead to use
