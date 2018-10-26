@@ -34,7 +34,7 @@ export default class RulesetFactory {
       this.isNearbyImageYAxisTitleCoeff,
       this.largerFontSizeCoeff,
       this.largerImageCoeff,
-    ] = [0, 0, 0, 0, coefficients[0], 0, 0, 0, 0, coefficients[1]];
+    ] = coefficients;
   }
 
   /**
@@ -140,23 +140,27 @@ export default class RulesetFactory {
   }
 
   /**
-   * Scores fnode based on its y distance from the highest scoring image element
+   * Return whether the potential title is near the top or bottom of the
+   * highest-scoring image.
+   *
+   * This is a makeshift ORing 2 signals: a "near the top" and a "near the
+   * bottom" one.
    */
-  isNearbyImageYAxisTitle(fnode) {
-    const viewportHeight = window.innerHeight;
-    const DOMRect = fnode.element.getBoundingClientRect();
-    const imageElement = this.getHighestScoringImage(fnode);
-    const imageDOMRect = imageElement.getBoundingClientRect();
-    // Some titles (like on Ebay) are above the image, so include a top buffer
-    const isEleTopNearby = DOMRect.top >= (imageDOMRect.top - TOP_BUFFER);
-    const isEleBottomNearby = DOMRect.bottom <= imageDOMRect.bottom;
-    // Give elements in a specific vertical band a higher score
-    if (isEleTopNearby && isEleBottomNearby) {
-      const deltaY = Math.abs(imageDOMRect.top - DOMRect.top);
-      // Give a higher score the closer it is to the image, normalized by viewportHeight
-      return (viewportHeight / deltaY) * this.isNearbyImageYAxisTitleCoeff;
-    }
-    return DEFAULT_SCORE;
+  isNearImageTopOrBottom(fnode) {
+    const image = this.getHighestScoringImage(fnode);
+    const imageRect = image.getBoundingClientRect();
+    const nodeRect = fnode.element.getBoundingClientRect();
+
+    // Should cover title above image and title in a column next to image.
+    // Could also consider using the y-axis midpoint of title.
+    const topDistance = Math.abs(imageRect.top - nodeRect.top);
+
+    // Test nodeRect.top. They're probably not side by side with the title at
+    // the bottom. Rather, title will be below image.
+    const bottomDistance = Math.abs(imageRect.bottom - nodeRect.top);
+
+    const shortestDistance = Math.min(topDistance, bottomDistance);
+    return trapezoid(shortestDistance, 200, 0) ** this.isNearbyImageYAxisTitleCoeff;
   }
 
   /**
@@ -278,7 +282,7 @@ export default class RulesetFactory {
       // consider all eligible h1 elements
       rule(dom('h1').when(this.isEligibleTitle.bind(this)), type('titleish')),
       // better score based on y-axis proximity to max scoring image element
-      rule(type('titleish'), score(this.isNearbyImageYAxisTitle.bind(this))),
+      rule(type('titleish'), score(this.isNearImageTopOrBottom.bind(this))),
       // return title element(s) with max score
       rule(type('titleish').max(), out('title')),
 
