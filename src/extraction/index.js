@@ -70,9 +70,15 @@ async function attemptExtraction() {
   // If we're in an iframe, don't bother extracting a product EXCEPT if we were
   // started by the background script for a price check.
   const isInIframe = window !== window.top;
-  const isBackgroundUpdate = window.top.location.href.startsWith(
-    browser.runtime.getURL('/'), // URL is unique per-install / hard to forge
-  );
+  let isBackgroundUpdate = false;
+  try {
+    isBackgroundUpdate = window.top.location.href.startsWith(
+      browser.runtime.getURL('/'), // URL is unique per-install / hard to forge
+    );
+  } catch (err) {
+    // Non-background updates may throw a cross-origin error
+  }
+
   if (isInIframe && !isBackgroundUpdate) {
     return;
   }
