@@ -9,7 +9,7 @@
   cursor: pointer;
   display: grid;
   gap: 8px;
-  grid-template-columns: 20px auto 64px;
+  grid-template-columns: 20px minmax(204px, 284px) 64px;
   grid-template-rows: auto 20px;
   height: 88px;
   overflow: hidden;
