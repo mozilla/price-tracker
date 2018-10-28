@@ -109,10 +109,10 @@ async function attemptExtraction() {
     extractedProduct = await attemptExtraction();
   });
 
-  // Re-send the extracted product to the background script if requested
-  browser.runtime.onMessage.addListener(async (message) => {
-    if (message.type === 'resend-product' && extractedProduct) {
-      await sendProductToBackground(extractedProduct);
-    }
-  });
+  // Messy workaround for bug 1493470: Resend product info to the background
+  // script twice in case subframe loads clear the toolbar icon.
+  // TODO(osmose): Remove once Firefox 64 hits the release channel.
+  const resend = () => sendProductToBackground(extractedProduct);
+  setTimeout(resend, 5000);
+  setTimeout(resend, 10000);
 }());
