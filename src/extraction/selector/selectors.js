@@ -6,9 +6,17 @@ import {parsePrice} from 'commerce/extraction/utils';
 
 function inUnits(fn) {
   return (element) => {
-    const priceString = fn(element);
-    return parsePrice([priceString]);
+    let tokens = fn(element);
+    if (!Array.isArray(tokens)) {
+      tokens = [tokens];
+    }
+
+    return parsePrice(tokens);
   };
+}
+
+function fromChildrenText() {
+  return (element => Array.from(element.childNodes).map(node => node.textContent));
 }
 
 function fromProperty(property) {
@@ -33,15 +41,15 @@ const fallbackExtractionData = [
         ['.product-title', fromProperty('innerText')],
       ],
       price: [
-        ['#priceblock_dealprice', inUnits(fromProperty('innerText'))],
-        ['#priceblock_ourprice', inUnits(fromProperty('innerText'))],
-        ['#price_inside_buybox', inUnits(fromProperty('innerText'))],
-        ['#buybox .a-color-price', inUnits(fromProperty('innerText'))],
+        ['#priceblock_dealprice', inUnits(fromChildrenText())],
+        ['#priceblock_ourprice', inUnits(fromChildrenText())],
+        ['#price_inside_buybox', inUnits(fromChildrenText())],
+        ['#buybox .a-color-price', inUnits(fromChildrenText())],
         ['input[name="displayedPrice"]', inUnits(fromAttribute('value'))],
-        ['.a-size-large.a-color-price.guild_priceblock_ourprice', inUnits(fromProperty('innerText'))],
-        ['.a-color-price.a-size-medium.a-align-bottom', inUnits(fromProperty('innerText'))],
-        ['.display-price', inUnits(fromProperty('innerText'))],
-        ['.offer-price', inUnits(fromProperty('innerText'))],
+        ['.a-size-large.a-color-price.guild_priceblock_ourprice', inUnits(fromChildrenText())],
+        ['.a-color-price.a-size-medium.a-align-bottom', inUnits(fromChildrenText())],
+        ['.display-price', inUnits(fromChildrenText())],
+        ['.offer-price', inUnits(fromChildrenText())],
       ],
       image: [
         ['#landingImage', fromProperty('src')],
@@ -57,7 +65,7 @@ const fallbackExtractionData = [
         ['.sku-title h1', fromProperty('innerText')],
       ],
       price: [
-        ['.priceView-hero-price.priceView-purchase-price', inUnits(fromProperty('innerText'))],
+        ['.priceView-hero-price.priceView-purchase-price', inUnits(fromChildrenText())],
       ],
       image: [
         ['img.primary-image', fromProperty('src')],
@@ -72,10 +80,10 @@ const fallbackExtractionData = [
         ['.product-title', fromProperty('innerText')],
       ],
       price: [
-        ['#prcIsum', inUnits(fromProperty('innerText'))],
-        ['#orgPrc', inUnits(fromProperty('innerText'))],
-        ['#mm-saleDscPrc', inUnits(fromProperty('innerText'))],
-        ['.display-price', inUnits(fromProperty('innerText'))],
+        ['#prcIsum', inUnits(fromChildrenText())],
+        ['#orgPrc', inUnits(fromChildrenText())],
+        ['#mm-saleDscPrc', inUnits(fromChildrenText())],
+        ['.display-price', inUnits(fromChildrenText())],
       ],
       image: [
         ['#icImg', fromProperty('src')],
@@ -91,7 +99,7 @@ const fallbackExtractionData = [
       ],
       price: [
         ['#ajaxPrice', inUnits(fromAttribute('content'))],
-        ['#ajaxPriceAlt', inUnits(fromProperty('innerText'))],
+        ['#ajaxPriceAlt', inUnits(fromChildrenText())],
       ],
       image: [
         ['#mainImage', fromProperty('src')],
@@ -106,9 +114,9 @@ const fallbackExtractionData = [
         ['h1.prod-ProductTitle', fromProperty('innerText')],
       ],
       price: [
-        ['.PriceRange.prod-PriceHero', inUnits(fromProperty('innerText'))],
+        ['.PriceRange.prod-PriceHero', inUnits(fromChildrenText())],
         ['.price-group', inUnits(fromAttribute('aria-label'))],
-        ['.price-group', inUnits(fromProperty('innerText'))],
+        ['.price-group', inUnits(fromChildrenText())],
       ],
       image: [
         ['.prod-hero-image-image', fromProperty('src')],
@@ -123,7 +131,7 @@ const fallbackExtractionData = [
         ['#title', fromProperty('innerText')],
       ],
       price: [
-        ['#price', inUnits(fromProperty('innerText'))],
+        ['#price', inUnits(fromChildrenText())],
       ],
       image: [
         ['img', fromProperty('src')],
