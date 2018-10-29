@@ -58,3 +58,17 @@ export async function handleExtractedProductData({extractedProduct}, sender) {
   // Update saved product data if it exists
   updateProductWithExtracted(extractedProduct);
 }
+
+/**
+ * Resets the browser action and re-triggers extraction when the History API is
+ * used to change a tab's URL.
+ * @param {object} details
+ */
+export async function handleHistoryStateUpdated({tabId}) {
+  if (tabId) {
+    browser.browserAction.setPopup({popup: null, tabId});
+    browser.browserAction.setBadgeBackgroundColor({color: null, tabId});
+    browser.browserAction.setBadgeText({text: null, tabId});
+    await browser.tabs.sendMessage(tabId, {type: 'reextract-product'});
+  }
+}
