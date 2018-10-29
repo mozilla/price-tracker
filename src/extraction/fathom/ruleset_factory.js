@@ -139,21 +139,17 @@ export default class RulesetFactory {
   }
 
   /**
-   * Scores fnode whose innerText matches a priceish RegExp pattern
+   * Return whether the fnode's innertext contains a dollars-and-cents number.
    */
   hasPriceishPattern(fnode) {
     const text = fnode.element.innerText;
     /**
      * With an optional '$' that doesn't necessarily have to be at the beginning
      * of the string (ex: 'US $5.00' on Ebay), matches any number of digits before
-     * a decimal point and exactly two after, where the two digits after the decimal point
-     * are at the end of the string
+     * a decimal point and exactly two after.
      */
-    const regExp = /\$?\d+\.\d{2}$/;
-    if (regExp.test(text)) {
-      return this.hasPriceishPatternCoeff;
-    }
-    return DEFAULT_SCORE;
+    const regExp = /\$?\d+\.\d{2}(?![0-9])/;
+    return (regExp.test(text) ? ONEISH : ZEROISH) ** this.hasPriceishPatternCoeff;
   }
 
   /**
