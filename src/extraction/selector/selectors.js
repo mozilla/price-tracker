@@ -55,6 +55,7 @@ const fallbackExtractionData = [
         ['#landingImage', fromProperty('src')],
         ['#imgBlkFront', fromProperty('src')],
         ['#ebooksImgBlkFront', fromProperty('src')],
+        ['#main-image-container img', fromProperty('src')],
       ],
     },
   },
