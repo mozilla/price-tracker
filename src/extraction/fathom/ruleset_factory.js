@@ -26,7 +26,9 @@ export default class RulesetFactory {
     [
       this.hasDollarSignCoeff,
       this.hasPriceInClassNameCoeff,
+      this.hasPriceInParentClassNameCoeff,
       this.hasPriceInIDCoeff,
+      this.hasPriceInParentIDCoeff,
       this.hasPriceishPatternCoeff,
       this.isAboveTheFoldImageCoeff,
       this.isAboveTheFoldPriceCoeff,
@@ -66,40 +68,33 @@ export default class RulesetFactory {
    * Scores fnode with a '$' in its innerText
    */
   hasDollarSign(fnode) {
-    if (fnode.element.innerText.includes('$')) {
-      return this.hasDollarSignCoeff;
-    }
-    return DEFAULT_SCORE;
+    return (fnode.element.innerText.includes('$') ? ONEISH : ZEROISH) ** this.hasDollarSignCoeff;
+  }
+
+  /** Return a confidence of whether "price" is a word within a given string. */
+  hasPriceIn(haystack, needle, coeff) {
+    return (element.id.toLowerCase().includes('price') ? ONEISH : ZEROISH) ** coeff;
   }
 
   /**
-   * Scores fnode with 'price' in its id or its parent's id
+   * Scores fnode with 'price' in its id
    */
   hasPriceInID(fnode) {
-    const id = fnode.element.id;
-    const parentID = fnode.element.parentElement.id;
-    if (id.toLowerCase().includes('price')) {
-      return this.hasPriceInIDCoeff;
-    }
-    if (parentID.toLowerCase().includes('price')) {
-      return 0.75 * this.hasPriceInIDCoeff;
-    }
-    return DEFAULT_SCORE;
+    return this.hasPriceIn(fnode.element.id, 'price', this.hasPriceInIDCoeff);
   }
 
-  /**
-   * Scores fnode with 'price' in its class name or its parent's class name
-   */
+  hasPriceInParentID(fnode) {
+    return this.hasPriceIn(fnode.element.parentElement.id, 'price', this.hasPriceInParentIDCoeff);
+  }
+
+  /** Scores fnode with 'price' in its class name */
   hasPriceInClassName(fnode) {
-    const className = fnode.element.className;
-    const parentClassName = fnode.element.parentElement.className;
-    if (className.toLowerCase().includes('price')) {
-      return this.hasPriceInClassNameCoeff;
-    }
-    if (parentClassName.toLowerCase().includes('price')) {
-      return 0.75 * this.hasPriceInClassNameCoeff;
-    }
-    return DEFAULT_SCORE;
+    return self.hasPriceIn(fnode.element.className, 'price', this.hasPriceInClassNameCoeff);
+  }
+
+  /** Scores fnode with 'price' in its class name */
+  hasPriceInParentClassName(fnode) {
+    return self.hasPriceIn(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
   }
 
   /**
@@ -297,8 +292,10 @@ export default class RulesetFactory {
       rule(type('priceish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldPriceCoeff))),
       // check if the id has "price" in it
       rule(type('priceish'), score(this.hasPriceInID.bind(this))),
+      rule(type('priceish'), score(this.hasPriceInParentID.bind(this))),
       // check if any class names have "price" in them
       rule(type('priceish'), score(this.hasPriceInClassName.bind(this))),
+      rule(type('priceish'), score(this.hasPriceInParentClassName.bind(this))),
       // better score for larger font size
       rule(type('priceish'), score(this.largerFontSize.bind(this))),
       // better score based on x-axis proximity to max scoring image element

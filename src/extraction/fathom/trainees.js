@@ -17,7 +17,7 @@ import RulesetFactory from './ruleset_factory';
 const trainees = new Map();
 
 const commonRuleset = {
-    coeffs: [7, 1, 18, 19, 2, 20, 4, 7, 6, 2],
+    coeffs: [7, 1, 1, 18, 13, 19, 2, 20, 4, 7, 6, 2],
     viewportSize: {width: 1680, height: 950},
     rulesetMaker: coeffs => (new RulesetFactory(coeffs)).makeRuleset()
 };
