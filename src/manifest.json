@@ -26,7 +26,8 @@
     "default_popup": "browser_action/index.html"
   },
   "permissions": [
-    "<all_urls>",
+    "https://*/*",
+    "http://*/*",
     "tabs",
     "storage",
     "unlimitedStorage",
