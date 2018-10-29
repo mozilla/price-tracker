@@ -56,7 +56,7 @@ export default class RulesetFactory {
 
   /** Return whether a  */
   fontIsBig(fnode) {
-    const size = window.getComputedStyle(fnode.element).fontSize;
+    const size = parseInt(getComputedStyle(fnode.element).fontSize, 10);
     return trapezoid(size, 14, 50) ** this.bigFontCoeff;
   }
 
@@ -69,7 +69,7 @@ export default class RulesetFactory {
 
   /** Return a confidence of whether "price" is a word within a given string. */
   hasPriceIn(haystack, needle, coeff) {
-    return (element.id.toLowerCase().includes('price') ? ONEISH : ZEROISH) ** coeff;
+    return (haystack.toLowerCase().includes(needle) ? ONEISH : ZEROISH) ** coeff;
   }
 
   /**
@@ -85,12 +85,12 @@ export default class RulesetFactory {
 
   /** Scores fnode with 'price' in its class name */
   hasPriceInClassName(fnode) {
-    return self.hasPriceIn(fnode.element.className, 'price', this.hasPriceInClassNameCoeff);
+    return this.hasPriceIn(fnode.element.className, 'price', this.hasPriceInClassNameCoeff);
   }
 
   /** Scores fnode with 'price' in its class name */
   hasPriceInParentClassName(fnode) {
-    return self.hasPriceIn(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
+    return this.hasPriceIn(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
   }
 
   /**
@@ -260,12 +260,14 @@ export default class RulesetFactory {
       /**
       * Price rules
       */
+      // 72% by itself, at [4, 4, 4, 4...]!:
       // consider all eligible span and h2 elements
       rule(dom('span, h2').when(this.isEligiblePrice.bind(this)), type('priceish')),
       // check if the element has a '$' in its innerText
       rule(type('priceish'), score(this.hasDollarSign.bind(this))),
       // better score the closer the element is to the top of the page
       rule(type('priceish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldPriceCoeff))),
+
       // check if the id has "price" in it
       rule(type('priceish'), score(this.hasPriceInID.bind(this))),
       rule(type('priceish'), score(this.hasPriceInParentID.bind(this))),
