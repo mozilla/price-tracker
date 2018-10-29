@@ -7,7 +7,6 @@ import {dom, out, rule, ruleset, score, type} from 'fathom-web';
 // training, replace 'utils' with 'utilsForFrontend'
 import {ancestors} from 'fathom-web/utilsForFrontend';
 
-const DEFAULT_BODY_FONT_SIZE = 14;
 const DEFAULT_SCORE = 1;
 const TOP_BUFFER = 150;
 // From: https://github.com/mozilla/fathom-trainees/blob/master/src/trainees.js
@@ -34,15 +33,15 @@ export default class RulesetFactory {
       this.isAboveTheFoldPriceCoeff,
       this.isNearbyImageXAxisPriceCoeff,
       this.isNearbyImageYAxisTitleCoeff,
-      this.largerFontSizeCoeff,
-      this.largerImageCoeff,
+      this.bigFontCoeff,
+      this.bigImageCoeff,
     ] = coefficients;
   }
 
   /**
    * Scores fnode in direct proportion to its size
    */
-  largerImage(fnode) {
+  imageIsBig(fnode) {
     const domRect = fnode.element.getBoundingClientRect();
     const area = domRect.width * domRect.height;
 
@@ -51,17 +50,13 @@ export default class RulesetFactory {
     // (though we should have distinct penalties for that sort of thing if we
     // care). More importantly, clamp the upper bound of the score so we don't
     // overcome other bonuses and penalties.
-    return trapezoid(area, 80 ** 2, 1000 ** 2) ** this.largerImageCoeff;
+    return trapezoid(area, 80 ** 2, 1000 ** 2) ** this.bigImageCoeff;
   }
 
-  /**
-   * Scores fnode in proportion to its font size
-   */
-  largerFontSize(fnode) {
+  /** Return whether a  */
+  fontIsBig(fnode) {
     const size = window.getComputedStyle(fnode.element).fontSize;
-    // Normalize the multiplier by the default font size
-    const sizeMultiplier = parseFloat(size, 10) / DEFAULT_BODY_FONT_SIZE;
-    return sizeMultiplier * this.largerFontSizeCoeff;
+    return trapezoid(size, 14, 50) ** this.bigFontCoeff;
   }
 
   /**
@@ -267,7 +262,7 @@ export default class RulesetFactory {
       // better score the closer the element is to the top of the page
       rule(type('imageish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldImageCoeff))),
       // better score for larger images
-      rule(type('imageish'), score(this.largerImage.bind(this))),
+      rule(type('imageish'), score(this.imageIsBig.bind(this))),
       // return image element(s) with max score
       rule(type('imageish').max(), out('image')),
 
@@ -297,7 +292,7 @@ export default class RulesetFactory {
       rule(type('priceish'), score(this.hasPriceInClassName.bind(this))),
       rule(type('priceish'), score(this.hasPriceInParentClassName.bind(this))),
       // better score for larger font size
-      rule(type('priceish'), score(this.largerFontSize.bind(this))),
+      rule(type('priceish'), score(this.fontIsBig.bind(this))),
       // better score based on x-axis proximity to max scoring image element
       rule(type('priceish'), score(this.isNearbyImageXAxisPrice.bind(this))),
       // check if innerText has a priceish pattern
