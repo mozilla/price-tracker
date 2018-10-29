@@ -6,6 +6,7 @@ import {dom, out, rule, ruleset, score, type} from 'fathom-web';
 // Since the fathom-trainees add-on currently uses a submodule of Fathom, for
 // training, replace 'utils' with 'utilsForFrontend'
 import {ancestors} from 'fathom-web/utilsForFrontend';
+import {euclidean} from 'fathom-web/clusters';
 
 const DEFAULT_SCORE = 1;
 const TOP_BUFFER = 150;
@@ -31,7 +32,7 @@ export default class RulesetFactory {
       this.hasPriceishPatternCoeff,
       this.isAboveTheFoldImageCoeff,
       this.isAboveTheFoldPriceCoeff,
-      this.isNearbyImageXAxisPriceCoeff,
+      this.isNearImageCoeff,
       this.isNearbyImageYAxisTitleCoeff,
       this.bigFontCoeff,
       this.bigImageCoeff,
@@ -105,28 +106,12 @@ export default class RulesetFactory {
   }
 
   /**
-   * Scores fnode based on its x distance from the highest scoring image element
+   * Return whether the centerpoint of the element is near that of the highest-
+   * scoring image.
    */
-  isNearbyImageXAxisPrice(fnode) {
-    const viewportWidth = window.innerWidth;
-    const eleDOMRect = fnode.element.getBoundingClientRect();
-    const imageElement = this.getHighestScoringImage(fnode);
-    const imageDOMRect = imageElement.getBoundingClientRect();
-    const deltaRight = eleDOMRect.left - imageDOMRect.right;
-    const deltaLeft = imageDOMRect.left - eleDOMRect.right;
-    // True if element is completely to the right or left of the image element
-    const noOverlap = (deltaRight > 0 || deltaLeft > 0);
-    let deltaX;
-    if (noOverlap) {
-      if (deltaRight > 0) {
-        deltaX = deltaRight;
-      } else {
-        deltaX = deltaLeft;
-      }
-      // Give a higher score the closer it is to the image, normalized by viewportWidth
-      return (viewportWidth / deltaX) * this.isNearbyImageXAxisPriceCoeff;
-    }
-    return DEFAULT_SCORE;
+  isNearImage(fnode) {
+    const image = this.getHighestScoringImage(fnode);
+    return trapezoid(euclidean(fnode, image), 1000, 0) ** this.isNearImageCoeff;
   }
 
   /**
@@ -137,7 +122,7 @@ export default class RulesetFactory {
    * bottom" one.
    */
   isNearImageTopOrBottom(fnode) {
-    const image = this.getHighestScoringImage(fnode);
+    const image = this.getHighestScoringImage(fnode).element;
     const imageRect = image.getBoundingClientRect();
     const nodeRect = fnode.element.getBoundingClientRect();
 
@@ -222,7 +207,7 @@ export default class RulesetFactory {
   isNearbyImageYAxisPrice(fnode) {
     const element = fnode.element;
     const DOMRect = element.getBoundingClientRect();
-    const imageElement = this.getHighestScoringImage(fnode);
+    const imageElement = this.getHighestScoringImage(fnode).element;
     const imageDOMRect = imageElement.getBoundingClientRect();
     if (DOMRect.top >= (imageDOMRect.top - TOP_BUFFER)
       && DOMRect.bottom <= imageDOMRect.bottom) {
@@ -294,7 +279,7 @@ export default class RulesetFactory {
       // better score for larger font size
       rule(type('priceish'), score(this.fontIsBig.bind(this))),
       // better score based on x-axis proximity to max scoring image element
-      rule(type('priceish'), score(this.isNearbyImageXAxisPrice.bind(this))),
+      rule(type('priceish'), score(this.isNearImage.bind(this))),
       // check if innerText has a priceish pattern
       rule(type('priceish'), score(this.hasPriceishPattern.bind(this))),
       // return price element(s) with max score
@@ -317,7 +302,7 @@ export default class RulesetFactory {
   }
 
   getHighestScoringImage(fnode) {
-    return fnode._ruleset.get('image')[0].element; // eslint-disable-line no-underscore-dangle
+    return fnode._ruleset.get('image')[0]; // eslint-disable-line no-underscore-dangle
   }
 }
 
