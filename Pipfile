@@ -11,6 +11,7 @@ marionette-client = "*"
 mozdownload = "*"
 mozinstall = "*"
 awscli = "*"
+requests = "*"
 
 [requires]
 python_version = "2.7"
