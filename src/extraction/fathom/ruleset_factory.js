@@ -3,12 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import {dom, out, rule, ruleset, score, type} from 'fathom-web';
-// Since the fathom-trainees add-on currently uses a submodule of Fathom, for
-// training, replace 'utils' with 'utilsForFrontend'
 import {ancestors} from 'fathom-web/utilsForFrontend';
 import {euclidean} from 'fathom-web/clusters';
 
-const DEFAULT_SCORE = 1;
 const TOP_BUFFER = 150;
 // From: https://github.com/mozilla/fathom-trainees/blob/master/src/trainees.js
 const ZEROISH = 0.08;
