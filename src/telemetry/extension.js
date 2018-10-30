@@ -115,6 +115,7 @@ const EVENTS = {
     objects: ['product_page'],
     extra_keys: [
       'price',
+      'price_prev',
       'price_orig',
       'product_key',
       ...DEFAULT_EXTRAS,

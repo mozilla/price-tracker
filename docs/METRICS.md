@@ -3,7 +3,7 @@
 
 # Metrics
 
-A summary of the metrics the Price Alerts extension will record.
+A summary of the metrics the Price Wise extension will record.
 
 
 ## Definitions
@@ -21,7 +21,7 @@ A summary of the metrics the Price Alerts extension will record.
 
 ## Analysis
 
-Data collected by the Price Alerts extension will be used to answer the following questions:
+Data collected by the Price Wise extension will be used to answer the following questions:
 
 Note: For any questions related to general user shopping behavior, the data about what sites users visit is limited to the Supported Sites for the MVP.
 
@@ -84,7 +84,7 @@ While some of these questions may be partially answerable by this extension, ans
 
 We will be sending pings using [Event Telemetry](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html) via the [WebExtensions Telemetry API](https://bugzilla.mozilla.org/show_bug.cgi?id=1280234).
 
-Each event will exist as part of the `main` ping under `payload.processes.dynamic.events` as an array in the `events` array. The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
+Each event will exist as part of the `main` ping under `payload.processes.dynamic.events` as an array in the `events` array (see Appendix B for how to view the events in `about:telemetry`). The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
 
 The telemetry category for events is `'extension.price_alerts'`.
 
@@ -144,6 +144,7 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
 - `'price'`: The price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
 - `'price_alert'`: 'true' if the product has an active Price Alert; otherwise 'false'.
 - `'price_orig'`: The original price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
+- `'price_prev'`: The previous price of the product when different from the latest price (`price`) in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
 - `'product_index'`: The index of the product in the product listing. The top most list item is index '0'. The list is sorted by date added, descending (#113).
 - `'product_key'`: A unique identifier for the product relative to other products for a given user. This key is _not_ unique to the product across all users.
 - `'tracked_prods'`: The number of products the user is tracking.
@@ -152,9 +153,9 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
   - `'best_buy_link'`: Sends the user to Best Buy.
   - `'ebay_link'`: Sends the user to Ebay.
   - `'feedback_button'`: Sends the user to a feedback Survey.
-  - `'help_button'`: Sends the user to a Price Alerts support.mozilla.org page.
+  - `'help_button'`: Sends the user to a Price Wise support.mozilla.org page.
   - `'home_depot_link'`: Sends the user to Home Depot.
-  - `'learn_more_link'`: Sends the user to a Price Alerts support.mozilla.org page.
+  - `'learn_more_link'`: Sends the user to a Price Wise support.mozilla.org page.
   - `'product_card'`: Sends the user to the product page for the given Product Card.
   - `'system_notification'`: Sends the user to the product page for the Price Alert displayed in the notification.
   - `'walmart_link'`: Sends the user to Walmart.
@@ -186,7 +187,7 @@ Fired when the user navigates to a Supported Site.
 
 ### `open_popup`
 
-Fired when the user clicks the Price Alerts browserAction toolbar button to open the popup.
+Fired when the user clicks the Price Wise browserAction toolbar button to open the popup.
 
 #### Payload properties
 - `methods`: String
@@ -303,6 +304,7 @@ Fired whenever a price change (of any magnitude and in any direction) is detecte
 - `extra_keys`: Object
   - `'price'`
   - `'price_orig'`
+  - `'price_prev'`
   - `'product_key'`
   - `'tracked_prods'`
 
@@ -427,3 +429,10 @@ Note: This is a sample ping. The exact value for the extension ID may differ, th
   // ...
 }
 ```
+
+### Appendix B: How to view Price Wise events in `about:telemetry`
+
+1. Navigate to `about:telemetry`.
+2. Click 'Events' in the sidebar menu.
+  - Note: This menu item is not present until an event has been recorded for the current session. If you don't see it, trigger one of the events as described in this document (e.g. `open_popup`) and refresh the page.
+3. On the top right corner of the next page, click 'dynamic' in the dropdown menu.
