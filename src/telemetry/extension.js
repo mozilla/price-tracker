@@ -13,13 +13,22 @@ import {getAllProducts} from 'commerce/state/products';
 
 const CATEGORY = 'extension.price_alerts';
 
+const DEFAULT_EXTRAS = [
+  'tracked_prods',
+  'do_not_track',
+  'privacy_tp',
+  'cookie_config',
+];
+
 const EVENTS = {
   // User Events
   // User visits a supported site
   visit_supported_site: {
     methods: ['visit_supported_site'],
     objects: ['supported_site'],
-    extra_keys: ['tracked_prods'],
+    extra_keys: [
+      ...DEFAULT_EXTRAS,
+    ],
   },
 
   // User clicks toolbar button to open the popup
@@ -28,7 +37,7 @@ const EVENTS = {
     objects: ['toolbar_button'],
     extra_keys: [
       'badge_type',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
   // User clicks on a UI element in the extension opening a page in a new tab
@@ -36,7 +45,7 @@ const EVENTS = {
     methods: ['open_external_page'],
     objects: ['ui_element'],
     extra_keys: [
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
       'element',
       // For 'element' values 'product_card' and 'system_notification' only
       'price',
@@ -54,7 +63,7 @@ const EVENTS = {
     extra_keys: [
       'price',
       'product_key',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
   // User deletes a product from the product listing
@@ -67,7 +76,7 @@ const EVENTS = {
       'price_orig',
       'product_index',
       'product_key',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
   // User undeletes a product from the product listing
@@ -80,7 +89,7 @@ const EVENTS = {
       'price_orig',
       'product_index',
       'product_key',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
   // User uninstalls the extension
@@ -95,7 +104,7 @@ const EVENTS = {
     objects: ['toolbar_button'],
     extra_keys: [
       'badge_type',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
 
@@ -108,7 +117,7 @@ const EVENTS = {
       'price',
       'price_orig',
       'product_key',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
 
@@ -118,7 +127,7 @@ const EVENTS = {
     objects: ['toolbar_button'],
     extra_keys: [
       'badge_type',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
   // System notification is sent notifying user of a price alert
@@ -129,7 +138,7 @@ const EVENTS = {
       'price',
       'price_orig',
       'product_key',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
   // Product extraction is attempted on the content page
@@ -139,7 +148,7 @@ const EVENTS = {
     extra_keys: [
       'extraction_id',
       'is_bg_update',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
   // Product extraction is completed on the content page
@@ -150,7 +159,7 @@ const EVENTS = {
       'extraction_id',
       'is_bg_update',
       'method',
-      'tracked_prods',
+      ...DEFAULT_EXTRAS,
     ],
   },
 };
@@ -168,6 +177,9 @@ export async function recordEvent(method, object, value, extraBase = {}) {
   const extra = {
     ...extraBase,
     tracked_prods: getAllProducts(store.getState()).length,
+    do_not_track: navigator.doNotTrack === '1',
+    privacy_tp: (await browser.privacy.websites.trackingProtectionMode.get({})).value,
+    cookie_config: (await browser.privacy.websites.cookieConfig.get({})).value.behavior,
   };
 
   // Convert all extra key values to strings as required by event telemetry

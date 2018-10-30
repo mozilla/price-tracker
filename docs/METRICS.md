@@ -158,6 +158,16 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
   - `'product_card'`: Sends the user to the product page for the given Product Card.
   - `'system_notification'`: Sends the user to the product page for the Price Alert displayed in the notification.
   - `'walmart_link'`: Sends the user to Walmart.
+- `'do_not_track'`: 'true' if the user has requested not to be tracked by websites, content, or advertising; otherwise 'false'.
+- `'privacy_tp'`: The user's tracking protection setting:
+  - `'always'`: Tracking Protection is on
+  - `'never'`: Tracking Protection is off
+  - `'private_browsing'`: Tracking Protection is on in private browsing windows only
+- `'cookie_config'`: The user's cookie setting:
+  - `'allow_all'`: Accept all cookies
+  - `'reject_all'`: Reject all cookies
+  - `'reject_third_party'`: Reject all third-party cookies
+  - `'allow_visited'`: Accept a third-party cookie only if the cookie's top-level domain already has at least one cookie.
 
 
 ## Collection (User Events)
