@@ -115,4 +115,12 @@ async function attemptExtraction() {
   const resend = () => sendProductToBackground(extractedProduct);
   setTimeout(resend, 5000);
   setTimeout(resend, 10000);
+
+  browser.runtime.onMessage.addListener(async (message) => {
+    // Re-extract the product if requested
+    if (message.type === 'reextract-product') {
+      extractedProduct = await attemptExtraction();
+      await sendProductToBackground(extractedProduct);
+    }
+  });
 }());

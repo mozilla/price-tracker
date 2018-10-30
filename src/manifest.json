@@ -34,7 +34,8 @@
     "privacy",
     "webRequest",
     "webRequestBlocking",
-    "telemetry"
+    "telemetry",
+    "webNavigation"
   ],
   "experiment_apis": {
     "customizableUI": {

@@ -10,6 +10,7 @@
  */
 
 import config from 'commerce/config';
+import {handleHistoryStateUpdated} from 'commerce/background/extraction';
 import {handleConnect, handleMessage} from 'commerce/background/messages';
 import {handleNotificationClicked, handlePriceAlerts} from 'commerce/background/price_alerts';
 import {handleWebRequest, updatePrices} from 'commerce/background/price_updates';
@@ -62,6 +63,15 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
     handleWebRequest,
     webRequestFilter,
     ['blocking', 'responseHeaders'],
+  );
+
+  // Set up listener to trigger re-extraction when a page changes the URL via
+  // the history API.
+  browser.webNavigation.onHistoryStateUpdated.addListener(
+    handleHistoryStateUpdated,
+    {url: [
+      {schemes: ['https', 'http']},
+    ]},
   );
 
   // Make sure the store is loaded before we check prices.
