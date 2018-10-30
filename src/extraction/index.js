@@ -70,9 +70,15 @@ async function attemptExtraction() {
   // If we're in an iframe, don't bother extracting a product EXCEPT if we were
   // started by the background script for a price check.
   const isInIframe = window !== window.top;
-  const isBackgroundUpdate = window.top.location.href.startsWith(
-    browser.runtime.getURL('/'), // URL is unique per-install / hard to forge
-  );
+  let isBackgroundUpdate = false;
+  try {
+    isBackgroundUpdate = window.top.location.href.startsWith(
+      browser.runtime.getURL('/'), // URL is unique per-install / hard to forge
+    );
+  } catch (err) {
+    // Non-background updates may throw a cross-origin error
+  }
+
   if (isInIframe && !isBackgroundUpdate) {
     return;
   }
@@ -103,10 +109,10 @@ async function attemptExtraction() {
     extractedProduct = await attemptExtraction();
   });
 
-  // Re-send the extracted product to the background script if requested
-  browser.runtime.onMessage.addListener(async (message) => {
-    if (message.type === 'resend-product' && extractedProduct) {
-      await sendProductToBackground(extractedProduct);
-    }
-  });
+  // Messy workaround for bug 1493470: Resend product info to the background
+  // script twice in case subframe loads clear the toolbar icon.
+  // TODO(osmose): Remove once Firefox 64 hits the release channel.
+  const resend = () => sendProductToBackground(extractedProduct);
+  setTimeout(resend, 5000);
+  setTimeout(resend, 10000);
 }());
