@@ -10,6 +10,7 @@
     "build": "webpack --config webpack/dev.config.js",
     "build:prod": "webpack --config webpack/prod.config.js",
     "watch": "webpack --watch --config webpack/dev.config.js",
+    "watch:prod": "webpack --watch --config webpack/prod.config.js",
     "package": "web-ext build --source-dir build --overwrite-dest",
     "lint": "bin/run_lints.sh",
     "test": "bin/run_tests.py"
@@ -49,7 +50,6 @@
   },
   "dependencies": {
     "autobind-decorator": "2.1.0",
-    "check-prop-types": "1.1.2",
     "dinero.js": "1.4.0",
     "fathom-web": "2.3.0",
     "lodash.maxby": "4.6.0",

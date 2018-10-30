@@ -39,6 +39,39 @@ export const extractedProductShape = pt.shape({
   date: pt.string.isRequired,
 });
 
+/**
+ * Validate the contents of the given extracted product. This is used in lieu
+ * of proptypes since proptype checks do not work in a production build.
+ * @param {ExtractedProduct} extractedProduct
+ * @return {Boolean}
+ */
+export function isValidExtractedProduct(extractedProduct) {
+  if (typeof extractedProduct.title !== 'string') {
+    return false;
+  }
+
+  if (Number.isNaN(Date.parse(extractedProduct.date))) {
+    return false;
+  }
+
+  if (typeof extractedProduct.price !== 'number') {
+    return false;
+  }
+
+  for (const key of ['url', 'image']) {
+    try {
+      const url = new URL(extractedProduct[key]);
+      if (!['https:', 'http:'].includes(url.protocol)) {
+        return false;
+      }
+    } catch (err) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 
 // Actions
 
