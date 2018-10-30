@@ -45,7 +45,7 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
   // Store the return value globally to avoid destroying it, which would
   // unregister the content scripts.
   window.registeredContentScript = browser.contentScripts.register({
-    matches: ['<all_urls>'],
+    matches: ['https://*/*', 'http://*/*'],
     js: [
       {file: 'extraction.bundle.js'},
     ],
@@ -55,7 +55,7 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
 
   // Set up web request listener to modify framing headers for background updates
   const webRequestFilter = {
-    urls: ['<all_urls>'],
+    urls: ['https://*/*', 'http://*/*'],
     types: ['sub_frame'],
     tabId: browser.tabs.TAB_ID_NONE,
   };
