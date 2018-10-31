@@ -52,6 +52,8 @@ const EVENTS = {
       'price_alert',
       'price_orig',
       'product_key',
+      // For 'element' value of 'system_notification' only
+      'price_last_high',
       // For 'element' value 'product_card' only
       'product_index',
     ],
@@ -137,6 +139,7 @@ const EVENTS = {
     objects: ['system_notification'],
     extra_keys: [
       'price',
+      'price_last_high',
       'price_orig',
       'product_key',
       ...DEFAULT_EXTRAS,

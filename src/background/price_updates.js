@@ -99,7 +99,7 @@ export async function updateProductWithExtracted(data) {
       const updatedState = store.getState();
       const latestPrice = getLatestPriceForProduct(updatedState, id);
       const originalPrice = getOldestPriceForProduct(updatedState, id);
-      recordEvent('detect_price_change', 'product_page', null, {
+      await recordEvent('detect_price_change', 'product_page', null, {
         price: latestPrice.amount.getAmount(),
         price_prev: previousPrice.amount.getAmount(),
         price_orig: originalPrice.amount.getAmount(),

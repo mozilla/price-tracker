@@ -143,6 +143,8 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
 - `method`: The extraction method that was successful, if any. One of: 'fathom', 'fallback' or 'neither'. A value of 'neither' means that extraction failed.
 - `'price'`: The price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
 - `'price_alert'`: 'true' if the product has an active Price Alert; otherwise 'false'.
+- `'price_last_high'`: The last high price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
+  - A high price is, semantically, the price that there's been an interesting drop from to warrant alerting the user. Practically, it is the highest price since the previous price alert.
 - `'price_orig'`: The original price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
 - `'price_prev'`: The previous price of the product when different from the latest price (`price`) in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
 - `'product_index'`: The index of the product in the product listing. The top most list item is index '0'. The list is sorted by date added, descending (#113).
@@ -216,6 +218,8 @@ Fired when the user clicks on a UI element in the extension that opens a page in
     - `'price_alert'`
     - `'price_orig'`
     - `'product_key'`
+  - `'system_notification'` only:
+    - `'price_last_high'`
   - `'product_card'` only:
     - `'product_index'`
 
@@ -313,6 +317,7 @@ Fired whenever a price change (of any magnitude and in any direction) is detecte
 Fired whenever the toolbar is badged in response to:
 1. A successful product extraction or
 2. A Price Alert
+  - Note: For Price Alerts, this event will continue to trigger after the initial Price Alert is shown to the user until the Price Alert is dismissed (per the [UX spec](https://mozilla.invisionapp.com/share/UFNSHAIMT4V#/screens/317130676_Artboard_1) and when a system notification is clicked).
 
 #### Payload properties
 
@@ -336,6 +341,7 @@ Fired whenever a system notification is sent to the user notifying them of a Pri
   - `'system_notification'`
 - `extra_keys`: Object
   - `'price'`
+  - `'price_last_high'`
   - `'price_orig'`
   - `'product_key'`
   - `'tracked_prods'`

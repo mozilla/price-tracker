@@ -42,9 +42,10 @@ function extractProduct() {
   return null;
 }
 
-async function sendProductToBackground(extractedProduct) {
+async function sendProductToBackground(extractedProduct, sendTelemetry) {
   return browser.runtime.sendMessage({
     type: 'extracted-product',
+    sendTelemetry,
     extractedProduct: {
       ...extractedProduct,
       url: document.location.href,
@@ -111,8 +112,9 @@ async function attemptExtraction() {
 
   // Messy workaround for bug 1493470: Resend product info to the background
   // script twice in case subframe loads clear the toolbar icon.
-  // TODO(osmose): Remove once Firefox 64 hits the release channel.
-  const resend = () => sendProductToBackground(extractedProduct);
+  // TODO(osmose): Remove once Firefox 64 hits the release channel, including second argument
+  // to sendProductToBackground.
+  const resend = () => sendProductToBackground(extractedProduct, false);
   setTimeout(resend, 5000);
   setTimeout(resend, 10000);
 

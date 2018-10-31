@@ -10,6 +10,7 @@
 import config from 'commerce/config';
 import {updateProductWithExtracted} from 'commerce/background/price_updates';
 import {isValidExtractedProduct} from 'commerce/state/products';
+import {recordEvent} from 'commerce/telemetry/extension';
 
 /**
  * Triggers background tasks when a product is extracted from a webpage. Along
@@ -20,7 +21,7 @@ import {isValidExtractedProduct} from 'commerce/state/products';
  * @param {MessageSender} sender
  *  The sender for the content script that extracted this product
  */
-export async function handleExtractedProductData({extractedProduct}, sender) {
+export async function handleExtractedProductData({extractedProduct, sendTelemetry = true}, sender) {
   // Do nothing if the extracted product isn't valid.
   if (!isValidExtractedProduct(extractedProduct)) {
     return;
@@ -51,6 +52,11 @@ export async function handleExtractedProductData({extractedProduct}, sender) {
       tabId,
     });
     browser.browserAction.setBadgeText({text: '✚', tabId});
+    if (sendTelemetry) {
+      await recordEvent('badge_toolbar_button', 'toolbar_button', null, {
+        badge_type: 'add',
+      });
+    }
   }
 
   // Update saved product data if it exists
