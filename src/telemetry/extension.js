@@ -11,7 +11,7 @@ import {shouldCollectTelemetry} from 'commerce/privacy';
 import store from 'commerce/state';
 import {getAllProducts} from 'commerce/state/products';
 
-const CATEGORY = 'extension.price_alerts';
+const CATEGORY = 'extension.price_wise';
 
 const DEFAULT_EXTRAS = [
   'tracked_prods',

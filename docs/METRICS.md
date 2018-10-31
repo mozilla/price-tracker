@@ -86,7 +86,7 @@ We will be sending pings using [Event Telemetry](https://firefox-source-docs.moz
 
 Each event will exist as part of the `main` ping under `payload.processes.dynamic.events` as an array in the `events` array (see Appendix B for how to view the events in `about:telemetry`). The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
 
-The telemetry category for events is `'extension.price_alerts'`.
+The telemetry category for events is `'extension.price_wise'`.
 
 Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site` events.
 
@@ -103,7 +103,7 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
         "events": [
           [
             2079,
-            "extension.price_alerts",
+            "extension.price_wise",
             "badge_toolbar_button",
             "toolbar_button",
             null,
@@ -114,7 +114,7 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
           ],
           [
             2081,
-            "extension.price_alerts",
+            "extension.price_wise",
             "visit_supported_site",
             "supported_site",
             null,
