@@ -78,6 +78,10 @@ export default class EmptyOnboarding extends React.Component {
           {' '}<a data-telemetry-id="walmart" href="https://www.walmart.com/">Walmart</a>
           {' '}to your Price Watcher list, and Firefox will notify you if the price drops.
         </p>
+        <p className="description">
+          Price Wise keeps track of your saved products by occasionally loading their webpages in
+          the background while Firefox is open.
+        </p>
         <a data-telemetry-id="learn_more" href={learnMoreHref} className="learn-more">Learn More</a>
         <TrackProductButton className="button" extractedProduct={extractedProduct} />
       </div>
