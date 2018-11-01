@@ -2,8 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import checkPropTypes from 'check-prop-types';
-
 /**
  * Resolves when the amount of time specified by delay has elapsed.
  */
@@ -38,16 +36,4 @@ export async function retry(callback, maxRetries = 5, delayFactor = 2, initialDe
     }
   }
   throw lastError;
-}
-
-/**
- * Wrapper for check-prop-types to check a propType against a single value.
- * @param {*} value Value to validate
- * @param {PropType} propType The Proptype to validate value against
- * @return {string|undefined}
- *  Undefined if the validation was successful, or an error string explaining
- *  why it failed.
- */
-export function validatePropType(value, propType) {
-  return checkPropTypes({value: propType}, {value}, 'prop', 'Validation');
 }

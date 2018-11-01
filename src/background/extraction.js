@@ -9,8 +9,7 @@
 
 import config from 'commerce/config';
 import {updateProductWithExtracted} from 'commerce/background/price_updates';
-import {extractedProductShape} from 'commerce/state/products';
-import {validatePropType} from 'commerce/utils';
+import {isValidExtractedProduct} from 'commerce/state/products';
 
 /**
  * Triggers background tasks when a product is extracted from a webpage. Along
@@ -22,9 +21,8 @@ import {validatePropType} from 'commerce/utils';
  *  The sender for the content script that extracted this product
  */
 export async function handleExtractedProductData({extractedProduct}, sender) {
-  // Do nothing if the extracted product is missing fields.
-  const result = validatePropType(extractedProduct, extractedProductShape);
-  if (result !== undefined) {
+  // Do nothing if the extracted product isn't valid.
+  if (!isValidExtractedProduct(extractedProduct)) {
     return;
   }
 
