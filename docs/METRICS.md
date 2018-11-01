@@ -140,7 +140,7 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
 - `'badge_type'`: Indicates what, if any, badge was present on the browserAction toolbar button. One of 'add', 'price_alert', or 'none'. A value of 'unknown' is possible if the badge text is unrecognized.
 - `'extraction_id'`: A unique identifier to associate an extraction attempt to an extraction completion event for a given page.
 - `'is_bg_update'`: 'true' if the extraction is associated with a background price check; otherwise 'false'.
-- `method`: The extraction method that was successful, if any. One of: 'fathom', 'fallback' or 'neither'. A value of 'neither' means that extraction failed.
+- `method`: The extraction method that was successful, if any. One of: 'fathom', 'css_selectors', 'open_graph' or 'none'. A value of 'none' means that all extraction methods failed.
 - `'price'`: The price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
 - `'price_alert'`: 'true' if the product has an active Price Alert; otherwise 'false'.
 - `'price_last_high'`: The last high price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).

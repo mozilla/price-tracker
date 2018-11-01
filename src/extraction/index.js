@@ -8,9 +8,11 @@
  * been parsed but before all resources have been loaded.
  */
 
+import uuidv4 from 'uuid/v4';
+
 import config from 'commerce/config/content';
 import extractProductWithFathom from 'commerce/extraction/fathom';
-import extractProductWithFallback from 'commerce/extraction/selector';
+import extractProductWithCSSSelectors from 'commerce/extraction/selector';
 import extractProductWithOpenGraph from 'commerce/extraction/open_graph';
 import {shouldExtract} from 'commerce/privacy';
 import recordEvent from 'commerce/telemetry/content';
@@ -20,25 +22,39 @@ import recordEvent from 'commerce/telemetry/content';
  * return either a valid ExtractedProduct, or null if a valid product could not
  * be found.
  */
-const EXTRACTION_METHODS = [
-  extractProductWithFathom,
-  extractProductWithFallback,
-  extractProductWithOpenGraph,
-];
+const EXTRACTION_METHODS = {
+  fathom: extractProductWithFathom,
+  css_selectors: extractProductWithCSSSelectors,
+  open_graph: extractProductWithOpenGraph,
+};
 
 /**
  * Perform product extraction, trying each method from EXTRACTION_METHODS in
  * order until one of them returns a truthy result.
  * @return {ExtractedProduct|null}
  */
-function extractProduct() {
-  for (const extract of EXTRACTION_METHODS) {
+function extractProduct(isBackgroundUpdate) {
+  const baseExtra = {
+    extraction_id: uuidv4(),
+    is_bg_update: isBackgroundUpdate,
+  };
+  recordEvent('attempt_extraction', 'product_page', null, {
+    ...baseExtra,
+  });
+  for (const [method, extract] of Object.entries(EXTRACTION_METHODS)) {
     const extractedProduct = extract(window.document);
     if (extractedProduct) {
+      recordEvent('complete_extraction', 'product_page', null, {
+        ...baseExtra,
+        method,
+      });
       return extractedProduct;
     }
   }
-
+  recordEvent('complete_extraction', 'product_page', null, {
+    ...baseExtra,
+    method: 'none',
+  });
   return null;
 }
 
@@ -58,8 +74,8 @@ async function sendProductToBackground(extractedProduct, sendTelemetry) {
  * Checks to see if any product information for the page was found,
  * and if so, sends it to the background script.
  */
-async function attemptExtraction() {
-  const extractedProduct = extractProduct();
+async function attemptExtraction(isBackgroundUpdate) {
+  const extractedProduct = extractProduct(isBackgroundUpdate);
   if (extractedProduct) {
     await sendProductToBackground(extractedProduct);
   }
@@ -105,9 +121,9 @@ async function attemptExtraction() {
   }
 
   // Extract immediately, and again if the readyState changes.
-  let extractedProduct = await attemptExtraction();
+  let extractedProduct = await attemptExtraction(isBackgroundUpdate);
   document.addEventListener('readystatechange', async () => {
-    extractedProduct = await attemptExtraction();
+    extractedProduct = await attemptExtraction(isBackgroundUpdate);
   });
 
   // Messy workaround for bug 1493470: Resend product info to the background
