@@ -15,9 +15,9 @@ const CATEGORY = 'extension.price_alerts';
 
 const DEFAULT_EXTRAS = [
   'tracked_prods',
-  'do_not_track',
+  'privacy_dnt',
   'privacy_tp',
-  'cookie_config',
+  'privacy_cookie',
 ];
 
 const EVENTS = {
@@ -177,9 +177,9 @@ export async function recordEvent(method, object, value, extraBase = {}) {
   const extra = {
     ...extraBase,
     tracked_prods: getAllProducts(store.getState()).length,
-    do_not_track: navigator.doNotTrack === '1',
+    privacy_dnt: navigator.doNotTrack === '1',
     privacy_tp: (await browser.privacy.websites.trackingProtectionMode.get({})).value,
-    cookie_config: (await browser.privacy.websites.cookieConfig.get({})).value.behavior,
+    privacy_cookie: (await browser.privacy.websites.cookieConfig.get({})).value.behavior,
   };
 
   // Convert all extra key values to strings as required by event telemetry
