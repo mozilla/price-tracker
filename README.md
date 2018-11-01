@@ -69,6 +69,34 @@ After this, you can run `pipenv run test` to run the automated test suite.
 | `npm run package` | Package the extension into an XPI file |
 | `pipenv run test` | Run test suite (See "Running Tests" for setup) |
 
+## Releasing a New Version
+
+Price Wise bumps the major version number for every release, similar to Firefox. Releases are created by tagging a commit that bumps the version number and pushing that tag to the repo. This triggers CircleCI automation that packages, tests, and uploads the new version to the Test Pilot S3 bucket.
+
+It is strongly recommended that developers creating releases [configure Git to
+sign their commits and tags][signing].
+
+To create a new release of Price Wise:
+
+1. Increment the version number in `package.json`, create a new commit on the `master` branch with this change, and create a new git tag pointing to the commit with a name of the form `v1.0.0`, where `1.0.0` is the new version number.
+
+   `npm` ships with a command that can perform these steps for you automatically:
+
+   ```sh
+   npm version major
+   ```
+2. Push the updated `master` branch and the new tag to the remote for the Mozilla Price Wise repository (named `origin` in the example below):
+
+   ```sh
+   git push origin master
+   git push origin v1.0.0
+   ```
+
+You can follow along with the build and upload progress for the new release on the [CircleCI dashboard][]. Once the build finishes, the new version should be available immediately at https://testpilot.firefox.com/files/shopping-testpilot@mozilla.org/latest.
+
+[signing]: https://help.github.com/articles/signing-commits/
+[CircleCI dashboard]: https://circleci.com/dashboard
+
 ## Code Organization
 
 - `src/background` contains the background scripts that trigger UI elements (such as the page action) and periodically check for price updates.
