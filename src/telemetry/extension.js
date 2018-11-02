@@ -92,12 +92,6 @@ const EVENTS = {
       ...DEFAULT_EXTRAS,
     ],
   },
-  // User uninstalls the extension
-  uninstall: {
-    methods: ['uninstall'],
-    objects: ['uninstall'],
-    extra_keys: ['tracked_prods'],
-  },
   // User hides the toolbar button for the extension
   hide_toolbar_button: {
     methods: ['hide_toolbar_button'],
