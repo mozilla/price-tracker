@@ -28,40 +28,72 @@ const EXTRACTION_METHODS = {
   open_graph: extractProductWithOpenGraph,
 };
 
+const IS_BACKGROUND_UPDATE = (function isBackgroundUpdate() {
+  let result = false;
+  try {
+    result = window.top.location.href.startsWith(
+      browser.runtime.getURL('/'), // URL is unique per-install / hard to forge
+    );
+  } catch (err) {
+    // Non-background updates may throw a cross-origin error
+  }
+  return result;
+}());
+
+/**
+ * Helper class to record extraction-related telemetry events.
+ */
+class ExtractionAttempt {
+  constructor() {
+    this.baseExtra = {
+      extraction_id: uuidv4(),
+      is_bg_update: IS_BACKGROUND_UPDATE,
+    };
+  }
+
+  start() {
+    recordEvent('attempt_extraction', 'product_page', null, {
+      ...this.baseExtra,
+    });
+  }
+
+  succeed(methodName) {
+    recordEvent('complete_extraction', 'product_page', null, {
+      ...this.baseExtra,
+      method: methodName,
+    });
+  }
+
+  fail() {
+    recordEvent('complete_extraction', 'product_page', null, {
+      ...this.baseExtra,
+      method: 'none',
+    });
+  }
+}
+
 /**
  * Perform product extraction, trying each method from EXTRACTION_METHODS in
  * order until one of them returns a truthy result.
  * @return {ExtractedProduct|null}
  */
-function extractProduct(isBackgroundUpdate) {
-  const baseExtra = {
-    extraction_id: uuidv4(),
-    is_bg_update: isBackgroundUpdate,
-  };
-  recordEvent('attempt_extraction', 'product_page', null, {
-    ...baseExtra,
-  });
-  for (const [method, extract] of Object.entries(EXTRACTION_METHODS)) {
+function extractProduct() {
+  const attempt = new ExtractionAttempt();
+  attempt.start();
+  for (const [methodName, extract] of Object.entries(EXTRACTION_METHODS)) {
     const extractedProduct = extract(window.document);
     if (extractedProduct) {
-      recordEvent('complete_extraction', 'product_page', null, {
-        ...baseExtra,
-        method,
-      });
+      attempt.succeed(methodName);
       return extractedProduct;
     }
   }
-  recordEvent('complete_extraction', 'product_page', null, {
-    ...baseExtra,
-    method: 'none',
-  });
+  attempt.fail();
   return null;
 }
 
-async function sendProductToBackground(extractedProduct, sendTelemetry) {
+async function sendProductToBackground(extractedProduct) {
   return browser.runtime.sendMessage({
     type: 'extracted-product',
-    sendTelemetry,
     extractedProduct: {
       ...extractedProduct,
       url: document.location.href,
@@ -74,8 +106,8 @@ async function sendProductToBackground(extractedProduct, sendTelemetry) {
  * Checks to see if any product information for the page was found,
  * and if so, sends it to the background script.
  */
-async function attemptExtraction(isBackgroundUpdate) {
-  const extractedProduct = extractProduct(isBackgroundUpdate);
+async function attemptExtraction() {
+  const extractedProduct = extractProduct();
   if (extractedProduct) {
     await sendProductToBackground(extractedProduct);
   }
@@ -87,16 +119,8 @@ async function attemptExtraction(isBackgroundUpdate) {
   // If we're in an iframe, don't bother extracting a product EXCEPT if we were
   // started by the background script for a price check.
   const isInIframe = window !== window.top;
-  let isBackgroundUpdate = false;
-  try {
-    isBackgroundUpdate = window.top.location.href.startsWith(
-      browser.runtime.getURL('/'), // URL is unique per-install / hard to forge
-    );
-  } catch (err) {
-    // Non-background updates may throw a cross-origin error
-  }
 
-  if (isInIframe && !isBackgroundUpdate) {
+  if (isInIframe && !IS_BACKGROUND_UPDATE) {
     return;
   }
 
@@ -111,26 +135,25 @@ async function attemptExtraction(isBackgroundUpdate) {
   const url = new URL(document.location.href);
   const allowList = await config.get('extractionAllowlist');
   const allowAll = allowList.length === 1 && allowList[0] === '*';
-  if (!allowAll && !isBackgroundUpdate && !allowList.includes(url.host)) {
+  if (!allowAll && !IS_BACKGROUND_UPDATE && !allowList.includes(url.host)) {
     return;
   }
 
   // Record visit_supported_site event
-  if (!isBackgroundUpdate) {
+  if (!IS_BACKGROUND_UPDATE) {
     await recordEvent('visit_supported_site', 'supported_site');
   }
 
   // Extract immediately, and again if the readyState changes.
-  let extractedProduct = await attemptExtraction(isBackgroundUpdate);
+  let extractedProduct = await attemptExtraction();
   document.addEventListener('readystatechange', async () => {
-    extractedProduct = await attemptExtraction(isBackgroundUpdate);
+    extractedProduct = await attemptExtraction();
   });
 
   // Messy workaround for bug 1493470: Resend product info to the background
   // script twice in case subframe loads clear the toolbar icon.
-  // TODO(osmose): Remove once Firefox 64 hits the release channel, including second argument
-  // to sendProductToBackground.
-  const resend = () => sendProductToBackground(extractedProduct, false);
+  // TODO(osmose): Remove once Firefox 64 hits the release channel
+  const resend = () => sendProductToBackground(extractedProduct);
   setTimeout(resend, 5000);
   setTimeout(resend, 10000);
 

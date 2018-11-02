@@ -206,6 +206,7 @@ async function getActiveTabId() {
 }
 
 export async function getBadgeType() {
+  // browserAction and background scripts have to use activeTabId as a proxy for the tabId
   const activeTabId = await getActiveTabId();
   const badgeText = await browser.browserAction.getBadgeText(
     activeTabId ? {tabId: activeTabId} : {},
@@ -221,6 +222,19 @@ export async function getBadgeType() {
       console.warn(`Unexpected badge text ${badgeText}.`); // eslint-disable-line no-console
       return 'unknown';
   }
+}
+
+export async function hasBadgeTextChanged(nextText, tabId = null) {
+  // If the nextText contains a digit, we know it's a price alert badge, which only affects
+  // the global badge text.
+  const returnGlobal = (/\d+/.test(nextText));
+  const prevText = await browser.browserAction.getBadgeText(
+    returnGlobal ? {} : {tabId: tabId || await getActiveTabId()},
+  );
+  if (prevText !== nextText) {
+    return true;
+  }
+  return false;
 }
 
 export async function handleWidgetRemoved(widgetId) {

@@ -229,13 +229,9 @@ export function addPriceFromExtracted(data) {
       // Potentially trigger an alert since there's a new price in town.
       dispatch(triggerPriceAlert(price));
 
-      // If this isn't the first price for this product, record detect_price_change event
-      const prices = getPricesForProduct(state, price.productId);
-      if (prices.length >= 1) {
-        return true;
-      }
+      return price;
     }
-    return false;
+    return null;
   };
 }
 

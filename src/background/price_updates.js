@@ -91,16 +91,13 @@ export async function updateProductWithExtracted(data) {
   const id = getProductIdFromExtracted(data);
   const product = getProduct(state, id);
   if (product) {
-    const isPriceChange = await store.dispatch(addPriceFromExtracted(data));
-    if (isPriceChange) {
+    const price = await store.dispatch(addPriceFromExtracted(data));
+    if (price) {
       // Record the detect_price_change event
       const previousPrice = getLatestPriceForProduct(state, id);
-      // Need to refetch state, since we just added a price entry for this product
-      const updatedState = store.getState();
-      const latestPrice = getLatestPriceForProduct(updatedState, id);
-      const originalPrice = getOldestPriceForProduct(updatedState, id);
+      const originalPrice = getOldestPriceForProduct(state, id);
       await recordEvent('detect_price_change', 'product_page', null, {
-        price: latestPrice.amount.getAmount(),
+        price: price.amount,
         price_prev: previousPrice.amount.getAmount(),
         price_orig: originalPrice.amount.getAmount(),
         product_key: product.anonId,
