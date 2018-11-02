@@ -138,6 +138,17 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
 `extra_keys` are keys in the [optional `extra` object field](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format) for telemetry events. All `extra_keys` and their values are strings.
 
 - `'badge_type'`: Indicates what, if any, badge was present on the browserAction toolbar button. One of 'add', 'price_alert', or 'none'. A value of 'unknown' is possible if the badge text is unrecognized.
+- `'dnt_tp_cookie'`: The status of three different privacy settings collapsed into a single, stringified JSON object:
+  - `'dnt'`: 'true' if the user has [requested not to be tracked by websites, content, or advertising](https://support.mozilla.org/en-US/kb/how-do-i-turn-do-not-track-feature); otherwise 'false'.
+  - `'tp'`: The user's [tracking protection](https://support.mozilla.org/en-US/kb/tracking-protection) setting:
+    - `'always'`: Tracking Protection is on
+    - `'never'`: Tracking Protection is off
+    - `'private_browsing'`: Tracking Protection is on in private browsing windows only
+  - `'cookie'`: The user's [cookie setting](https://support.mozilla.org/en-US/kb/disable-third-party-cookies):
+    - `'allow_all'`: Accept all cookies
+    - `'reject_all'`: Reject all cookies
+    - `'reject_third_party'`: Reject all third-party cookies
+    - `'allow_visited'`: Accept a third-party cookie only if the cookie's top-level domain already has at least one cookie.
 - `'extraction_id'`: A unique identifier to associate an extraction attempt to an extraction completion event for a given page.
 - `'is_bg_update'`: 'true' if the extraction is associated with a background price check; otherwise 'false'.
 - `method`: The extraction method that was successful, if any. One of: 'fathom', 'css_selectors', 'open_graph' or 'none'. A value of 'none' means that all extraction methods failed.
@@ -161,16 +172,6 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
   - `'product_card'`: Sends the user to the product page for the given Product Card.
   - `'system_notification'`: Sends the user to the product page for the Price Alert displayed in the notification.
   - `'walmart_link'`: Sends the user to Walmart.
-- `'privacy_dnt'`: 'true' if the user has [requested not to be tracked by websites, content, or advertising](https://support.mozilla.org/en-US/kb/how-do-i-turn-do-not-track-feature); otherwise 'false'.
-- `'privacy_tp'`: The user's [tracking protection](https://support.mozilla.org/en-US/kb/tracking-protection) setting:
-  - `'always'`: Tracking Protection is on
-  - `'never'`: Tracking Protection is off
-  - `'private_browsing'`: Tracking Protection is on in private browsing windows only
-- `'privacy_cookie'`: The user's [cookie setting](https://support.mozilla.org/en-US/kb/disable-third-party-cookies):
-  - `'allow_all'`: Accept all cookies
-  - `'reject_all'`: Reject all cookies
-  - `'reject_third_party'`: Reject all third-party cookies
-  - `'allow_visited'`: Accept a third-party cookie only if the cookie's top-level domain already has at least one cookie.
 
 
 ## Collection (User Events)
