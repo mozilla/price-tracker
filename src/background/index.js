@@ -65,6 +65,18 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
     ['blocking', 'responseHeaders'],
   );
 
+  // Workaround for bug 1493470: Resend product info to the background
+  // script in case subframe loads clear the toolbar icon.
+  // TODO(osmose): Remove once Firefox 64 hits the release channel.
+  browser.webRequest.onCompleted.addListener(
+    (details) => {
+      if (details.tabId) {
+        browser.tabs.sendMessage(details.tabId, {type: 'resend-product'});
+      }
+    },
+    {urls: ['https://*/*', 'http://*/*'], types: ['sub_frame']},
+  );
+
   // Set up listener to trigger re-extraction when a page changes the URL via
   // the history API.
   browser.webNavigation.onHistoryStateUpdated.addListener(

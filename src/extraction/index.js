@@ -89,6 +89,10 @@ function extractProduct() {
 }
 
 async function sendProductToBackground(extractedProduct) {
+  if (!extractedProduct) {
+    return null;
+  }
+
   return browser.runtime.sendMessage({
     type: 'extracted-product',
     extractedProduct: {
@@ -147,17 +151,13 @@ async function attemptExtraction() {
     extractedProduct = await attemptExtraction();
   });
 
-  // Messy workaround for bug 1493470: Resend product info to the background
-  // script twice in case subframe loads clear the toolbar icon.
-  // TODO(osmose): Remove once Firefox 64 hits the release channel
-  const resend = () => sendProductToBackground(extractedProduct);
-  setTimeout(resend, 5000);
-  setTimeout(resend, 10000);
-
   browser.runtime.onMessage.addListener(async (message) => {
-    // Re-extract the product if requested
     if (message.type === 'reextract-product') {
+      // Re-extract the product if requested
       extractedProduct = await attemptExtraction();
+      await sendProductToBackground(extractedProduct);
+    } else if (message.type === 'resend-product') {
+      // Re-send the already-extracted product if requested
       await sendProductToBackground(extractedProduct);
     }
   });
