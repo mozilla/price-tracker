@@ -97,8 +97,7 @@ export async function handleNotificationClicked(notificationId) {
     // Record open_external_page event
     const latestPrice = getLatestPriceForProduct(state, product.id);
     const originalPrice = getOldestPriceForProduct(state, product.id);
-    await recordEvent('open_external_page', 'ui_element', null, {
-      element: 'system_notification',
+    await recordEvent('open_product_page', 'system_notification', null, {
       price: latestPrice.amount.getAmount(),
       price_alert: alert.active,
       price_last_high: alert.highPriceAmount,

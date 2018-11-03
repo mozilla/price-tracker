@@ -63,7 +63,7 @@ export default class ProductCard extends React.Component {
    */
   async handleClick() {
     browser.tabs.create({url: this.props.product.url});
-    await this.recordClickEvent('open_external_page', 'ui_element', {element: 'product_card'});
+    await this.recordClickEvent('open_product_page', 'product_card');
     window.close();
   }
 

@@ -15,7 +15,9 @@ const CATEGORY = 'extension.price_wise';
 
 const DEFAULT_EXTRAS = [
   'tracked_prods',
-  'dnt_tp_cookie',
+  'privacy_dnt',
+  'privacy_tp',
+  'privacy_cookie',
 ];
 
 const EVENTS = {
@@ -38,22 +40,29 @@ const EVENTS = {
       ...DEFAULT_EXTRAS,
     ],
   },
-  // User clicks on a UI element in the extension opening a page in a new tab
-  open_external_page: {
-    methods: ['open_external_page'],
+  // User clicks on a UI element in the extension opening a non-product page in a new tab
+  open_nonproduct_page: {
+    methods: ['open_nonproduct_page'],
     objects: ['ui_element'],
     extra_keys: [
-      ...DEFAULT_EXTRAS,
       'element',
-      // For 'element' values 'product_card' and 'system_notification' only
+      ...DEFAULT_EXTRAS,
+    ],
+  },
+  // User clicks on a UI element in the extension opening a product page in a new tab
+  open_product_page: {
+    methods: ['open_product_page'],
+    objects: ['product_card', 'system_notification'],
+    extra_keys: [
       'price',
       'price_alert',
       'price_orig',
       'product_key',
-      // For 'element' value of 'system_notification' only
-      'price_last_high',
-      // For 'element' value 'product_card' only
+      ...DEFAULT_EXTRAS,
+      // For 'objects' value 'product_card' only
       'product_index',
+      // For 'objects' value of 'system_notification' only
+      'price_last_high',
     ],
   },
   // User adds a product to the product listing
@@ -173,11 +182,9 @@ export async function recordEvent(method, object, value, extraBase = {}) {
   const extra = {
     ...extraBase,
     tracked_prods: getAllProducts(store.getState()).length,
-    dnt_tp_cookie: JSON.stringify({
-      dnt: (navigator.doNotTrack === '1'),
-      tp: (await browser.privacy.websites.trackingProtectionMode.get({})).value,
-      cookie: (await browser.privacy.websites.cookieConfig.get({})).value.behavior,
-    }),
+    privacy_dnt: navigator.doNotTrack === '1',
+    privacy_tp: (await browser.privacy.websites.trackingProtectionMode.get({})).value,
+    privacy_cookie: (await browser.privacy.websites.cookieConfig.get({})).value.behavior,
   };
 
   // Convert all extra key values to strings as required by event telemetry

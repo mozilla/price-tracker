@@ -88,7 +88,7 @@ Each event will exist as part of the `main` ping under `payload.processes.dynami
 
 The telemetry category for events is `'extension.price_wise'`.
 
-Below is a sample ping for the `visit_supported_site` and `badge_toolbar_button` events.
+Below is a sample ping for when the user visits a supported page and adds the product on that page.
 
 ```javascript
 {
@@ -102,18 +102,51 @@ Below is a sample ping for the `visit_supported_site` and `badge_toolbar_button`
         // ...
         "events": [
           [
-            733502,
+            7756,
             "extension.price_wise",
             "visit_supported_site",
             "supported_site",
             null,
             {
               "tracked_prods": "0",
-              "dnt_tp_cookie": "{\"dnt\":false,\"tp\":\"private_browsing\",\"cookie\":\"allow_visited\"}"
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
             }
           ],
           [
-            733530,
+            7769,
+            "extension.price_wise",
+            "attempt_extraction",
+            "product_page",
+            null,
+            {
+              "extraction_id": "67caf845-f971-42ce-8a9a-aa3ce919186f",
+              "is_bg_update": "false",
+              "tracked_prods": "0",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
+            }
+          ],
+          [
+            7779,
+            "extension.price_wise",
+            "complete_extraction",
+            "product_page",
+            null,
+            {
+              "extraction_id": "67caf845-f971-42ce-8a9a-aa3ce919186f",
+              "is_bg_update": "false",
+              "method": "css_selectors",
+              "tracked_prods": "0",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
+            }
+          ],
+          [
+            7783,
             "extension.price_wise",
             "badge_toolbar_button",
             "toolbar_button",
@@ -121,10 +154,41 @@ Below is a sample ping for the `visit_supported_site` and `badge_toolbar_button`
             {
               "badge_type": "add",
               "tracked_prods": "0",
-              "dnt_tp_cookie": "{\"dnt\":false,\"tp\":\"private_browsing\",\"cookie\":\"allow_visited\"}"
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
             }
-          ]
-        ]
+          ],
+          [
+            18180,
+            "extension.price_wise",
+            "open_popup",
+            "toolbar_button",
+            null,
+            {
+              "badge_type": "add",
+              "tracked_prods": "0",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
+            }
+          ],
+          [
+            19565,
+            "extension.price_wise",
+            "add_product",
+            "add_button",
+            null,
+            {
+              "price": "4800",
+              "product_key": "2b4d8569-3db9-4448-a9d8-af1fc5cacf7a",
+              "tracked_prods": "1",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
+            }
+          ],
+        ],
       }
       // ...
     }
@@ -143,17 +207,16 @@ Below is a sample ping for the `visit_supported_site` and `badge_toolbar_button`
 
 Some `extra_keys` are sent with every telemetry event recorded by the extension:
 - `'tracked_prods'`: The number of products the user is tracking.
-- `'dnt_tp_cookie'`: The status of three different privacy settings collapsed into a single, stringified JSON object:
-  - `'dnt'`: 'true' if the user has [requested not to be tracked by websites, content, or advertising](https://support.mozilla.org/en-US/kb/how-do-i-turn-do-not-track-feature); otherwise 'false'.
-  - `'tp'`: The user's [tracking protection](https://support.mozilla.org/en-US/kb/tracking-protection) setting:
-    - `'always'`: Tracking Protection is on
-    - `'never'`: Tracking Protection is off
-    - `'private_browsing'`: Tracking Protection is on in private browsing windows only
-  - `'cookie'`: The user's [cookie setting](https://support.mozilla.org/en-US/kb/disable-third-party-cookies):
-    - `'allow_all'`: Accept all cookies
-    - `'reject_all'`: Reject all cookies
-    - `'reject_third_party'`: Reject all third-party cookies
-    - `'allow_visited'`: Accept a third-party cookie only if the cookie's top-level domain already has at least one cookie.
+- `'privacy_dnt'`: 'true' if the user has [requested not to be tracked by websites, content, or advertising](https://support.mozilla.org/en-US/kb/how-do-i-turn-do-not-track-feature); otherwise 'false'.
+- `'privacy_tp'`: The user's [tracking protection](https://support.mozilla.org/en-US/kb/tracking-protection) setting:
+  - `'always'`: Tracking Protection is on
+  - `'never'`: Tracking Protection is off
+  - `'private_browsing'`: Tracking Protection is on in private browsing windows only
+- `'privacy_cookie'`: The user's [cookie setting](https://support.mozilla.org/en-US/kb/disable-third-party-cookies):
+  - `'allow_all'`: Accept all cookies
+  - `'reject_all'`: Reject all cookies
+  - `'reject_third_party'`: Reject all third-party cookies
+  - `'allow_visited'`: Accept a third-party cookie only if the cookie's top-level domain already has at least one cookie.
 
 ### Event-specific Extra Keys
 
@@ -166,8 +229,6 @@ Some `extra_keys` are sent with every telemetry event recorded by the extension:
   - `'help_button'`: Sends the user to a Price Wise support.mozilla.org page.
   - `'home_depot_link'`: Sends the user to Home Depot.
   - `'learn_more_link'`: Sends the user to a Price Wise support.mozilla.org page.
-  - `'product_card'`: Sends the user to the product page for the given Product Card.
-  - `'system_notification'`: Sends the user to the product page for the Price Alert displayed in the notification.
   - `'walmart_link'`: Sends the user to Walmart.
 - `'extraction_id'`: A unique identifier to associate an extraction attempt to an extraction completion event for a given page.
 - `'is_bg_update'`: 'true' if the extraction is associated with a background price check; otherwise 'false'.
@@ -209,28 +270,37 @@ Fired when the user clicks the Price Wise browserAction toolbar button to open t
   - `'badge_type'`
   - [Common extra keys](#common-extra-keys)
 
-### `open_external_page`
+### `open_nonproduct_page`
 
-Fired when the user clicks on a UI element in the extension that opens a page in a new tab.
+Fired when the user clicks on a UI element in the extension that opens a non-product page in a new tab.
 
 #### Payload properties
 - `methods`: String
-  - `'open_external_page'`
+  - `'open_nonproduct_page'`
 - `objects`: String
   - `'ui_element'`
-- `extra_keys`: Object; which keys are included depends on the value of the `'element'` extra key.
-  - All values:
-    - [Common extra keys](#common-extra-keys)
-    - `'element'`
-  - `'system_notification'` and `'product_card'` only:
-    - `'price'`
-    - `'price_alert'`
-    - `'price_orig'`
-    - `'product_key'`
-  - `'system_notification'` only:
-    - `'price_last_high'`
-  - `'product_card'` only:
-    - `'product_index'`
+- `extra_keys`: Object
+  - `'element'`
+  - [Common extra keys](#common-extra-keys)
+
+### `open_product_page`
+
+Fired when the user clicks on a UI element in the extension that opens a product page in a new tab.
+
+#### Payload properties
+- `methods`: String
+  - `'open_product_page'`
+- `objects`: String. The extension UI element that the user clicked to open a product page in a new tab. One of:
+  - `'product_card'`: Sends the user to the product page for the given Product Card.
+  - `'system_notification'`: Sends the user to the product page for the Price Alert displayed in the notification.
+- `extra_keys`: Object
+  - `'price'`
+  - `'price_alert'`
+  - `'price_orig'`
+  - `'product_key'`
+  - [Common extra keys](#common-extra-keys)
+  - `'product_index'` (for `objects` value of `'product_card'` only)
+  - `'price_last_high'` (for `objects` value of `'system_notification'` only)
 
 ### `add_product`
 
