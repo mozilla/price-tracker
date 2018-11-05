@@ -9,9 +9,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin: 16px auto;
+  margin: 16px;
   text-align: center;
-  width: 288px;
 }
 
 .empty-onboarding .hero {
