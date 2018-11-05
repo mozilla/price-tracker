@@ -1,8 +1,8 @@
 {
   "name": "price-wise",
   "version": "8.0.0",
-  "description": "",
-  "private": "true",
+  "description": "Price Wise is a Firefox extension that tracks price changes to help you find the best time to buy.",
+  "private": true,
   "author": "Mozilla Foundation",
   "license": "MPL-2.0",
   "scripts": {
@@ -62,5 +62,14 @@
     "redux": "4.0.0",
     "redux-thunk": "2.3.0",
     "uuid": "3.3.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla/price-wise.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/mozilla/price-wise/issues"
+  },
+  "homepage": "https://testpilot.firefox.com/experiments/price-wise"
 }

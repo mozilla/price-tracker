@@ -2,7 +2,9 @@
   "manifest_version": 2,
   "name": "Price Wise",
   "version": "$version",
-  "description": "",
+  "author": "$author",
+  "description": "$description",
+  "homepage_url": "$homepage",
   "applications": {
     "gecko": {
       "id": "shopping-testpilot@mozilla.org",
