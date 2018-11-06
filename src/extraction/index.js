@@ -28,17 +28,14 @@ const EXTRACTION_METHODS = {
   open_graph: extractProductWithOpenGraph,
 };
 
-const IS_BACKGROUND_UPDATE = (function isBackgroundUpdate() {
-  let result = false;
-  try {
-    result = window.top.location.href.startsWith(
-      browser.runtime.getURL('/'), // URL is unique per-install / hard to forge
-    );
-  } catch (err) {
-    // Non-background updates may throw a cross-origin error
-  }
-  return result;
-}());
+let isBackgroundUpdate = false;
+try {
+  isBackgroundUpdate = window.top.location.href.startsWith(
+    browser.runtime.getURL('/'), // URL is unique per-install / hard to forge
+  );
+} catch (err) {
+  // Non-background updates may throw a cross-origin error
+}
 
 /**
  * Helper class to record extraction-related telemetry events.
@@ -47,7 +44,7 @@ class ExtractionAttempt {
   constructor() {
     this.baseExtra = {
       extraction_id: uuidv4(),
-      is_bg_update: IS_BACKGROUND_UPDATE,
+      is_bg_update: isBackgroundUpdate,
     };
   }
 
@@ -120,7 +117,7 @@ async function attemptExtraction() {
   // started by the background script for a price check.
   const isInIframe = window !== window.top;
 
-  if (isInIframe && !IS_BACKGROUND_UPDATE) {
+  if (isInIframe && !isBackgroundUpdate) {
     return;
   }
 
@@ -135,12 +132,12 @@ async function attemptExtraction() {
   const url = new URL(document.location.href);
   const allowList = await config.get('extractionAllowlist');
   const allowAll = allowList.length === 1 && allowList[0] === '*';
-  if (!allowAll && !IS_BACKGROUND_UPDATE && !allowList.includes(url.host)) {
+  if (!allowAll && !isBackgroundUpdate && !allowList.includes(url.host)) {
     return;
   }
 
   // Record visit_supported_site event
-  if (!IS_BACKGROUND_UPDATE) {
+  if (!isBackgroundUpdate) {
     await recordEvent('visit_supported_site', 'supported_site');
   }
 

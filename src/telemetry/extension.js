@@ -214,10 +214,7 @@ async function getActiveTabId() {
 
 export async function getBadgeType() {
   // browserAction and background scripts have to use activeTabId as a proxy for the tabId
-  const activeTabId = await getActiveTabId();
-  const badgeText = await browser.browserAction.getBadgeText(
-    activeTabId ? {tabId: activeTabId} : {},
-  );
+  const badgeText = await getToolbarBadgeText(await getActiveTabId());
   switch (true) {
     case (badgeText === ''):
       return 'none';
@@ -231,17 +228,13 @@ export async function getBadgeType() {
   }
 }
 
-export async function hasBadgeTextChanged(nextText, tabId = null) {
-  // If the nextText contains a digit, we know it's a price alert badge, which only affects
-  // the global badge text.
-  const returnGlobal = (/\d+/.test(nextText));
-  const prevText = await browser.browserAction.getBadgeText(
-    returnGlobal ? {} : {tabId: tabId || await getActiveTabId()},
+export async function getToolbarBadgeText(tabId = null) {
+  // The 'add' badge modifies badge text for a specific tab and will have a tabId.
+  // The 'price_alert' badge modifies the global badge text and will not have a tabId.
+  const returnGlobal = !tabId;
+  return browser.browserAction.getBadgeText(
+    returnGlobal ? {} : {tabId},
   );
-  if (prevText !== nextText) {
-    return true;
-  }
-  return false;
 }
 
 export async function handleWidgetRemoved(widgetId) {

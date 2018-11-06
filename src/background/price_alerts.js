@@ -22,7 +22,7 @@ import {
 } from 'commerce/state/prices';
 import {getProduct} from 'commerce/state/products';
 import {getVendor} from 'commerce/state/vendors';
-import {recordEvent, hasBadgeTextChanged} from 'commerce/telemetry/extension';
+import {recordEvent, getToolbarBadgeText} from 'commerce/telemetry/extension';
 
 /**
  * Update the extension UI based on the current state of active price alerts.
@@ -34,7 +34,7 @@ export async function handlePriceAlerts() {
 
   // Show the browser action badge if there are any active alerts.
   if (activeAlerts.length > 0) {
-    if (await hasBadgeTextChanged(`${activeAlerts.length}`)) {
+    if (await getToolbarBadgeText() !== `${activeAlerts.length}`) {
       await recordEvent('badge_toolbar_button', 'toolbar_button', null, {
         badge_type: 'price_alert',
       });
