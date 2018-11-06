@@ -231,9 +231,8 @@ export async function getBadgeType() {
 export async function getToolbarBadgeText(tabId = null) {
   // The 'add' badge modifies badge text for a specific tab and will have a tabId.
   // The 'price_alert' badge modifies the global badge text and will not have a tabId.
-  const returnGlobal = !tabId;
   return browser.browserAction.getBadgeText(
-    returnGlobal ? {} : {tabId},
+    tabId ? {tabId} : {},
   );
 }
 
