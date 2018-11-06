@@ -50,7 +50,7 @@ export default class EmptyOnboarding extends React.Component {
     if (event.target.href) {
       event.preventDefault();
       browser.tabs.create({url: event.target.href});
-      await recordEvent('open_external_page', 'ui_element', null, {element: `${event.target.dataset.telemetryId}_link`});
+      await recordEvent('open_nonproduct_page', 'ui_element', null, {element: `${event.target.dataset.telemetryId}_link`});
       window.close();
     }
   }

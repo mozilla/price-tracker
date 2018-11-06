@@ -3,7 +3,7 @@
 
 # Metrics
 
-A summary of the metrics the Price Alerts extension will record.
+A summary of the metrics the Price Wise extension will record.
 
 
 ## Definitions
@@ -21,7 +21,7 @@ A summary of the metrics the Price Alerts extension will record.
 
 ## Analysis
 
-Data collected by the Price Alerts extension will be used to answer the following questions:
+Data collected by the Price Wise extension will be used to answer the following questions:
 
 Note: For any questions related to general user shopping behavior, the data about what sites users visit is limited to the Supported Sites for the MVP.
 
@@ -84,11 +84,11 @@ While some of these questions may be partially answerable by this extension, ans
 
 We will be sending pings using [Event Telemetry](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html) via the [WebExtensions Telemetry API](https://bugzilla.mozilla.org/show_bug.cgi?id=1280234).
 
-Each event will exist as part of the `main` ping under `payload.processes.dynamic.events` as an array in the `events` array. The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
+Each event will exist as part of the `main` ping under `payload.processes.dynamic.events` as an array in the `events` array (see Appendix B for how to view the events in `about:telemetry`). The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
 
-The telemetry category for events is `'extension.price_alerts'`.
+The telemetry category for events is `'extension.price_wise'`.
 
-Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site` events.
+Below is a sample ping for when the user visits a supported page and adds the product on that page.
 
 ```javascript
 {
@@ -102,27 +102,93 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
         // ...
         "events": [
           [
-            2079,
-            "extension.price_alerts",
+            7756,
+            "extension.price_wise",
+            "visit_supported_site",
+            "supported_site",
+            null,
+            {
+              "tracked_prods": "0",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
+            }
+          ],
+          [
+            7769,
+            "extension.price_wise",
+            "attempt_extraction",
+            "product_page",
+            null,
+            {
+              "extraction_id": "67caf845-f971-42ce-8a9a-aa3ce919186f",
+              "is_bg_update": "false",
+              "tracked_prods": "0",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
+            }
+          ],
+          [
+            7779,
+            "extension.price_wise",
+            "complete_extraction",
+            "product_page",
+            null,
+            {
+              "extraction_id": "67caf845-f971-42ce-8a9a-aa3ce919186f",
+              "is_bg_update": "false",
+              "method": "css_selectors",
+              "tracked_prods": "0",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
+            }
+          ],
+          [
+            7783,
+            "extension.price_wise",
             "badge_toolbar_button",
             "toolbar_button",
             null,
             {
               "badge_type": "add",
-              "tracked_prods": "5"
+              "tracked_prods": "0",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
             }
           ],
           [
-            2081,
-            "extension.price_alerts",
-            "visit_supported_site",
-            "supported_site",
+            18180,
+            "extension.price_wise",
+            "open_popup",
+            "toolbar_button",
             null,
             {
-              "tracked_prods": "5"
+              "badge_type": "add",
+              "tracked_prods": "0",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
             }
-          ]
-        ]
+          ],
+          [
+            19565,
+            "extension.price_wise",
+            "add_product",
+            "add_button",
+            null,
+            {
+              "price": "4800",
+              "product_key": "2b4d8569-3db9-4448-a9d8-af1fc5cacf7a",
+              "tracked_prods": "1",
+              "privacy_dnt": "false",
+              "privacy_tp": "private_browsing",
+              "privacy_cookie": "allow_visited"
+            }
+          ],
+        ],
       }
       // ...
     }
@@ -133,31 +199,14 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
 ```
 
 
-## `extra_keys`
+## Extra Keys
 
 `extra_keys` are keys in the [optional `extra` object field](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format) for telemetry events. All `extra_keys` and their values are strings.
 
-- `'badge_type'`: Indicates what, if any, badge was present on the browserAction toolbar button. One of 'add', 'price_alert', or 'none'. A value of 'unknown' is possible if the badge text is unrecognized.
-- `'extraction_id'`: A unique identifier to associate an extraction attempt to an extraction completion event for a given page.
-- `'is_bg_update'`: 'true' if the extraction is associated with a background price check; otherwise 'false'.
-- `method`: The extraction method that was successful, if any. One of: 'fathom', 'fallback' or 'neither'. A value of 'neither' means that extraction failed.
-- `'price'`: The price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
-- `'price_alert'`: 'true' if the product has an active Price Alert; otherwise 'false'.
-- `'price_orig'`: The original price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
-- `'product_index'`: The index of the product in the product listing. The top most list item is index '0'. The list is sorted by date added, descending (#113).
-- `'product_key'`: A unique identifier for the product relative to other products for a given user. This key is _not_ unique to the product across all users.
+### Common Extra Keys
+
+Some `extra_keys` are sent with every telemetry event recorded by the extension:
 - `'tracked_prods'`: The number of products the user is tracking.
-- `'element'`: The extension UI element that the user clicked to open a page in a new tab. Note: All `*_link` elements exist in the Onboarding Popup only. One of...
-  - `'amazon_link'`: Sends the user to Amazon.
-  - `'best_buy_link'`: Sends the user to Best Buy.
-  - `'ebay_link'`: Sends the user to Ebay.
-  - `'feedback_button'`: Sends the user to a feedback Survey.
-  - `'help_button'`: Sends the user to a Price Alerts support.mozilla.org page.
-  - `'home_depot_link'`: Sends the user to Home Depot.
-  - `'learn_more_link'`: Sends the user to a Price Alerts support.mozilla.org page.
-  - `'product_card'`: Sends the user to the product page for the given Product Card.
-  - `'system_notification'`: Sends the user to the product page for the Price Alert displayed in the notification.
-  - `'walmart_link'`: Sends the user to Walmart.
 - `'privacy_dnt'`: 'true' if the user has [requested not to be tracked by websites, content, or advertising](https://support.mozilla.org/en-US/kb/how-do-i-turn-do-not-track-feature); otherwise 'false'.
 - `'privacy_tp'`: The user's [tracking protection](https://support.mozilla.org/en-US/kb/tracking-protection) setting:
   - `'always'`: Tracking Protection is on
@@ -168,6 +217,30 @@ Below is a sample ping for the `badge_toolbar_button` and `visit_supported_site`
   - `'reject_all'`: Reject all cookies
   - `'reject_third_party'`: Reject all third-party cookies
   - `'allow_visited'`: Accept a third-party cookie only if the cookie's top-level domain already has at least one cookie.
+
+### Event-specific Extra Keys
+
+- `'badge_type'`: Indicates what, if any, badge was present on the browserAction toolbar button. One of 'add', 'price_alert', or 'none'. A value of 'unknown' is possible if the badge text is unrecognized.
+- `'element'`: The extension UI element that the user clicked to open a page in a new tab. Note: All `*_link` elements exist in the Onboarding Popup only. One of...
+  - `'amazon_link'`: Sends the user to Amazon.
+  - `'best_buy_link'`: Sends the user to Best Buy.
+  - `'ebay_link'`: Sends the user to Ebay.
+  - `'feedback_button'`: Sends the user to a feedback Survey.
+  - `'help_button'`: Sends the user to a Price Wise support.mozilla.org page.
+  - `'home_depot_link'`: Sends the user to Home Depot.
+  - `'learn_more_link'`: Sends the user to a Price Wise support.mozilla.org page.
+  - `'walmart_link'`: Sends the user to Walmart.
+- `'extraction_id'`: A unique identifier to associate an extraction attempt to an extraction completion event for a given page.
+- `'is_bg_update'`: 'true' if the extraction is associated with a background price check; otherwise 'false'.
+- `method`: The extraction method that was successful, if any. One of: 'fathom', 'css_selectors', 'open_graph' or 'none'. A value of 'none' means that all extraction methods failed.
+- `'price'`: The price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
+- `'price_alert'`: 'true' if the product has an active Price Alert; otherwise 'false'.
+- `'price_last_high'`: The last high price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
+  - A high price is, semantically, the price that there's been an interesting drop from to warrant alerting the user. Practically, it is the highest price since the previous price alert.
+- `'price_orig'`: The original price of the product in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
+- `'price_prev'`: The previous price of the product when different from the latest price (`price`) in subunits (e.g. a $10.00 product would have a value of `'1000'`). For the MVP, the units here are always cents (USD currency only).
+- `'product_index'`: The index of the product in the product listing. The top most list item is index '0'. The list is sorted by date added, descending (#113).
+- `'product_key'`: A unique identifier for the product relative to other products for a given user. This key is _not_ unique to the product across all users.
 
 
 ## Collection (User Events)
@@ -182,11 +255,11 @@ Fired when the user navigates to a Supported Site.
 - `objects`: String
   - `'supported_site'`
 - `extra_keys`: Object
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 ### `open_popup`
 
-Fired when the user clicks the Price Alerts browserAction toolbar button to open the popup.
+Fired when the user clicks the Price Wise browserAction toolbar button to open the popup.
 
 #### Payload properties
 - `methods`: String
@@ -195,28 +268,39 @@ Fired when the user clicks the Price Alerts browserAction toolbar button to open
   - `'toolbar_button'`
 - `extra_keys`: Object
   - `'badge_type'`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
-### `open_external_page`
+### `open_nonproduct_page`
 
-Fired when the user clicks on a UI element in the extension that opens a page in a new tab.
+Fired when the user clicks on a UI element in the extension that opens a non-product page in a new tab.
 
 #### Payload properties
 - `methods`: String
-  - `'open_external_page'`
+  - `'open_nonproduct_page'`
 - `objects`: String
   - `'ui_element'`
-- `extra_keys`: Object; which keys are included depends on the value of the `'element'` extra key.
-  - All values:
-    - `'tracked_prods'`
-    - `'element'`
-  - `'system_notification'` and `'product_card'` only:
-    - `'price'`
-    - `'price_alert'`
-    - `'price_orig'`
-    - `'product_key'`
-  - `'product_card'` only:
-    - `'product_index'`
+- `extra_keys`: Object
+  - `'element'`
+  - [Common extra keys](#common-extra-keys)
+
+### `open_product_page`
+
+Fired when the user clicks on a UI element in the extension that opens a product page in a new tab.
+
+#### Payload properties
+- `methods`: String
+  - `'open_product_page'`
+- `objects`: String. The extension UI element that the user clicked to open a product page in a new tab. One of:
+  - `'product_card'`: Sends the user to the product page for the given Product Card.
+  - `'system_notification'`: Sends the user to the product page for the Price Alert displayed in the notification.
+- `extra_keys`: Object
+  - `'price'`
+  - `'price_alert'`
+  - `'price_orig'`
+  - `'product_key'`
+  - [Common extra keys](#common-extra-keys)
+  - `'product_index'` (for `objects` value of `'product_card'` only)
+  - `'price_last_high'` (for `objects` value of `'system_notification'` only)
 
 ### `add_product`
 
@@ -231,7 +315,7 @@ Fired when the user clicks the add product button in the browserAction popup.
 - `extra_keys`: Object
   - `'price'`
   - `'product_key'`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 ### `delete_product`
 
@@ -249,7 +333,7 @@ Fired when the user clicks a delete product button in a Product Card in the brow
   - `'price_orig'`
   - `'product_index'`
   - `'product_key'`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 ### `undo_delete_product`
 
@@ -267,7 +351,7 @@ Fired when the user clicks an undo button in a Product Card in the browserAction
   - `'price_orig'`
   - `'product_index'`
   - `'product_key'`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 ### `uninstall`
 
@@ -285,7 +369,7 @@ Fired when the user hides the extension's browserAction toolbar button from the 
   - `'toolbar_button'`
 - `extra_keys`: Object
   - `'badge_type'`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 
 ## Collection (Non-User Events)
@@ -303,14 +387,16 @@ Fired whenever a price change (of any magnitude and in any direction) is detecte
 - `extra_keys`: Object
   - `'price'`
   - `'price_orig'`
+  - `'price_prev'`
   - `'product_key'`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 ### `badge_toolbar_button`
 
 Fired whenever the toolbar is badged in response to:
 1. A successful product extraction or
 2. A Price Alert
+  - Note: For Price Alerts, this event will continue to trigger after the initial Price Alert is shown to the user until the Price Alert is dismissed (per the [UX spec](https://mozilla.invisionapp.com/share/UFNSHAIMT4V#/screens/317130676_Artboard_1) and when a system notification is clicked).
 
 #### Payload properties
 
@@ -320,7 +406,7 @@ Fired whenever the toolbar is badged in response to:
   - `'toolbar_button'`
 - `extra_keys`: Object
   - `'badge_type'`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 ### `send_notification`
 
@@ -334,9 +420,10 @@ Fired whenever a system notification is sent to the user notifying them of a Pri
   - `'system_notification'`
 - `extra_keys`: Object
   - `'price'`
+  - `'price_last_high'`
   - `'price_orig'`
   - `'product_key'`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 ### `attempt_extraction`
 
@@ -351,7 +438,7 @@ Fired whenever a supported page loads and the add-on attempts to extract product
 - `extra_keys`: Object
   - `'extraction_id'`
   - `'is_bg_update'`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 ### `complete_extraction`
 
@@ -367,7 +454,7 @@ Fired whenever extraction on a supported page completes, whether or not the extr
   - `'extraction_id'`
   - `'is_bg_update'`
   - `method`
-  - `'tracked_prods'`
+  - [Common extra keys](#common-extra-keys)
 
 
 ## Opt-out
@@ -427,3 +514,10 @@ Note: This is a sample ping. The exact value for the extension ID may differ, th
   // ...
 }
 ```
+
+### Appendix B: How to view Price Wise events in `about:telemetry`
+
+1. Navigate to `about:telemetry`.
+2. Click 'Events' in the sidebar menu.
+  - Note: This menu item is not present until an event has been recorded for the current session. If you don't see it, trigger one of the events as described in this document (e.g. `open_popup`) and refresh the page.
+3. On the top right corner of the next page, click 'dynamic' in the dropdown menu.

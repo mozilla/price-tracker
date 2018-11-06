@@ -22,18 +22,23 @@ import {
 } from 'commerce/state/prices';
 import {getProduct} from 'commerce/state/products';
 import {getVendor} from 'commerce/state/vendors';
-import {recordEvent} from 'commerce/telemetry/extension';
+import {recordEvent, getToolbarBadgeText} from 'commerce/telemetry/extension';
 
 /**
  * Update the extension UI based on the current state of active price alerts.
  * Should be called whenever price alerts may have changed.
  */
-export function handlePriceAlerts() {
+export async function handlePriceAlerts() {
   const state = store.getState();
   const activeAlerts = getActivePriceAlerts(state);
 
   // Show the browser action badge if there are any active alerts.
   if (activeAlerts.length > 0) {
+    if (await getToolbarBadgeText() !== `${activeAlerts.length}`) {
+      await recordEvent('badge_toolbar_button', 'toolbar_button', null, {
+        badge_type: 'price_alert',
+      });
+    }
     browser.browserAction.setBadgeText({text: `${activeAlerts.length}`});
   } else {
     browser.browserAction.setBadgeText({text: null});
@@ -61,6 +66,12 @@ export function handlePriceAlerts() {
       title: `Price Alert: ${product.title}`,
       message: `${vendorName} · Originally ${original}, high of ${high}, now ${now}`,
     });
+    await recordEvent('send_notification', 'system_notification', null, { // eslint-disable-line no-await-in-loop
+      price: alertPrice.amount.getAmount(),
+      price_last_high: alert.highPriceAmount,
+      price_orig: originalPrice.amount.getAmount(),
+      product_key: product.anonId,
+    });
 
     // Update state now that we've shown it
     store.dispatch(showPriceAlert(alert));
@@ -86,10 +97,10 @@ export async function handleNotificationClicked(notificationId) {
     // Record open_external_page event
     const latestPrice = getLatestPriceForProduct(state, product.id);
     const originalPrice = getOldestPriceForProduct(state, product.id);
-    await recordEvent('open_external_page', 'ui_element', null, {
-      element: 'system_notification',
+    await recordEvent('open_product_page', 'system_notification', null, {
       price: latestPrice.amount.getAmount(),
       price_alert: alert.active,
+      price_last_high: alert.highPriceAmount,
       price_orig: originalPrice.amount.getAmount(),
       product_key: product.anonId,
     });

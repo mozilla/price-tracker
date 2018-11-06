@@ -11,7 +11,7 @@ import {shouldCollectTelemetry} from 'commerce/privacy';
 import store from 'commerce/state';
 import {getAllProducts} from 'commerce/state/products';
 
-const CATEGORY = 'extension.price_alerts';
+const CATEGORY = 'extension.price_wise';
 
 const DEFAULT_EXTRAS = [
   'tracked_prods',
@@ -40,20 +40,29 @@ const EVENTS = {
       ...DEFAULT_EXTRAS,
     ],
   },
-  // User clicks on a UI element in the extension opening a page in a new tab
-  open_external_page: {
-    methods: ['open_external_page'],
+  // User clicks on a UI element in the extension opening a non-product page in a new tab
+  open_nonproduct_page: {
+    methods: ['open_nonproduct_page'],
     objects: ['ui_element'],
     extra_keys: [
-      ...DEFAULT_EXTRAS,
       'element',
-      // For 'element' values 'product_card' and 'system_notification' only
+      ...DEFAULT_EXTRAS,
+    ],
+  },
+  // User clicks on a UI element in the extension opening a product page in a new tab
+  open_product_page: {
+    methods: ['open_product_page'],
+    objects: ['product_card', 'system_notification'],
+    extra_keys: [
       'price',
       'price_alert',
       'price_orig',
       'product_key',
-      // For 'element' value 'product_card' only
+      ...DEFAULT_EXTRAS,
+      // For 'objects' value 'product_card' only
       'product_index',
+      // For 'objects' value of 'system_notification' only
+      'price_last_high',
     ],
   },
   // User adds a product to the product listing
@@ -92,12 +101,6 @@ const EVENTS = {
       ...DEFAULT_EXTRAS,
     ],
   },
-  // User uninstalls the extension
-  uninstall: {
-    methods: ['uninstall'],
-    objects: ['uninstall'],
-    extra_keys: ['tracked_prods'],
-  },
   // User hides the toolbar button for the extension
   hide_toolbar_button: {
     methods: ['hide_toolbar_button'],
@@ -115,6 +118,7 @@ const EVENTS = {
     objects: ['product_page'],
     extra_keys: [
       'price',
+      'price_prev',
       'price_orig',
       'product_key',
       ...DEFAULT_EXTRAS,
@@ -136,6 +140,7 @@ const EVENTS = {
     objects: ['system_notification'],
     extra_keys: [
       'price',
+      'price_last_high',
       'price_orig',
       'product_key',
       ...DEFAULT_EXTRAS,
@@ -208,10 +213,8 @@ async function getActiveTabId() {
 }
 
 export async function getBadgeType() {
-  const activeTabId = await getActiveTabId();
-  const badgeText = await browser.browserAction.getBadgeText(
-    activeTabId ? {tabId: activeTabId} : {},
-  );
+  // browserAction and background scripts have to use activeTabId as a proxy for the tabId
+  const badgeText = await getToolbarBadgeText(await getActiveTabId());
   switch (true) {
     case (badgeText === ''):
       return 'none';
@@ -223,6 +226,14 @@ export async function getBadgeType() {
       console.warn(`Unexpected badge text ${badgeText}.`); // eslint-disable-line no-console
       return 'unknown';
   }
+}
+
+export async function getToolbarBadgeText(tabId = null) {
+  // The 'add' badge modifies badge text for a specific tab and will have a tabId.
+  // The 'price_alert' badge modifies the global badge text and will not have a tabId.
+  return browser.browserAction.getBadgeText(
+    tabId ? {tabId} : {},
+  );
 }
 
 export async function handleWidgetRemoved(widgetId) {

@@ -211,7 +211,8 @@ export default function reducer(state = initialState(), action) {
 // Action Creators
 
 /**
- * Adds a new price to the store.
+ * Adds a new price to the store. Returns true if the extracted price
+ * is different than the last known price in state.
  * @param {ExtractedProduct} data
  */
 export function addPriceFromExtracted(data) {
@@ -227,7 +228,10 @@ export function addPriceFromExtracted(data) {
 
       // Potentially trigger an alert since there's a new price in town.
       dispatch(triggerPriceAlert(price));
+
+      return price;
     }
+    return null;
   };
 }
 

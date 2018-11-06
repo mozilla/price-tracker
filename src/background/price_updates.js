@@ -10,9 +10,10 @@
 import config from 'commerce/config';
 import store from 'commerce/state';
 import {shouldUpdatePrices} from 'commerce/privacy';
-import {addPriceFromExtracted, getLatestPriceForProduct} from 'commerce/state/prices';
+import {addPriceFromExtracted, getLatestPriceForProduct, getOldestPriceForProduct} from 'commerce/state/prices';
 import {getAllProducts, getProduct, getProductIdFromExtracted} from 'commerce/state/products';
 import {wait} from 'commerce/utils';
+import {recordEvent} from 'commerce/telemetry/extension';
 
 /**
  * Remove the x-frame-options header, so that the product page can load in the
@@ -85,11 +86,22 @@ async function fetchLatestPrice(product, delay) {
  * price history with the latest price.
  * @param {ExtractedProduct} data
  */
-export function updateProductWithExtracted(data) {
+export async function updateProductWithExtracted(data) {
   const state = store.getState();
   const id = getProductIdFromExtracted(data);
   const product = getProduct(state, id);
   if (product) {
-    store.dispatch(addPriceFromExtracted(data));
+    const price = await store.dispatch(addPriceFromExtracted(data));
+    if (price) {
+      // Record the detect_price_change event
+      const previousPrice = getLatestPriceForProduct(state, id);
+      const originalPrice = getOldestPriceForProduct(state, id);
+      await recordEvent('detect_price_change', 'product_page', null, {
+        price: price.amount,
+        price_prev: previousPrice.amount.getAmount(),
+        price_orig: originalPrice.amount.getAmount(),
+        product_key: product.anonId,
+      });
+    }
   }
 }

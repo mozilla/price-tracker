@@ -69,7 +69,7 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickHelp() {
     browser.tabs.create({url: await config.get('supportUrl')});
-    await recordEvent('open_external_page', 'ui_element', null, {element: 'help_button'});
+    await recordEvent('open_nonproduct_page', 'ui_element', null, {element: 'help_button'});
     window.close();
   }
 
@@ -78,7 +78,7 @@ export default class BrowserActionApp extends React.Component {
    */
   async handleClickFeedback() {
     browser.tabs.create({url: await config.get('feedbackUrl')});
-    await recordEvent('open_external_page', 'ui_element', null, {element: 'feedback_button'});
+    await recordEvent('open_nonproduct_page', 'ui_element', null, {element: 'feedback_button'});
     window.close();
   }
 

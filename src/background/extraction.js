@@ -10,6 +10,7 @@
 import config from 'commerce/config';
 import {updateProductWithExtracted} from 'commerce/background/price_updates';
 import {isValidExtractedProduct} from 'commerce/state/products';
+import {recordEvent, getToolbarBadgeText} from 'commerce/telemetry/extension';
 
 /**
  * Triggers background tasks when a product is extracted from a webpage. Along
@@ -50,6 +51,11 @@ export async function handleExtractedProductData({extractedProduct}, sender) {
       color: await config.get('badgeDetectBackground'),
       tabId,
     });
+    if (await getToolbarBadgeText(tabId) !== '✚') {
+      await recordEvent('badge_toolbar_button', 'toolbar_button', null, {
+        badge_type: 'add',
+      });
+    }
     browser.browserAction.setBadgeText({text: '✚', tabId});
   }
 
