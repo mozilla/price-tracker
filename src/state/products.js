@@ -39,6 +39,14 @@ export const extractedProductShape = pt.shape({
   date: pt.string.isRequired,
 });
 
+const ALLOWED_IMAGE_MIMETYPES = [
+  'image/gif;',
+  'image/png;',
+  'image/jpeg;',
+  'image/svg+xml;',
+  'image/webp;',
+];
+
 /**
  * Validate the contents of the given extracted product. This is used in lieu
  * of proptypes since proptype checks do not work in a production build.
@@ -58,15 +66,28 @@ export function isValidExtractedProduct(extractedProduct) {
     return false;
   }
 
-  for (const key of ['url', 'image']) {
-    try {
-      const url = new URL(extractedProduct[key]);
-      if (!['https:', 'http:'].includes(url.protocol)) {
-        return false;
-      }
-    } catch (err) {
-      return false;
-    }
+  let url;
+  let imageUrl;
+
+  try {
+    url = new URL(extractedProduct.url);
+    imageUrl = new URL(extractedProduct.image);
+  } catch (error) {
+    return false;
+  }
+
+  if (!['https:', 'http:'].includes(url.protocol)) {
+    return false;
+  }
+
+  // Some sites like Amazon initially load a data URI for the image
+  if (!['https:', 'http:', 'data:'].includes(imageUrl.protocol)) {
+    return false;
+  }
+
+  // Ensure the data URI is an image by validating its mimetype
+  if (imageUrl.protocol === 'data:' && !(ALLOWED_IMAGE_MIMETYPES.find(path => imageUrl.pathname.startsWith(path)))) {
+    return false;
   }
 
   return true;
