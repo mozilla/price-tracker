@@ -39,56 +39,13 @@ export const extractedProductShape = pt.shape({
   date: pt.string.isRequired,
 });
 
-const DATA_URI_PATHS = [
+const ALLOWED_IMAGE_MIMETYPES = [
   'image/gif;',
   'image/png;',
   'image/jpeg;',
   'image/svg+xml;',
   'image/webp;',
 ];
-
-const RESOURCE_VALIDATION_DEFAULTS = {
-  isValidResource(value) {
-    try {
-      const url = new URL(value);
-      if (!['https:', 'http:'].includes(url.protocol)) {
-        return false;
-      }
-    } catch (err) {
-      return false;
-    }
-    return true;
-  },
-};
-
-const RESOURCE_VALIDATION = {
-  url: {
-    ...RESOURCE_VALIDATION_DEFAULTS,
-  },
-  image: {
-    ...RESOURCE_VALIDATION_DEFAULTS,
-    isValidResource(value) {
-      try {
-        const url = new URL(value);
-        const {protocol} = url;
-        if (!['https:', 'http:', 'data:'].includes(protocol)) {
-          return false;
-        }
-        if (protocol === 'data:') {
-          for (const path of DATA_URI_PATHS) {
-            if (url.pathname.startsWith(path)) {
-              return true;
-            }
-          }
-          return false;
-        }
-      } catch (err) {
-        return false;
-      }
-      return true;
-    },
-  },
-};
 
 /**
  * Validate the contents of the given extracted product. This is used in lieu
@@ -109,8 +66,28 @@ export function isValidExtractedProduct(extractedProduct) {
     return false;
   }
 
-  for (const [key, methods] of Object.entries(RESOURCE_VALIDATION)) {
-    return methods.isValidResource(extractedProduct[key]);
+  let url;
+  let imageUrl;
+
+  try {
+    url = new URL(extractedProduct.url);
+    imageUrl = new URL(extractedProduct.image);
+  } catch (error) {
+    return false;
+  }
+
+  if (!['https:', 'http:'].includes(url.protocol)) {
+    return false;
+  }
+
+  // Some sites like Amazon initially load a data URI for the image
+  if (!['https:', 'http:', 'data:'].includes(imageUrl.protocol)) {
+    return false;
+  }
+
+  // Ensure the data URI is an image by validating its mimetype
+  if (imageUrl.protocol === 'data:' && !(ALLOWED_IMAGE_MIMETYPES.find(path => imageUrl.pathname.startsWith(path)))) {
+    return false;
   }
 
   return true;
