@@ -39,6 +39,57 @@ export const extractedProductShape = pt.shape({
   date: pt.string.isRequired,
 });
 
+const DATA_URI_PATHS = [
+  'image/gif;',
+  'image/png;',
+  'image/jpeg;',
+  'image/svg+xml;',
+  'image/webp;',
+];
+
+const RESOURCE_VALIDATION_DEFAULTS = {
+  isValidResource(value) {
+    try {
+      const url = new URL(value);
+      if (!['https:', 'http:'].includes(url.protocol)) {
+        return false;
+      }
+    } catch (err) {
+      return false;
+    }
+    return true;
+  },
+};
+
+const RESOURCE_VALIDATION = {
+  url: {
+    ...RESOURCE_VALIDATION_DEFAULTS,
+  },
+  image: {
+    ...RESOURCE_VALIDATION_DEFAULTS,
+    isValidResource(value) {
+      try {
+        const url = new URL(value);
+        const {protocol} = url;
+        if (!['https:', 'http:', 'data:'].includes(protocol)) {
+          return false;
+        }
+        if (protocol === 'data:') {
+          for (const path of DATA_URI_PATHS) {
+            if (url.pathname.startsWith(path)) {
+              return true;
+            }
+          }
+          return false;
+        }
+      } catch (err) {
+        return false;
+      }
+      return true;
+    },
+  },
+};
+
 /**
  * Validate the contents of the given extracted product. This is used in lieu
  * of proptypes since proptype checks do not work in a production build.
@@ -58,15 +109,8 @@ export function isValidExtractedProduct(extractedProduct) {
     return false;
   }
 
-  for (const key of ['url', 'image']) {
-    try {
-      const url = new URL(extractedProduct[key]);
-      if (!['https:', 'http:'].includes(url.protocol)) {
-        return false;
-      }
-    } catch (err) {
-      return false;
-    }
+  for (const [key, methods] of Object.entries(RESOURCE_VALIDATION)) {
+    return methods.isValidResource(extractedProduct[key]);
   }
 
   return true;
