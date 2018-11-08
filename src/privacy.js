@@ -67,7 +67,7 @@ function doNotTrackEnabled() {
 async function cookiesBlocked() {
   if (browser.privacy.websites.cookieConfig) {
     const {behavior} = (await browser.privacy.websites.cookieConfig.get({})).value;
-    if (!['allow_all', 'allow_visited'].includes(behavior)) {
+    if (!['allow_all', 'allow_visited', 'reject_trackers'].includes(behavior)) {
       return true;
     }
 
