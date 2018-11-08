@@ -29,6 +29,7 @@ const EVENTS = {
     extra_keys: [
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
 
   // User clicks toolbar button to open the popup
@@ -39,6 +40,7 @@ const EVENTS = {
       'badge_type',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
   // User clicks on a UI element in the extension opening a non-product page in a new tab
   open_nonproduct_page: {
@@ -48,6 +50,7 @@ const EVENTS = {
       'element',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
   // User clicks on a UI element in the extension opening a product page in a new tab
   open_product_page: {
@@ -64,6 +67,7 @@ const EVENTS = {
       // For 'objects' value of 'system_notification' only
       'price_last_high',
     ],
+    record_on_release: true,
   },
   // User adds a product to the product listing
   add_product: {
@@ -74,6 +78,7 @@ const EVENTS = {
       'product_key',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
   // User deletes a product from the product listing
   delete_product: {
@@ -87,6 +92,7 @@ const EVENTS = {
       'product_key',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
   // User undeletes a product from the product listing
   undo_delete_product: {
@@ -100,6 +106,7 @@ const EVENTS = {
       'product_key',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
   // User hides the toolbar button for the extension
   hide_toolbar_button: {
@@ -109,6 +116,7 @@ const EVENTS = {
       'badge_type',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
 
   // Non-User Events
@@ -123,6 +131,7 @@ const EVENTS = {
       'product_key',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
 
   // Toolbar button is badged either due to a price alert or an extracted product
@@ -133,6 +142,7 @@ const EVENTS = {
       'badge_type',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
   // System notification is sent notifying user of a price alert
   send_notification: {
@@ -145,6 +155,7 @@ const EVENTS = {
       'product_key',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
   // Product extraction is attempted on the content page
   attempt_extraction: {
@@ -155,6 +166,7 @@ const EVENTS = {
       'is_bg_update',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
   // Product extraction is completed on the content page
   complete_extraction: {
@@ -166,6 +178,7 @@ const EVENTS = {
       'method',
       ...DEFAULT_EXTRAS,
     ],
+    record_on_release: true,
   },
 };
 
