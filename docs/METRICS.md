@@ -84,117 +84,111 @@ While some of these questions may be partially answerable by this extension, ans
 
 We will be sending pings using [Event Telemetry](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html) via the [WebExtensions Telemetry API](https://bugzilla.mozilla.org/show_bug.cgi?id=1280234).
 
-Each event will exist as part of the `main` ping under `payload.processes.dynamic.events` as an array in the `events` array (see Appendix B for how to view the events in `about:telemetry`). The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
+Each event will exist as part of the [`event` ping](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/event-ping.html) under `payload.events.dynamic` as an array (see Appendix B for how to view extension events in `about:telemetry`). The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
 
 The telemetry category for events is `'extension.price_wise'`.
 
-Below is a sample ping for when the user visits a supported page and adds the product on that page.
+Below is a sample `event` ping for when the user visits a supported page and adds the product on that page.
 
 ```javascript
 {
-  "type": "main",
-  // ...
+  "type": "event",
+  //...
   "payload": {
-    // ...
-    "processes": {
-      // ...
-      "dynamic": {
-        // ...
-        "events": [
-          [
-            7756,
-            "extension.price_wise",
-            "visit_supported_site",
-            "supported_site",
-            null,
-            {
-              "tracked_prods": "0",
-              "privacy_dnt": "false",
-              "privacy_tp": "private_browsing",
-              "privacy_cookie": "allow_visited"
-            }
-          ],
-          [
-            7769,
-            "extension.price_wise",
-            "attempt_extraction",
-            "product_page",
-            null,
-            {
-              "extraction_id": "67caf845-f971-42ce-8a9a-aa3ce919186f",
-              "is_bg_update": "false",
-              "tracked_prods": "0",
-              "privacy_dnt": "false",
-              "privacy_tp": "private_browsing",
-              "privacy_cookie": "allow_visited"
-            }
-          ],
-          [
-            7779,
-            "extension.price_wise",
-            "complete_extraction",
-            "product_page",
-            null,
-            {
-              "extraction_id": "67caf845-f971-42ce-8a9a-aa3ce919186f",
-              "is_bg_update": "false",
-              "method": "css_selectors",
-              "tracked_prods": "0",
-              "privacy_dnt": "false",
-              "privacy_tp": "private_browsing",
-              "privacy_cookie": "allow_visited"
-            }
-          ],
-          [
-            7783,
-            "extension.price_wise",
-            "badge_toolbar_button",
-            "toolbar_button",
-            null,
-            {
-              "badge_type": "add",
-              "tracked_prods": "0",
-              "privacy_dnt": "false",
-              "privacy_tp": "private_browsing",
-              "privacy_cookie": "allow_visited"
-            }
-          ],
-          [
-            18180,
-            "extension.price_wise",
-            "open_popup",
-            "toolbar_button",
-            null,
-            {
-              "badge_type": "add",
-              "tracked_prods": "0",
-              "privacy_dnt": "false",
-              "privacy_tp": "private_browsing",
-              "privacy_cookie": "allow_visited"
-            }
-          ],
-          [
-            19565,
-            "extension.price_wise",
-            "add_product",
-            "add_button",
-            null,
-            {
-              "price": "4800",
-              "product_key": "2b4d8569-3db9-4448-a9d8-af1fc5cacf7a",
-              "tracked_prods": "1",
-              "privacy_dnt": "false",
-              "privacy_tp": "private_browsing",
-              "privacy_cookie": "allow_visited"
-            }
-          ],
+    //...
+    "events": {
+      "dynamic": [
+        [
+          154572,
+          "extension.price_wise",
+          "visit_supported_site",
+          "supported_site",
+          null,
+          {
+            "tracked_prods": "0",
+            "privacy_dnt": "false",
+            "privacy_tp": "private_browsing",
+            "privacy_cookie": "allow_all"
+          }
         ],
-      }
-      // ...
+        [
+          154592,
+          "extension.price_wise",
+          "attempt_extraction",
+          "product_page",
+          null,
+          {
+            "extraction_id": "d7031676-74aa-41b7-a730-c26fc9617dd5",
+            "is_bg_update": "false",
+            "tracked_prods": "0",
+            "privacy_dnt": "false",
+            "privacy_tp": "private_browsing",
+            "privacy_cookie": "allow_all"
+          }
+        ],
+        [
+          154597,
+          "extension.price_wise",
+          "complete_extraction",
+          "product_page",
+          null,
+          {
+            "extraction_id": "d7031676-74aa-41b7-a730-c26fc9617dd5",
+            "is_bg_update": "false",
+            "method": "css_selectors",
+            "tracked_prods": "0",
+            "privacy_dnt": "false",
+            "privacy_tp": "private_browsing",
+            "privacy_cookie": "allow_all"
+          }
+        ],
+        [
+          154601,
+          "extension.price_wise",
+          "badge_toolbar_button",
+          "toolbar_button",
+          null,
+          {
+            "badge_type": "add",
+            "tracked_prods": "0",
+            "privacy_dnt": "false",
+            "privacy_tp": "private_browsing",
+            "privacy_cookie": "allow_all"
+          }
+        ],
+        [
+          156806,
+          "extension.price_wise",
+          "open_popup",
+          "toolbar_button",
+          null,
+          {
+            "badge_type": "add",
+            "tracked_prods": "0",
+            "privacy_dnt": "false",
+            "privacy_tp": "private_browsing",
+            "privacy_cookie": "allow_all"
+          }
+        ],
+        [
+          158056,
+          "extension.price_wise",
+          "add_product",
+          "add_button",
+          null,
+          {
+            "price": "1100",
+            "product_key": "791893d7-1303-4e11-9913-c2ce762aa691",
+            "tracked_prods": "1",
+            "privacy_dnt": "false",
+            "privacy_tp": "private_browsing",
+            "privacy_cookie": "allow_all"
+          }
+        ]
+      ]
     }
-    // ...
-  }
-  // ...
+  },
+  //...
 }
 ```
 
@@ -467,8 +461,9 @@ No telemetry will be sent from the extension in the following additional cases:
 - [Tracking Protection](https://support.mozilla.org/en-US/kb/tracking-protection) is enabled
   - Preference: `privacy.trackingprotection.enabled`
 - The user is in a [Private Browsing](https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history?redirectlocale=en-US&redirectslug=Private+Browsing)  window
-  - Preference: `browser.privatebrowsing.autostart`
   - [`windows.Window`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/Window) property: `window.incognito`
+- The user has elected to [block certain kinds of cookies](https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences) and site data: all third party cookies or all cookies.
+  - Preference: `network.cookie.cookieBehavior`
 
 
 ## Appendices
@@ -477,47 +472,64 @@ No telemetry will be sent from the extension in the following additional cases:
 
 Fired when the user uninstalls the extension.
 
-This event, along with all other add-on lifecycle events, is recorded by the Addons Manager's event telemetry in Firefox. It will exist as part of the `main` ping under `payload.processes.parent.events` as an array in the `events` array. This event will be fired under the `addonsManager` telemetry category.
+This event, along with all other add-on lifecycle events, is recorded by the Addons Manager's event telemetry in Firefox. It will exist as part of the `event` ping under `payload.events.parent` as an array.
+
+This event will be fired under the `addonsManager` telemetry category.
+
+Notes:
+- Other lifecycle events such as `install` may have a different event structure than `uninstall`. Since `addonsManager` events are registered statically, you can view how each event is structured in [Events.yaml](https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/Events.yaml) in the Firefox source code.
+- The `addonsManager` events are only available in Firefox version 64 and later versions.
 
 #### Sample Ping
 
-Note: This is a sample ping. The exact value for the extension ID may differ, though the other values are correct.
-
 ```javascript
 {
-  "type": "main",
-  // ...
+  "type": "event",
+  //...
   "payload": {
-    // ...
-    "processes": {
-      // ...
-      "parent": {
-        // ...
-        "events": [
-          [
-            9792,
-            "addonsManager",
-            "uninstall",
-            "extension",
-            "shopping-testpilot@mozilla.org", // the extension ID
-            {
-              "source": "testpilot"
-              // ...
-            }
-          ]
+    //...
+    "events": {
+      "parent": [
+        [
+          9792,
+          "addonsManager",
+          "uninstall",
+          "extension",
+          "shopping-testpilot@mozilla.org",
+          {
+            "source": "testpilot"
+            // ...
+          }
         ]
-      }
-      // ...
+      ]
     }
-    // ...
-  }
-  // ...
+  },
+  //...
 }
 ```
 
+
 ### Appendix B: How to view Price Wise events in `about:telemetry`
+
+Note: Event Telemetry for this extension may be disabled for certain situations, see [Opt Out](#opt-out).
+
+#### Current Session
+
+To view event telemetry for the current session:
 
 1. Navigate to `about:telemetry`.
 2. Click 'Events' in the sidebar menu.
   - Note: This menu item is not present until an event has been recorded for the current session. If you don't see it, trigger one of the events as described in this document (e.g. `open_popup`) and refresh the page.
 3. On the top right corner of the next page, click 'dynamic' in the dropdown menu.
+4. You should see a table displayed with all the recorded dynamic events for the session.
+
+#### Previous Session
+
+To view event telemetry from a previous session:
+
+1. Click the dropdown menu down arrow in the top left corner of `about:telemetry`
+2. Select 'Archived ping data'
+3. Select the `event` ping type
+4. Choose an archived `event` ping by date and time
+5. In the sidebar menu, select 'Raw Payload'
+6. You should see the `payload` JSON object displayed with events listed in the `events` array
