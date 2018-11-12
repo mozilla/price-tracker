@@ -13,8 +13,8 @@ A summary of the metrics the Price Wise extension will record.
 * **Fathom**: A [JavaScript framework](https://github.com/erikrose/fathom) used to extract product information from a Product Page.
 * **Price Alert**: An alert that occurs when a tracked product's price _decreases_ below a certain absolute or percentage threshold. For the MVP, the default thresholds are specified in `./src/config.js`.
 * **Product Card**: A product list item in the list of tracked products for which the user has opted to receive Price Alerts displayed on the browserAction popup. Each Product Card displays the product title, image and price among other information.
-* **Product Page**: A webpage ([example](https://www.amazon.com/LEGO-Fantastic-Beasts-Grindelwald-Grindelwalds/dp/B07BKQXCZR/ref=sr_1_3_sspa?s=toys-and-games&ie=UTF8&qid=1538418041&sr=1-3-spons&keywords=legos&psc=1)) displaying a single product that the user could purchase online.
-* **Supported Sites**: For the initial launch (a.k.a. MVP, Minimum Viable Product) of this extension, we are limiting the sites supported by this feature to [five websites](https://github.com/mozilla/price-wise/issues/36#issuecomment-409641491): Amazon, Ebay, Walmart, Home Depot and Best Buy.
+* **Product Page**: A webpage displaying a single product that the user could purchase online.
+* **Supported Sites**: For the initial launch (a.k.a. MVP, Minimum Viable Product) of this extension, we are limiting the sites supported by this feature to [five websites](https://github.com/mozilla/price-wise/issues/36#issuecomment-409641491): Amazon, eBay, Walmart, Home Depot and Best Buy.
 * **Survey**: a short survey collecting user feedback.
 * **Onboarding Popup**: The popup displayed when the user has zero products tracked, including the first time the popup is opened.
 
@@ -63,7 +63,7 @@ Note: For any questions related to general user shopping behavior, the data abou
 
 ### Questions to answer in future experiments
 
-While some of these questions may be partially answerable by this extension, answering them thorougly requires controlled A/B testing and/or more extensive data collection on more sites.
+While some of these questions may be partially answerable by this extension, answering them thoroughly requires controlled A/B testing and/or more extensive data collection on more sites.
 
 #### Does it affect user behavior in Firefox?
 - Does it increase shopping browsing?
@@ -80,116 +80,104 @@ While some of these questions may be partially answerable by this extension, ans
 - On what sites do users shop?
 
 
-## Sample Pings
+## Sample Events
 
 We will be sending pings using [Event Telemetry](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html) via the [WebExtensions Telemetry API](https://bugzilla.mozilla.org/show_bug.cgi?id=1280234).
 
-Each event will exist as part of the [`event` ping](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/data/event-ping.html) under `payload.events.dynamic` as an array (see Appendix B for how to view extension events in `about:telemetry`). The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
+The data types of individual fields for each event follow the Event Telemetry [serialization format](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html#serialization-format).
 
 The telemetry category for events is `'extension.price_wise'`.
 
-Below is a sample `event` ping for when the user visits a supported page and adds the product on that page.
+Below is a sample list of events recorded when the user visits a supported page and adds the product on that page.
 
 ```javascript
-{
-  "type": "event",
-  //...
-  "payload": {
-    //...
-    "events": {
-      "dynamic": [
-        [
-          154572,
-          "extension.price_wise",
-          "visit_supported_site",
-          "supported_site",
-          null,
-          {
-            "tracked_prods": "0",
-            "privacy_dnt": "false",
-            "privacy_tp": "private_browsing",
-            "privacy_cookie": "allow_all"
-          }
-        ],
-        [
-          154592,
-          "extension.price_wise",
-          "attempt_extraction",
-          "product_page",
-          null,
-          {
-            "extraction_id": "d7031676-74aa-41b7-a730-c26fc9617dd5",
-            "is_bg_update": "false",
-            "tracked_prods": "0",
-            "privacy_dnt": "false",
-            "privacy_tp": "private_browsing",
-            "privacy_cookie": "allow_all"
-          }
-        ],
-        [
-          154597,
-          "extension.price_wise",
-          "complete_extraction",
-          "product_page",
-          null,
-          {
-            "extraction_id": "d7031676-74aa-41b7-a730-c26fc9617dd5",
-            "is_bg_update": "false",
-            "method": "css_selectors",
-            "tracked_prods": "0",
-            "privacy_dnt": "false",
-            "privacy_tp": "private_browsing",
-            "privacy_cookie": "allow_all"
-          }
-        ],
-        [
-          154601,
-          "extension.price_wise",
-          "badge_toolbar_button",
-          "toolbar_button",
-          null,
-          {
-            "badge_type": "add",
-            "tracked_prods": "0",
-            "privacy_dnt": "false",
-            "privacy_tp": "private_browsing",
-            "privacy_cookie": "allow_all"
-          }
-        ],
-        [
-          156806,
-          "extension.price_wise",
-          "open_popup",
-          "toolbar_button",
-          null,
-          {
-            "badge_type": "add",
-            "tracked_prods": "0",
-            "privacy_dnt": "false",
-            "privacy_tp": "private_browsing",
-            "privacy_cookie": "allow_all"
-          }
-        ],
-        [
-          158056,
-          "extension.price_wise",
-          "add_product",
-          "add_button",
-          null,
-          {
-            "price": "1100",
-            "product_key": "791893d7-1303-4e11-9913-c2ce762aa691",
-            "tracked_prods": "1",
-            "privacy_dnt": "false",
-            "privacy_tp": "private_browsing",
-            "privacy_cookie": "allow_all"
-          }
-        ]
-      ]
-    }
-  },
-  //...
-}
+[
+  154572,
+  "extension.price_wise",
+  "visit_supported_site",
+  "supported_site",
+  null,
+  {
+    "tracked_prods": "0",
+    "privacy_dnt": "false",
+    "privacy_tp": "private_browsing",
+    "privacy_cookie": "allow_all"
+  }
+],
+[
+  154592,
+  "extension.price_wise",
+  "attempt_extraction",
+  "product_page",
+  null,
+  {
+    "extraction_id": "d7031676-74aa-41b7-a730-c26fc9617dd5",
+    "is_bg_update": "false",
+    "tracked_prods": "0",
+    "privacy_dnt": "false",
+    "privacy_tp": "private_browsing",
+    "privacy_cookie": "allow_all"
+  }
+],
+[
+  154597,
+  "extension.price_wise",
+  "complete_extraction",
+  "product_page",
+  null,
+  {
+    "extraction_id": "d7031676-74aa-41b7-a730-c26fc9617dd5",
+    "is_bg_update": "false",
+    "method": "css_selectors",
+    "tracked_prods": "0",
+    "privacy_dnt": "false",
+    "privacy_tp": "private_browsing",
+    "privacy_cookie": "allow_all"
+  }
+],
+[
+  154601,
+  "extension.price_wise",
+  "badge_toolbar_button",
+  "toolbar_button",
+  null,
+  {
+    "badge_type": "add",
+    "tracked_prods": "0",
+    "privacy_dnt": "false",
+    "privacy_tp": "private_browsing",
+    "privacy_cookie": "allow_all"
+  }
+],
+[
+  156806,
+  "extension.price_wise",
+  "open_popup",
+  "toolbar_button",
+  null,
+  {
+    "badge_type": "add",
+    "tracked_prods": "0",
+    "privacy_dnt": "false",
+    "privacy_tp": "private_browsing",
+    "privacy_cookie": "allow_all"
+  }
+],
+[
+  158056,
+  "extension.price_wise",
+  "add_product",
+  "add_button",
+  null,
+  {
+    "price": "1100",
+    "product_key": "791893d7-1303-4e11-9913-c2ce762aa691",
+    "tracked_prods": "1",
+    "privacy_dnt": "false",
+    "privacy_tp": "private_browsing",
+    "privacy_cookie": "allow_all"
+  }
+]
 ```
 
 
@@ -218,7 +206,7 @@ Some `extra_keys` are sent with every telemetry event recorded by the extension:
 - `'element'`: The extension UI element that the user clicked to open a page in a new tab. Note: All `*_link` elements exist in the Onboarding Popup only. One of...
   - `'amazon_link'`: Sends the user to Amazon.
   - `'best_buy_link'`: Sends the user to Best Buy.
-  - `'ebay_link'`: Sends the user to Ebay.
+  - `'ebay_link'`: Sends the user to eBay.
   - `'feedback_button'`: Sends the user to a feedback Survey.
   - `'help_button'`: Sends the user to a Price Wise support.mozilla.org page.
   - `'home_depot_link'`: Sends the user to Home Depot.
@@ -472,7 +460,7 @@ No telemetry will be sent from the extension in the following additional cases:
 
 Fired when the user uninstalls the extension.
 
-This event, along with all other add-on lifecycle events, is recorded by the Addons Manager's event telemetry in Firefox. It will exist as part of the `event` ping under `payload.events.parent` as an array.
+This event, along with all other add-on lifecycle events, is recorded by the Addons Manager's event telemetry in Firefox.
 
 This event will be fired under the `addonsManager` telemetry category.
 
@@ -480,56 +468,18 @@ Notes:
 - Other lifecycle events such as `install` may have a different event structure than `uninstall`. Since `addonsManager` events are registered statically, you can view how each event is structured in [Events.yaml](https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/Events.yaml) in the Firefox source code.
 - The `addonsManager` events are only available in Firefox version 64 and later versions.
 
-#### Sample Ping
+#### Sample Event
 
 ```javascript
-{
-  "type": "event",
-  //...
-  "payload": {
-    //...
-    "events": {
-      "parent": [
-        [
-          9792,
-          "addonsManager",
-          "uninstall",
-          "extension",
-          "shopping-testpilot@mozilla.org",
-          {
-            "source": "testpilot"
-            // ...
-          }
-        ]
-      ]
-    }
-  },
-  //...
-}
+[
+  9792,
+  "addonsManager",
+  "uninstall",
+  "extension",
+  "shopping-testpilot@mozilla.org",
+  {
+    "source": "testpilot"
+    // ...
+  }
+]
 ```
-
-
-### Appendix B: How to view Price Wise events in `about:telemetry`
-
-Note: Event Telemetry for this extension may be disabled for certain situations, see [Opt Out](#opt-out).
-
-#### Current Session
-
-To view event telemetry for the current session:
-
-1. Navigate to `about:telemetry`.
-2. Click 'Events' in the sidebar menu.
-  - Note: This menu item is not present until an event has been recorded for the current session. If you don't see it, trigger one of the events as described in this document (e.g. `open_popup`) and refresh the page.
-3. On the top right corner of the next page, click 'dynamic' in the dropdown menu.
-4. You should see a table displayed with all the recorded dynamic events for the session.
-
-#### Previous Session
-
-To view event telemetry from a previous session:
-
-1. Click the dropdown menu down arrow in the top left corner of `about:telemetry`
-2. Select 'Archived ping data'
-3. Select the `event` ping type
-4. Choose an archived `event` ping by date and time
-5. In the sidebar menu, select 'Raw Payload'
-6. You should see the `payload` JSON object displayed with events listed in the `events` array

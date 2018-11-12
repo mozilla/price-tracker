@@ -3,12 +3,7 @@
 Price Wise is a Firefox extension that tracks price changes to help you find the best time to buy.
 
 
-## User Experience
-
-See [UX specifications](https://mozilla.invisionapp.com/share/UFNSHAIMT4V#/screens/317130676_Artboard_1).
-
-
-## Telemetry
+## Data Collection
 
 See [METRICS.md](./docs/METRICS.md).
 
@@ -60,24 +55,6 @@ Note: This will install the extension as an [unsigned](https://wiki.mozilla.org/
 | `pipenv run test` | Run test suite (See "Running Tests" for setup) |
 
 
-## Code Organization
-
-- `src/background` contains the background scripts that trigger UI elements (such as the browserAction toolbar button) and periodically check for price updates.
-- `src/browser_action` contains the toolbar popup for managing the list of currently-tracked products and tracking new products.
-- `src/config` contains the scripts used to fetch config values specified in [config.js](src/config.js).
-- `src/experiment_apis` contains the [experimental APIs](https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/basics.html#webextensions-experiments) used to read [preference values](#preferences) and listen for chrome-privileged Firefox events. 
-- `src/extraction` contains the content scripts that extract product information from product web pages.
-- `src/img` contains all the non-favicon images used by the extension.
-- `src/state` contains the Redux-based code for managing global extension state.
-- `src/styles` contains Firefox-specific CSS property values stored as variables.
-- `src/telemetry` contains the scripts used to register and record extension [telemetry events](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/collection/events.html) in different contexts.
-- `src/tests` contains the automated test suite.
-- `config.js` contains the static configuration settings for the extension, including default values if [override preferences](#preferences) are not set.
-- `manifest.json` contains basic metadata about the extension.
-- `privacy.js` handles checking privacy settings to gate functionality across the extension.
-- `utils.js` contains general utility functions that can be used across the extension.
-
-
 ## Data Storage
 
 Global state for the add-on is managed via [Redux][]. Any time the data is changed, it is persisted to the [add-on local storage][localstorage].
@@ -125,31 +102,23 @@ The following preferences can be set to customize the extension's behavior for t
 
 <dl>
   <dt><code>extensions.shopping-testpilot@mozilla.org.extractionAllowlist</code></dt>
-  <dd>Preference type: string. List of domains (<code>{Array.string}</code> or <code>*</code>) that extraction is performed on. Can be set to <code>*</code> to enable extraction on all sites (default: <code>extractionAllowlist</code> value specified in [config.js](src/config.js).</dd>
+  <dd>(<code>string</code>) List of domains (<code>{Array.string}</code> or <code>*</code>) that extraction is performed on. Can be set to <code>*</code> to enable extraction on all sites.</dd>
 
   <dt><code>extensions.shopping-testpilot@mozilla.org.priceCheckInterval</code></dt>
-  <dd>Preference type: integer. Time to wait between price checks for a product in milliseconds (default: <code>21600000</code> or 6 hours).</dd>
+  <dd>(<code>integer</code>) Time to wait between price checks for a product in milliseconds.</dd>
 
   <dt><code>extensions.shopping-testpilot@mozilla.org.priceCheckTimeoutInterval</code></dt>
-  <dd>Preference type: integer. Time to wait between checking if we should fetch new prices in milliseconds (default: <code>900000</code> or 15 minutes).</dd>
+  <dd>(<code>integer</code>) Time to wait between checking if we should fetch new prices in milliseconds.</dd>
 
   <dt><code>extensions.shopping-testpilot@mozilla.org.iframeTimeout</code></dt>
-  <dd>Preference type: integer. Delay before removing iframes created during price checks in milliseconds (default: <code>60000</code>or 1 minute).</dd>
+  <dd>(<code>integer</code>) Delay before removing iframes created during price checks in milliseconds.</dd>
 
   <dt><code>extensions.shopping-testpilot@mozilla.org.alertPercentThreshold</code></dt>
-  <dd>Preference type: integer. The percentage drop in price on which to trigger a price alert compared to the last high price (See `price_last_high` in [METRICS.md](./docs/METRICS.md)) default: <code>5</code> or 5%).</dd>
+  <dd>(<code>integer</code>) The percentage drop in price on which to trigger a price alert compared to the last high price (See <code>price_last_high</code> in [METRICS.md](./docs/METRICS.md)).</dd>
 
   <dt><code>extensions.shopping-testpilot@mozilla.org.alertAbsoluteThreshold</code></dt>
-  <dd>Preference type: integer. The absolute drop in price on which to trigger a price alert compared to the last high price (see `price_last_high` in [METRICS.md](./docs/METRICS.md)) in cents (default: <code>1000</code> or $10).</dd>
+  <dd>(<code>integer</code>) The absolute drop in price on which to trigger a price alert compared to the last high price (see `price_last_high` in [METRICS.md](./docs/METRICS.md)) in currency subunits (e.g. cents for USD).</dd>
 </dl>
-
-### Test Page
-
-The extension can be tested with this [Fake Product Page](http://www.mkelly.me/fake-product-page/), which randomly generates a price each time it loads.
-
-Query strings may be used to:
-* Set the max price: e.g.  http://www.mkelly.me/fake-product-page/?max=10000
-* Fix the price to a particular value: e.g. http://www.mkelly.me/fake-product-page/?dollars=10000
 
 
 ## Releasing a New Version
