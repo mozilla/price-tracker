@@ -2,6 +2,12 @@
 
 Price Wise is a Firefox extension that tracks price changes to help you find the best time to buy.
 
+
+## Data Collection
+
+See [METRICS.md](./docs/METRICS.md).
+
+
 ## Developer Setup
 
 Prerequisites:
@@ -30,7 +36,39 @@ Prerequisites:
    npm start
    ```
 
-## Running Tests
+Note: This will install the extension as an [unsigned](https://wiki.mozilla.org/Add-ons/Extension_Signing) [WebExtension Experiment](https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/basics.html#webextensions-experiments).
+* Unsigned WebExtension Experiments can only be run in Nightly and DevEdition with boolean `about:config` preferences `xpinstall.signatures.required` set to `false` and `extensions.legacy.enabled` set to `true`.
+* To test an unsigned WebExtension Experiment in Firefox Beta or Release, an [unbranded build](https://wiki.mozilla.org/Add-ons/Extension_Signing#Unbranded_Builds) must be used.
+
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm start` | Launch Firefox with the extension temporarily installed |
+| `npm run lint` | Run linting checks |
+| `npm run build` | Compile source files with Webpack using a development configuration |
+| `npm run build:prod` | Compile source files with Webpack using a production configuration |
+| `npm run watch` | Watch for changes and rebuild with Webpack using a development configuration|
+| `npm run watch:prod` | Watch for changes and rebuild with Webpack using a production configuration|
+| `npm run package` | Package the extension into an XPI file |
+| `pipenv run test` | Run test suite (See "Running Tests" for setup) |
+
+
+## Data Storage
+
+Global state for the add-on is managed via [Redux][]. Any time the data is changed, it is persisted to the [add-on local storage][localstorage].
+
+Reducers, action creators, etc. are organized into [ducks][] inside the `src/state` directory.
+
+[Redux]: https://redux.js.org/
+[localstorage]: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/local
+[ducks]: https://github.com/erikras/ducks-modular-redux
+
+
+## Testing
+
+### Running Tests
 
 Automated tests are run in a Firefox browser instance using [Marionette][]. We use the Python client for Marionette since there is no up-to-date JavaScript client.
 
@@ -58,16 +96,30 @@ After this, you can run `pipenv run test` to run the automated test suite.
 [Marionette]: https://firefox-source-docs.mozilla.org/testing/marionette/marionette/index.html
 [Pipenv]: https://docs.pipenv.org/
 
-## Scripts
+### Preferences
 
-| Command | Description |
-| --- | --- |
-| `npm start` | Launch Firefox with the extension temporarily installed |
-| `npm run lint` | Run linting checks |
-| `npm run build` | Compile source files with Webpack |
-| `npm run watch` | Watch for changes and rebuild |
-| `npm run package` | Package the extension into an XPI file |
-| `pipenv run test` | Run test suite (See "Running Tests" for setup) |
+The following preferences can be set to customize the extension's behavior for testing purposes. Some convenient testing values can be found in [web-ext-config.js](web-ext-config.js), and will be used by default with `npm start`.
+
+<dl>
+  <dt><code>extensions.shopping-testpilot@mozilla.org.extractionAllowlist</code></dt>
+  <dd>(<code>string</code>) List of domains (<code>{Array.string}</code> or <code>*</code>) that extraction is performed on. Can be set to <code>*</code> to enable extraction on all sites.</dd>
+
+  <dt><code>extensions.shopping-testpilot@mozilla.org.priceCheckInterval</code></dt>
+  <dd>(<code>integer</code>) Time to wait between price checks for a product in milliseconds.</dd>
+
+  <dt><code>extensions.shopping-testpilot@mozilla.org.priceCheckTimeoutInterval</code></dt>
+  <dd>(<code>integer</code>) Time to wait between checking if we should fetch new prices in milliseconds.</dd>
+
+  <dt><code>extensions.shopping-testpilot@mozilla.org.iframeTimeout</code></dt>
+  <dd>(<code>integer</code>) Delay before removing iframes created during price checks in milliseconds.</dd>
+
+  <dt><code>extensions.shopping-testpilot@mozilla.org.alertPercentThreshold</code></dt>
+  <dd>(<code>integer</code>) The percentage drop in price on which to trigger a price alert compared to the last high price (See <code>price_last_high</code> in [METRICS.md](./docs/METRICS.md)).</dd>
+
+  <dt><code>extensions.shopping-testpilot@mozilla.org.alertAbsoluteThreshold</code></dt>
+  <dd>(<code>integer</code>) The absolute drop in price on which to trigger a price alert compared to the last high price (see `price_last_high` in [METRICS.md](./docs/METRICS.md)) in currency subunits (e.g. cents for USD).</dd>
+</dl>
+
 
 ## Releasing a New Version
 
@@ -97,24 +149,7 @@ You can follow along with the build and upload progress for the new release on t
 [signing]: https://help.github.com/articles/signing-commits/
 [CircleCI dashboard]: https://circleci.com/dashboard
 
-## Code Organization
-
-- `src/background` contains the background scripts that trigger UI elements (such as the page action) and periodically check for price updates.
-- `src/browser_action` contains the toolbar popup for managing the list of currently-tracked products and tracking new products.
-- `src/extraction` contains the content scripts that extract product information from product web pages.
-- `src/state` contains the Redux-based code for managing global extension state.
-- `src/tests` contains the automated test suite.
-
-### Data Storage
-
-Global state for the add-on is managed via [Redux][]. Any time the data is changed, it is persisted to the [add-on local storage][localstorage].
-
-Reducers, action creators, etc. are organized into [ducks][] inside the `src/state` directory.
-
-[Redux]: https://redux.js.org/
-[localstorage]: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/local
-[ducks]: https://github.com/erikras/ducks-modular-redux
 
 ## License
 
-The Commerce WebExtension is licensed under the MPL v2.0. See `LICENSE` for details.
+The Commerce WebExtension is licensed under the MPL v2.0. See [`LICENSE`](LICENSE) for details.
