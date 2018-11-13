@@ -76,7 +76,7 @@ const CONFIG = {
   supportUrl: new StringValue('https://support.mozilla.org/kb/new-test-pilot-experiments'),
 
   /** URL for the add-on's feedback form */
-  feedbackUrl: new StringValue('https://www.surveygizmo.com/s3/4649085/Price-Wise-Feedback'),
+  feedbackUrl: new StringValue('https://qsurvey.mozilla.com/s3/price-wise'),
 
   /** List of domains that extraction is performed on. */
   extractionAllowlist: new ListValue([
