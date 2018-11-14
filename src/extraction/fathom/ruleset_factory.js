@@ -101,7 +101,7 @@ export default class RulesetFactory {
    * Scores fnode by its vertical location relative to the fold
    */
   isAboveTheFold(fnode, featureCoeff) {
-    const viewportHeight = window.innerHeight;
+    const viewportHeight = 950;
     const imageTop = fnode.element.getBoundingClientRect().top;
 
     // Stop giving additional bonus for anything closer than 200px to the top
