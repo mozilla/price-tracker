@@ -33,6 +33,8 @@ export default class RulesetFactory {
       this.isNearbyImageYAxisTitleCoeff,
       this.bigFontCoeff,
       this.bigImageCoeff,
+      this.extremeAspectCoeff,
+      this.backgroundIdImageCoeff
     ] = coefficients;
   }
 
@@ -64,9 +66,14 @@ export default class RulesetFactory {
     return (fnode.element.innerText.includes('$') ? ONEISH : ZEROISH) ** this.hasDollarSignCoeff;
   }
 
-  /** Return a confidence of whether "price" is a word within a given string. */
+  /** Return whether some substring is within a given string, case insensitively. */
+  doesContain(haystack, needle) {
+    return haystack.toLowerCase().includes(needle);
+  }
+
+  /** Return a weighted confidence of whether a substring is within a given string, case insensitively. */
   contains(haystack, needle, coeff) {
-    return (haystack.toLowerCase().includes(needle) ? ONEISH : ZEROISH) ** coeff;
+    return (this.doesContain(haystack, needle) ? ONEISH : ZEROISH) ** coeff;
   }
 
   /**
@@ -232,6 +239,15 @@ export default class RulesetFactory {
   }
 
   /**
+   * Return the aspect ratio of a fnode's client rect, with horizontal and
+   * vertical rearranged so it's always >=1.
+   */
+  aspectRatio(element) {
+    const rect = element.getBoundingClientRect();
+    return (rect.width > rect.height) ? (rect.width / rect.height) : (rect.height / rect.width);
+  }
+
+  /**
   * Using coefficients passed into the constructor method, returns a weighted
   * ruleset used to score elements in an HTML document.
   */
@@ -249,6 +265,11 @@ export default class RulesetFactory {
       rule(type('imageish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldImageCoeff))),
       // better score for larger images
       rule(type('imageish'), score(this.isBig.bind(this))),
+      // punishment for extreme aspect ratios, to filter out banners or nav elements
+      rule(type('imageish'), score(fnode => trapezoid(this.aspectRatio(fnode.element), 10, 5) ** this.extremeAspectCoeff)),
+      // no background images, even ones that have reasonable aspect ratios
+      // TODO: If necessary, also look at parents. I've seen them say "background" in their IDs as well.
+      rule(type('imageish'), score(fnode => (this.doesContain(fnode.element.id, 'background') ? (ZEROISH ** this.backgroundIdImageCoeff) : 1))),
       // return image element(s) with max score
       rule(type('imageish').max(), out('image')),
 
