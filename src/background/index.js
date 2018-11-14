@@ -70,7 +70,7 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
   // TODO(osmose): Remove once Firefox 64 hits the release channel.
   browser.webRequest.onCompleted.addListener(
     (details) => {
-      if (details.tabId) {
+      if (details.tabId && details.tabId !== browser.tabs.TAB_ID_NONE) {
         browser.tabs.sendMessage(details.tabId, {type: 'resend-product'});
       }
     },
