@@ -99,6 +99,7 @@ export function isValidExtractedProduct(extractedProduct) {
 export const ADD_PRODUCT = 'commerce/products/ADD_PRODUCT'; // Used by price duck
 const SET_DELETION_FLAG = 'commerce/products/SET_DELETION_FLAG';
 export const REMOVE_MARKED_PRODUCTS = 'commerce/products/REMOVE_MARKED_PRODUCTS';
+const UPDATE_PRODUCT = 'commerce/products/UPDATE_PRODUCT';
 
 // Reducer
 
@@ -135,6 +136,21 @@ export default function reducer(state = initialState(), action) {
       return {
         ...state,
         products: state.products.filter(product => !product.isDeleted),
+      };
+    }
+    case UPDATE_PRODUCT: {
+      const updatedProduct = getProductFromExtracted(
+        {...action.extractedProductData},
+        action.anonId,
+      );
+      return {
+        ...state,
+        products: state.products.map((product) => {
+          if (product.id === action.productId) {
+            return {...updatedProduct};
+          }
+          return product;
+        }),
       };
     }
     default:
@@ -179,6 +195,19 @@ export function setDeletionFlag(productId, deletionFlag) {
 export function removeMarkedProducts() {
   return {
     type: REMOVE_MARKED_PRODUCTS,
+  };
+}
+
+/**
+ * Update an existing product in the store.
+ * @param {ExtractedProduct} data
+ */
+export function updateProductFromExtracted(data, productId, anonId) {
+  return {
+    type: UPDATE_PRODUCT,
+    extractedProductData: data,
+    productId,
+    anonId,
   };
 }
 
