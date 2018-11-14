@@ -115,7 +115,7 @@ export default class RulesetFactory {
    * Return whether the potential title is near the top or bottom of the
    * highest-scoring image.
    *
-   * This is a makeshift ORing 2 signals: a "near the top" and a "near the
+   * This is a makeshift ORing of 2 signals: a "near the top" and a "near the
    * bottom" one.
    */
   isNearImageTopOrBottom(fnode) {
@@ -244,7 +244,7 @@ export default class RulesetFactory {
       rule(dom('img').when(this.isVisible.bind(this)), type('imageish')),
       // and divs, which sometimes have CSS background-images
       // TODO: Consider a bonus for <img> tags.
-      rule(dom('div').when((fnode) => this.isVisible(fnode) && this.hasBackgroundImage(fnode)), type('imageish')),
+      rule(dom('div').when(fnode => this.isVisible(fnode) && this.hasBackgroundImage(fnode)), type('imageish')),
       // better score the closer the element is to the top of the page
       rule(type('imageish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldImageCoeff))),
       // better score for larger images
@@ -253,8 +253,8 @@ export default class RulesetFactory {
       rule(type('imageish').max(), out('image')),
 
       /**
-      * Title rules
-      */
+       * Title rules
+       */
       // consider all eligible h1 elements
       rule(dom('h1').when(this.isEligibleTitle.bind(this)), type('titleish')),
       // better score based on y-axis proximity to max scoring image element
@@ -263,8 +263,8 @@ export default class RulesetFactory {
       rule(type('titleish').max(), out('title')),
 
       /**
-      * Price rules
-      */
+       * Price rules
+       */
       // 72% by itself, at [4, 4, 4, 4...]!:
       // consider all eligible span and h2 elements
       rule(dom('span, h2').when(this.isEligiblePrice.bind(this)), type('priceish')),
