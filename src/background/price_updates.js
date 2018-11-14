@@ -11,7 +11,7 @@ import config from 'commerce/config';
 import store from 'commerce/state';
 import {shouldUpdatePrices} from 'commerce/privacy';
 import {addPriceFromExtracted, getLatestPriceForProduct, getOldestPriceForProduct} from 'commerce/state/prices';
-import {getAllProducts, getProduct, getProductIdFromExtracted} from 'commerce/state/products';
+import {getAllProducts, getProduct, getProductIdFromExtracted, updateProductFromExtracted} from 'commerce/state/products';
 import {wait} from 'commerce/utils';
 import {recordEvent} from 'commerce/telemetry/extension';
 
@@ -82,8 +82,8 @@ async function fetchLatestPrice(product, delay) {
 }
 
 /**
- * If we have a saved product matching the extracted data, update the
- * price history with the latest price.
+ * If we have a saved product matching the extracted data, update the product
+ * information and price history with the latest price.
  * @param {ExtractedProduct} data
  */
 export async function updateProductWithExtracted(data) {
@@ -91,6 +91,10 @@ export async function updateProductWithExtracted(data) {
   const id = getProductIdFromExtracted(data);
   const product = getProduct(state, id);
   if (product) {
+    // Update all product information (except product ids) in case they have changed
+    await store.dispatch(updateProductFromExtracted(data, id, product.anonId));
+
+    // Add new price
     const price = await store.dispatch(addPriceFromExtracted(data));
     if (price) {
       // Record the detect_price_change event
