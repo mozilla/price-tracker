@@ -44,18 +44,7 @@ export async function shouldCollectTelemetry(method) {
  * @return {boolean}
  */
 export async function shouldUpdatePrices() {
-  if (await trackingProtectionEnabled()) {
-    return false;
-  }
-
-  if (doNotTrackEnabled()) {
-    return false;
-  }
-
-  if (await cookiesBlocked()) {
-    return false;
-  }
-
+  // TODO (bdanforth): Add private browsing check per #177
   return true;
 }
 
