@@ -39,7 +39,7 @@ export default class RulesetFactory {
   /**
    * Scores fnode in direct proportion to its size
    */
-  imageIsBig(fnode) {
+  nodeIsBig(fnode) {
     const domRect = fnode.element.getBoundingClientRect();
     const area = domRect.width * domRect.height;
 
@@ -226,6 +226,11 @@ export default class RulesetFactory {
     return true;
   }
 
+  hasBackgroundImage(fnode) {
+    const bgImage = getComputedStyle(fnode.element)['background-image'];
+    return !!bgImage && bgImage !== 'none';
+  }
+
   /**
   * Using coefficients passed into the constructor method, returns a weighted
   * ruleset used to score elements in an HTML document.
@@ -237,10 +242,13 @@ export default class RulesetFactory {
        */
       // consider all visible img elements
       rule(dom('img').when(this.isVisible.bind(this)), type('imageish')),
+      // and divs, which sometimes have CSS background-images
+      // TODO: Consider a bonus for <img> tags.
+      rule(dom('div').when((fnode) => this.isVisible(fnode) && this.hasBackgroundImage(fnode)), type('imageish')),
       // better score the closer the element is to the top of the page
       rule(type('imageish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldImageCoeff))),
       // better score for larger images
-      rule(type('imageish'), score(this.imageIsBig.bind(this))),
+      rule(type('imageish'), score(this.nodeIsBig.bind(this))),
       // return image element(s) with max score
       rule(type('imageish').max(), out('image')),
 
