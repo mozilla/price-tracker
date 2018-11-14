@@ -39,7 +39,7 @@ export default class RulesetFactory {
   /**
    * Scores fnode in direct proportion to its size
    */
-  nodeIsBig(fnode) {
+  isBig(fnode) {
     const domRect = fnode.element.getBoundingClientRect();
     const area = domRect.width * domRect.height;
 
@@ -248,7 +248,7 @@ export default class RulesetFactory {
       // better score the closer the element is to the top of the page
       rule(type('imageish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldImageCoeff))),
       // better score for larger images
-      rule(type('imageish'), score(this.nodeIsBig.bind(this))),
+      rule(type('imageish'), score(this.isBig.bind(this))),
       // return image element(s) with max score
       rule(type('imageish').max(), out('image')),
 
