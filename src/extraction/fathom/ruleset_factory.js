@@ -65,7 +65,7 @@ export default class RulesetFactory {
   }
 
   /** Return a confidence of whether "price" is a word within a given string. */
-  hasPriceIn(haystack, needle, coeff) {
+  contains(haystack, needle, coeff) {
     return (haystack.toLowerCase().includes(needle) ? ONEISH : ZEROISH) ** coeff;
   }
 
@@ -73,21 +73,21 @@ export default class RulesetFactory {
    * Scores fnode with 'price' in its id
    */
   hasPriceInID(fnode) {
-    return this.hasPriceIn(fnode.element.id, 'price', this.hasPriceInIDCoeff);
+    return this.contains(fnode.element.id, 'price', this.hasPriceInIDCoeff);
   }
 
   hasPriceInParentID(fnode) {
-    return this.hasPriceIn(fnode.element.parentElement.id, 'price', this.hasPriceInParentIDCoeff);
+    return this.contains(fnode.element.parentElement.id, 'price', this.hasPriceInParentIDCoeff);
   }
 
   /** Scores fnode with 'price' in its class name */
   hasPriceInClassName(fnode) {
-    return this.hasPriceIn(fnode.element.className, 'price', this.hasPriceInClassNameCoeff);
+    return this.contains(fnode.element.className, 'price', this.hasPriceInClassNameCoeff);
   }
 
   /** Scores fnode with 'price' in its class name */
   hasPriceInParentClassName(fnode) {
-    return this.hasPriceIn(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
+    return this.contains(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
   }
 
   /**
