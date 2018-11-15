@@ -21,8 +21,10 @@ body {
 }
 
 #browser-action-app {
-  min-width: 320px;
-  max-width: 400px; /* Overflow menu popup width exceeds 320px and cannot be changed */
+  width: 320px;
+}
+
+#browser-action-app.overflow {
   width: 100%;
 }
 

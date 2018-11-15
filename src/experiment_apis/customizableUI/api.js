@@ -5,6 +5,7 @@
 
 this.customizableUI = class extends ExtensionAPI {
   getAPI(context) {
+    const {Services} = ChromeUtils.import('resource://gre/modules/Services.jsm');
     ChromeUtils.import('resource://gre/modules/ExtensionCommon.jsm');
     const {EventManager} = ExtensionCommon;
     const {CustomizableUI} = ChromeUtils.import('resource:///modules/CustomizableUI.jsm', {});
@@ -25,6 +26,10 @@ this.customizableUI = class extends ExtensionAPI {
             };
           },
         ).api(),
+        async isWidgetInOverflow(widgetId) {
+          const browserWindow = Services.wm.getMostRecentWindow('navigator:browser');
+          return CustomizableUI.getWidget(widgetId).forWindow(browserWindow).overflowed;
+        },
       },
     };
   }

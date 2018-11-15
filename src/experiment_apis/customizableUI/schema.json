@@ -14,6 +14,21 @@
           }
         ]
       }
+    ],
+    "functions": [
+      {
+        "name": "isWidgetInOverflow",
+        "type": "function",
+        "description": "Returns a boolean for whether or not the provided widget in the provided window is in the overflow menu or not.",
+        "async": true,
+        "parameters": [
+          {
+            "name": "widgetId",
+            "type": "string",
+            "description": "The id of the widget to check."
+          }
+        ]
+      }
     ]
   }
 ]
