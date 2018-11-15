@@ -31,7 +31,7 @@ trainees.set('image', {
 });
 trainees.set('title', commonRuleset);
 trainees.set('price', {
-    coeffs: [2, 7, -2, 5, -4, 3, -17, 4, 15],
+    coeffs: [2, 7, -2, 6, -3, 5, -17, 4, 16],
     viewportSize,
     rulesetMaker: coeffs => (new RulesetFactory([coeffs[0], coeffs[1], coeffs[2], coeffs[3], coeffs[4], coeffs[5], commonRuleset.coeffs[6], coeffs[6], coeffs[7], commonRuleset.coeffs[9], coeffs[8], commonRuleset.coeffs[11], commonRuleset.coeffs[12], commonRuleset.coeffs[13]])).makeRuleset()
 });
