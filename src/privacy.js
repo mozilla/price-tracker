@@ -44,8 +44,7 @@ export async function shouldCollectTelemetry(method) {
  * @return {boolean}
  */
 export async function shouldUpdatePrices() {
-  // TODO (bdanforth): Add private browsing check per #177
-  return true;
+  return !isActiveWindowPrivate();
 }
 
 async function trackingProtectionEnabled() {
@@ -68,4 +67,9 @@ async function cookiesBlocked() {
   }
 
   return true;
+}
+
+async function isActiveWindowPrivate() {
+  const activeWindow = await browser.windows.getCurrent();
+  return activeWindow.incognito;
 }
