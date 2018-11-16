@@ -18,7 +18,7 @@ const trainees = new Map();
 const viewportSize = {width: 1680, height: 950};
 
 const commonRuleset = {
-    coeffs: [2, 7, -2, 5, -4, 3, 5, -17, 4, 5, 15, 9, 3, 4],
+    coeffs: [3, 7, -1, 8, -2, 4, 5, -19, 4, 5, -19, 9, 3, 4],
     viewportSize,
     rulesetMaker: coeffs => (new RulesetFactory(coeffs)).makeRuleset()
 };
