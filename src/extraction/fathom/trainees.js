@@ -44,9 +44,9 @@ const trainees = new Map();
 const viewportSize = {width: 1680, height: 950};
 
 const commonRuleset = {
-    coeffs,
-    viewportSize,
-    rulesetMaker: coeffs => (new RulesetFactory(coeffs)).makeRuleset()
+  coeffs,
+  viewportSize,
+  rulesetMaker: coefficients => (new RulesetFactory(coefficients)).makeRuleset(),
 };
 
 trainees.set('image', commonRuleset);

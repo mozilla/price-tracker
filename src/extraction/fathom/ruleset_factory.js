@@ -34,7 +34,7 @@ export default class RulesetFactory {
       this.isAboveTheFoldImageCoeff,
       this.isAboveTheFoldPriceCoeff,
       this.isNearbyImageYAxisTitleCoeff,
-      this.isNearImageCoeff
+      this.isNearImageCoeff,
     ] = coefficients;
   }
 
@@ -71,7 +71,9 @@ export default class RulesetFactory {
     return haystack.toLowerCase().includes(needle);
   }
 
-  /** Return a weighted confidence of whether a substring is within a given string, case insensitively. */
+  /** Return a weighted confidence of whether a substring is within a given
+   *  string, case insensitively.
+   */
   contains(haystack, needle, coeff) {
     return (this.doesContain(haystack, needle) ? ONEISH : ZEROISH) ** coeff;
   }
@@ -266,9 +268,11 @@ export default class RulesetFactory {
       // better score for larger images
       rule(type('imageish'), score(this.isBig.bind(this))),
       // punishment for extreme aspect ratios, to filter out banners or nav elements
-      rule(type('imageish'), score(fnode => trapezoid(this.aspectRatio(fnode.element), 10, 5) ** this.extremeAspectCoeff)),
+      rule(type('imageish'), score(fnode => trapezoid(this.aspectRatio(fnode.element), 10, 5)
+                                            ** this.extremeAspectCoeff)),
       // no background images, even ones that have reasonable aspect ratios
-      // TODO: If necessary, also look at parents. I've seen them say "background" in their IDs as well.
+      // TODO: If necessary, also look at parents. I've seen them say
+      // "background" in their IDs as well.
       rule(type('imageish'), score(fnode => (this.doesContain(fnode.element.id, 'background') ? (ZEROISH ** this.backgroundIdImageCoeff) : 1))),
       // return image element(s) with max score
       rule(type('imageish').max(), out('image')),
@@ -339,20 +343,22 @@ export default class RulesetFactory {
  * to the right, use a zeroAt greater than oneAt.
  */
 function trapezoid(number, zeroAt, oneAt) {
-    const isRising = zeroAt < oneAt;
-    if (isRising) {
-        if (number <= zeroAt) {
-            return ZEROISH;
-        } else if (number >= oneAt) {
-            return ONEISH;
-        }
-    } else {
-        if (number >= zeroAt) {
-            return ZEROISH;
-        } else if (number <= oneAt) {
-            return ONEISH;
-        }
+  const isRising = zeroAt < oneAt;
+  if (isRising) {
+    if (number <= zeroAt) {
+      return ZEROISH;
     }
-    const slope = (ONEISH - ZEROISH) / (oneAt - zeroAt);
-    return slope * (number - zeroAt) + ZEROISH;
+    if (number >= oneAt) {
+      return ONEISH;
+    }
+  } else {
+    if (number >= zeroAt) {
+      return ZEROISH;
+    }
+    if (number <= oneAt) {
+      return ONEISH;
+    }
+  }
+  const slope = (ONEISH - ZEROISH) / (oneAt - zeroAt);
+  return slope * (number - zeroAt) + ZEROISH;
 }
