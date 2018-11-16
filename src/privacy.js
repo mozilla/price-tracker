@@ -7,6 +7,8 @@
  * @module
  */
 
+import {CATEGORY_3_EVENTS} from 'commerce/telemetry/events';
+
 /**
  * Determine if a content script should extract a product.
  * @return {boolean}
@@ -19,17 +21,19 @@ export async function shouldExtract() {
  * Determine if a telemetry event should be recorded
  * @return {boolean}
  */
-export async function shouldCollectTelemetry() {
-  if (await trackingProtectionEnabled()) {
-    return false;
-  }
+export async function shouldCollectTelemetry(method) {
+  if (CATEGORY_3_EVENTS.hasOwnProperty(method)) {
+    if (await trackingProtectionEnabled()) {
+      return false;
+    }
 
-  if (doNotTrackEnabled()) {
-    return false;
-  }
+    if (doNotTrackEnabled()) {
+      return false;
+    }
 
-  if (await cookiesBlocked()) {
-    return false;
+    if (await cookiesBlocked()) {
+      return false;
+    }
   }
 
   return true;
@@ -40,18 +44,7 @@ export async function shouldCollectTelemetry() {
  * @return {boolean}
  */
 export async function shouldUpdatePrices() {
-  if (await trackingProtectionEnabled()) {
-    return false;
-  }
-
-  if (doNotTrackEnabled()) {
-    return false;
-  }
-
-  if (await cookiesBlocked()) {
-    return false;
-  }
-
+  // TODO (bdanforth): Add private browsing check per #177
   return true;
 }
 
