@@ -21,20 +21,20 @@ export default class RulesetFactory {
    */
   constructor(coefficients) {
     [
+      this.backgroundIdImageCoeff,
+      this.bigFontCoeff,
+      this.bigImageCoeff,
+      this.extremeAspectCoeff,
       this.hasDollarSignCoeff,
       this.hasPriceInClassNameCoeff,
-      this.hasPriceInParentClassNameCoeff,
       this.hasPriceInIDCoeff,
+      this.hasPriceInParentClassNameCoeff,
       this.hasPriceInParentIDCoeff,
       this.hasPriceishPatternCoeff,
       this.isAboveTheFoldImageCoeff,
       this.isAboveTheFoldPriceCoeff,
-      this.isNearImageCoeff,
       this.isNearbyImageYAxisTitleCoeff,
-      this.bigFontCoeff,
-      this.bigImageCoeff,
-      this.extremeAspectCoeff,
-      this.backgroundIdImageCoeff
+      this.isNearImageCoeff
     ] = coefficients;
   }
 
@@ -53,7 +53,7 @@ export default class RulesetFactory {
     return trapezoid(area, 80 ** 2, 1000 ** 2) ** this.bigImageCoeff;
   }
 
-  /** Return whether a  */
+  /** Return whether the computed font size of an element is big. */
   fontIsBig(fnode) {
     const size = parseInt(getComputedStyle(fnode.element).fontSize, 10);
     return trapezoid(size, 14, 50) ** this.bigFontCoeff;
