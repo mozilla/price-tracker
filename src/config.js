@@ -94,6 +94,12 @@ const CONFIG = {
     'mkelly.me',
     'www.mkelly.me',
   ]),
+
+  // TODO (bdanforth) Revert PR#278 after 11/26/18
+  /** Temporary Cyber Monday study UI feature flag */
+  enableStudyUI: new BoolValue(true),
+  /** URL for the study's recruitment survey */
+  studyUrl: new StringValue('https://qsurvey.mozilla.com/s3/Price-Wise-Research-Study'),
 };
 
 export default {

@@ -13,6 +13,8 @@ import TrackedProductList from 'commerce/browser_action/components/TrackedProduc
 import {extractedProductShape, getAllProducts, productShape} from 'commerce/state/products';
 import * as syncActions from 'commerce/state/sync';
 import {recordEvent, getBadgeType} from 'commerce/telemetry/extension';
+import StudyInvitation from 'commerce/browser_action/components/StudyInvitation';
+import StudyFooter from 'commerce/browser_action/components/StudyFooter';
 
 import 'commerce/browser_action/components/BrowserActionApp.css';
 
@@ -49,6 +51,8 @@ export default class BrowserActionApp extends React.Component {
     super(props);
     this.state = {
       extractedProduct: props.extractedProduct,
+      showStudyInvitation: false,
+      enableStudyUI: false,
     };
   }
 
@@ -60,6 +64,8 @@ export default class BrowserActionApp extends React.Component {
         this.setState({extractedProduct: message.extractedProduct});
       }
     });
+
+    this.setState({enableStudyUI: await config.get('enableStudyUI')});
 
     await recordEvent('open_popup', 'toolbar_button', null, {badge_type: await getBadgeType()});
   }
@@ -82,9 +88,40 @@ export default class BrowserActionApp extends React.Component {
     window.close();
   }
 
+  /**
+   * Show the Study popup when the StudyFooter is clicked
+   */
+  handleClickStudy() {
+    this.setState({showStudyInvitation: true});
+  }
+
+  /**
+   * Return to the TrackedProductList when the back button on the Study popup is clicked
+   */
+  handleClickBack() {
+    this.setState({showStudyInvitation: false});
+  }
+
+  /**
+   * Open the Study recruitment survey page and close the panel when the participate button
+   * in the Study popup is clicked
+   */
+  async handleClickParticipate() {
+    browser.tabs.create({url: await config.get('studyUrl')});
+    window.close();
+  }
+
   render() {
     const {products} = this.props;
-    const {extractedProduct} = this.state;
+    const {extractedProduct, showStudyInvitation, enableStudyUI} = this.state;
+    if (showStudyInvitation) {
+      return (
+        <StudyInvitation
+          onClickBack={this.handleClickBack}
+          onClickParticipate={this.handleClickParticipate}
+        />
+      );
+    }
     return (
       <React.Fragment>
         <div className="title-bar">
@@ -115,7 +152,10 @@ export default class BrowserActionApp extends React.Component {
             <EmptyOnboarding extractedProduct={extractedProduct} />
           )
           : (
-            <TrackedProductList products={products} extractedProduct={extractedProduct} />
+            <React.Fragment>
+              <TrackedProductList products={products} extractedProduct={extractedProduct} />
+              {enableStudyUI ? <StudyFooter onClick={this.handleClickStudy} /> : null}
+            </React.Fragment>
           )}
       </React.Fragment>
     );
