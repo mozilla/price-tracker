@@ -52,6 +52,7 @@ export default class BrowserActionApp extends React.Component {
     this.state = {
       extractedProduct: props.extractedProduct,
       showStudyInvitation: false,
+      enableStudyUI: false,
     };
   }
 
@@ -63,6 +64,8 @@ export default class BrowserActionApp extends React.Component {
         this.setState({extractedProduct: message.extractedProduct});
       }
     });
+
+    this.setState({enableStudyUI: await config.get('enableStudyUI')});
 
     await recordEvent('open_popup', 'toolbar_button', null, {badge_type: await getBadgeType()});
   }
@@ -103,14 +106,14 @@ export default class BrowserActionApp extends React.Component {
    * Open the Study recruitment survey page and close the panel when the participate button
    * in the Study popup is clicked
    */
-  handleClickParticipate() {
-    browser.tabs.create({url: 'https://www.surveygizmo.com/s3/4693160/Price-Wise-Research-Study-Participant-Screener'});
+  async handleClickParticipate() {
+    browser.tabs.create({url: await config.get('studyUrl')});
     window.close();
   }
 
   render() {
     const {products} = this.props;
-    const {extractedProduct, showStudyInvitation} = this.state;
+    const {extractedProduct, showStudyInvitation, enableStudyUI} = this.state;
     if (showStudyInvitation) {
       return (
         <StudyInvitation
@@ -151,7 +154,7 @@ export default class BrowserActionApp extends React.Component {
           : (
             <React.Fragment>
               <TrackedProductList products={products} extractedProduct={extractedProduct} />
-              <StudyFooter onClick={this.handleClickStudy} />
+              {enableStudyUI ? <StudyFooter onClick={this.handleClickStudy} /> : null}
             </React.Fragment>
           )}
       </React.Fragment>
