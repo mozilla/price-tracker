@@ -4,7 +4,16 @@
 
 /** Study footer styles */
 
-.menu-item.study {
+.menu-item.study:enabled {
   justify-content: center;
   border-top: 1px solid var(--grey-30);
+  background-color: var(--grey-90-a10);
+}
+
+.menu-item.study:enabled:hover {
+  background-color: var(--grey-90-a20);
+}
+
+.menu-item.study:enabled:active {
+  background-color: var(--grey-90-a30);
 }
