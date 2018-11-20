@@ -119,8 +119,8 @@ export default class RulesetFactory {
    * scoring image.
    */
   isNearImage(fnode) {
-    const image = this.getHighestScoringImage(fnode);
-    return linearScale(euclidean(fnode, image), 1000, 0) ** this.isNearImageCoeff;
+    const imageFnode = this.getHighestScoringImage(fnode);
+    return linearScale(euclidean(fnode, imageFnode), 1000, 0) ** this.isNearImageCoeff;
   }
 
   /**
@@ -131,8 +131,8 @@ export default class RulesetFactory {
    * bottom" one.
    */
   isNearImageTopOrBottom(fnode) {
-    const image = this.getHighestScoringImage(fnode).element;
-    const imageRect = image.getBoundingClientRect();
+    const imageElement = this.getHighestScoringImage(fnode).element;
+    const imageRect = imageElement.getBoundingClientRect();
     const nodeRect = fnode.element.getBoundingClientRect();
 
     // Should cover title above image and title in a column next to image.
