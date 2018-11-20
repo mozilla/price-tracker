@@ -44,11 +44,10 @@ const PRODUCT_FEATURES = {
       }
       if (element.tagName === 'IMG') {
         return element.src;
-      } else {
-        // The other thing the ruleset can return is an arbitrary element with
-        // a CSS background image.
-        return urlFromCssDeclaration(getComputedStyle(element)['background-image']);
       }
+      // The other thing the ruleset can return is an arbitrary element with
+      // a CSS background image.
+      return urlFromCssDeclaration(getComputedStyle(element)['background-image']);
     },
   },
   title: {
