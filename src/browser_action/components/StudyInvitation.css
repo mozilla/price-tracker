@@ -1,0 +1,52 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/** Components for the StudyInvitation screen */
+
+.title-bar.study {
+  justify-content: flex-start;
+  position: relative;
+}
+
+.title-bar.study .title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.study-invitation {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 16px;
+  text-align: center;
+}
+
+.study-invitation .hero {
+  height: 123px;
+  width: 142px;
+}
+
+.study-invitation .description {
+  margin: 0;
+}
+
+.study-invitation .participate.button {
+  width: 100%;
+}
+
+.participate.button:enabled {
+  color: var(--white-100);
+  background-color: var(--blue-60);
+}
+
+.participate.button:hover:enabled {
+  background: var(--blue-70);
+}
+
+.participate.button:active:enabled {
+  background: var(--blue-80);
+}
