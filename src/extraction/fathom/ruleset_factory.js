@@ -66,7 +66,7 @@ export default class RulesetFactory {
    * Return whether some substring is within a given string, case
    * insensitively.
    */
-  doesContain(haystack, needle) {
+  caselessIncludes(haystack, needle) {
     return haystack.toLowerCase().includes(needle);
   }
 
@@ -74,27 +74,27 @@ export default class RulesetFactory {
    * Return a weighted confidence of whether a substring is within a given
    * string, case insensitively.
    */
-  contains(haystack, needle, coeff) {
-    return (this.doesContain(haystack, needle) ? ONEISH : ZEROISH) ** coeff;
+  weightedIncludes(haystack, needle, coeff) {
+    return (this.caselessIncludes(haystack, needle) ? ONEISH : ZEROISH) ** coeff;
   }
 
   /** Scores fnode with 'price' in its id */
   hasPriceInID(fnode) {
-    return this.contains(fnode.element.id, 'price', this.hasPriceInIDCoeff);
+    return this.weightedIncludes(fnode.element.id, 'price', this.hasPriceInIDCoeff);
   }
 
   hasPriceInParentID(fnode) {
-    return this.contains(fnode.element.parentElement.id, 'price', this.hasPriceInParentIDCoeff);
+    return this.weightedIncludes(fnode.element.parentElement.id, 'price', this.hasPriceInParentIDCoeff);
   }
 
   /** Scores fnode with 'price' in its class name */
   hasPriceInClassName(fnode) {
-    return this.contains(fnode.element.className, 'price', this.hasPriceInClassNameCoeff);
+    return this.weightedIncludes(fnode.element.className, 'price', this.hasPriceInClassNameCoeff);
   }
 
   /** Scores fnode with 'price' in its class name */
   hasPriceInParentClassName(fnode) {
-    return this.contains(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
+    return this.weightedIncludes(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
   }
 
   /** Scores fnode by its vertical location relative to the fold */
@@ -265,7 +265,7 @@ export default class RulesetFactory {
       // no background images, even ones that have reasonable aspect ratios
       // TODO: If necessary, also look at parents. I've seen them say
       // "background" in their IDs as well.
-      rule(type('imageish'), score(fnode => (this.doesContain(fnode.element.id, 'background') ? (ZEROISH ** this.backgroundIdImageCoeff) : 1))),
+      rule(type('imageish'), score(fnode => (this.caselessIncludes(fnode.element.id, 'background') ? (ZEROISH ** this.backgroundIdImageCoeff) : 1))),
       // return image element(s) with max score
       rule(type('imageish').max(), out('image')),
 
