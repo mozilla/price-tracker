@@ -40,36 +40,17 @@ const coeffs = RulesetFactory.getCoeffsInOrder(defaultCoefficients);
  *   re-freezed, and there are non-obvious side effects in the diff (an issue with
  *   the freeze-dried library Fathom uses).
  */
+const trainees = new Map();
+const viewportSize = {width: 1680, height: 950};
 
-function rulesetMaker(coefficients) {
-  // The coefficients are updated over time during training, so create a new factory for
-  // each iteration
-  const rulesetFactory = new RulesetFactory(coefficients);
-  return rulesetFactory.makeRuleset();
-}
+const commonRuleset = {
+  coeffs,
+  viewportSize,
+  rulesetMaker: coefficients => (new RulesetFactory(coefficients)).makeRuleset(),
+};
 
-const trainees = new Map([
-  [
-    'image',
-    {
-      coeffs,
-      rulesetMaker,
-    },
-  ],
-  [
-    'title',
-    {
-      coeffs,
-      rulesetMaker,
-    },
-  ],
-  [
-    'price',
-    {
-      coeffs,
-      rulesetMaker,
-    },
-  ],
-]);
+trainees.set('image', commonRuleset);
+trainees.set('title', commonRuleset);
+trainees.set('price', commonRuleset);
 
 export default trainees;

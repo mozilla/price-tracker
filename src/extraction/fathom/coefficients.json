@@ -1,12 +1,16 @@
 {
-  "hasDollarSignCoeff": 8,
-  "hasPriceInClassNameCoeff": 2,
-  "hasPriceInIDCoeff": 17,
-  "hasPriceishPatternCoeff": 15,
-  "isAboveTheFoldImageCoeff": 13,
-  "isAboveTheFoldPriceCoeff": 33,
-  "isNearbyImageXAxisPriceCoeff": 5,
+  "backgroundIdImageCoeff": 4,
+  "bigFontCoeff": 14,
+  "bigImageCoeff": 9,
+  "extremeAspectCoeff": 3,
+  "hasDollarSignCoeff": 3,
+  "hasPriceInClassNameCoeff": 7,
+  "hasPriceInIDCoeff": 8,
+  "hasPriceInParentClassNameCoeff": -1,
+  "hasPriceInParentIDCoeff": -2,
+  "hasPriceishPatternCoeff": 4,
+  "isAboveTheFoldImageCoeff": 5,
+  "isAboveTheFoldPriceCoeff": -19,
   "isNearbyImageYAxisTitleCoeff": 5,
-  "largerFontSizeCoeff": 7,
-  "largerImageCoeff": 2
+  "isNearImageCoeff": 4
 }
