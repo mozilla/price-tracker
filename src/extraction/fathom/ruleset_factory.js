@@ -236,7 +236,7 @@ export default class RulesetFactory {
 
   hasBackgroundImage(fnode) {
     const bgImage = getComputedStyle(fnode.element)['background-image'];
-    return !!bgImage && bgImage !== 'none';
+    return bgImage && bgImage !== 'none';
   }
 
   /**
