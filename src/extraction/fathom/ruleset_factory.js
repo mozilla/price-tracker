@@ -78,6 +78,13 @@ export default class RulesetFactory {
     return (this.caselessIncludes(haystack, needle) ? ONEISH : ZEROISH) ** coeff;
   }
 
+  /**
+   * Punish elements with "background" in their ID. Do nothing to those without.
+   */
+  hasBackgroundInID(fnode) {
+    return this.caselessIncludes(fnode.element.id, 'background') ? (ZEROISH ** this.backgroundIdImageCoeff) : 1;
+  }
+
   /** Scores fnode with 'price' in its id */
   hasPriceInID(fnode) {
     return this.weightedIncludes(fnode.element.id, 'price', this.hasPriceInIDCoeff);
@@ -271,7 +278,7 @@ export default class RulesetFactory {
       // no background images, even ones that have reasonable aspect ratios
       // TODO: If necessary, also look at parents. I've seen them say
       // "background" in their IDs as well.
-      rule(type('imageish'), score(fnode => (this.caselessIncludes(fnode.element.id, 'background') ? (ZEROISH ** this.backgroundIdImageCoeff) : 1))),
+      rule(type('imageish'), score(this.hasBackgroundInID.bind(this))),
       // return image element(s) with max score
       rule(type('imageish').max(), out('image')),
 
