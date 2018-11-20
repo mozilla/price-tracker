@@ -40,8 +40,9 @@ const PRODUCT_FEATURES = {
        * Given a CSS url() declaration 'url("http://foo")', return 'http://foo'.
        */
       function urlFromCssDeclaration(declaration) {
-        return declaration.substring(5, declaration.length - 2);
+        return declaration.slice(5, -2);
       }
+
       if (element.tagName === 'IMG') {
         return element.src;
       }
