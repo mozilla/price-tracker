@@ -32,8 +32,23 @@ const FEATURE_DEFAULTS = {
 const PRODUCT_FEATURES = {
   image: {
     ...FEATURE_DEFAULTS,
+    /**
+     * @return the URL of an image resource
+     */
     getValueFromElement(element) {
-      return element.src;
+      /**
+       * Given a CSS url() declaration 'url("http://foo")', return 'http://foo'.
+       */
+      function urlFromCssDeclaration(declaration) {
+        return declaration.substring(5, declaration.length - 2);
+      }
+      if (element.tagName === 'IMG') {
+        return element.src;
+      } else {
+        // The other thing the ruleset can return is an arbitrary element with
+        // a CSS background image.
+        return urlFromCssDeclaration(getComputedStyle(element)['background-image']);
+      }
     },
   },
   title: {

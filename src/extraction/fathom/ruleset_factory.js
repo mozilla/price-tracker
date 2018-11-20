@@ -236,7 +236,9 @@ export default class RulesetFactory {
 
   hasBackgroundImage(fnode) {
     const bgImage = getComputedStyle(fnode.element)['background-image'];
-    return bgImage && bgImage !== 'none';
+    return bgImage && bgImage.startsWith('url("') && bgImage.endsWith('")');
+    // The app doesn't yet know how to deal with non-url() types of background
+    // images.
   }
 
   /**
