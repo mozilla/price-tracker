@@ -92,7 +92,7 @@ export default class RulesetFactory {
     return this.weightedIncludes(fnode.element.className, 'price', this.hasPriceInClassNameCoeff);
   }
 
-  /** Scores fnode with 'price' in its class name */
+  /** Scores fnode with 'price' in its parent's class name */
   hasPriceInParentClassName(fnode) {
     return this.weightedIncludes(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
   }
@@ -241,6 +241,11 @@ export default class RulesetFactory {
     return (rect.width > rect.height) ? (rect.width / rect.height) : (rect.height / rect.width);
   }
 
+  /** Give a bonus for elements that have a non-extreme aspect ratio. */
+  hasSquareAspectRatio(fnode) {
+    return linearScale(this.aspectRatio(fnode.element), 10, 5) ** this.extremeAspectCoeff;
+  }
+
   /**
   * Using coefficients passed into the constructor method, returns a weighted
   * ruleset used to score elements in an HTML document.
@@ -259,9 +264,10 @@ export default class RulesetFactory {
       rule(type('imageish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldImageCoeff))),
       // better score for larger images
       rule(type('imageish'), score(this.isBig.bind(this))),
-      // punishment for extreme aspect ratios, to filter out banners or nav elements
-      rule(type('imageish'), score(fnode => linearScale(this.aspectRatio(fnode.element), 10, 5)
-                                            ** this.extremeAspectCoeff)),
+      // bonus for non-extreme aspect ratios, to filter out banners or nav elements
+      // TODO: Meant to make this a penalty, but it turns out to work as is.
+      // Try as a penalty.
+      rule(type('imageish'), score(this.hasSquareAspectRatio.bind(this))),
       // no background images, even ones that have reasonable aspect ratios
       // TODO: If necessary, also look at parents. I've seen them say
       // "background" in their IDs as well.
