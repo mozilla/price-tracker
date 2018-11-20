@@ -50,13 +50,13 @@ export default class RulesetFactory {
     // (though we should have distinct penalties for that sort of thing if we
     // care). More importantly, clamp the upper bound of the score so we don't
     // overcome other bonuses and penalties.
-    return trapezoid(area, 80 ** 2, 1000 ** 2) ** this.bigImageCoeff;
+    return linearScale(area, 80 ** 2, 1000 ** 2) ** this.bigImageCoeff;
   }
 
   /** Return whether the computed font size of an element is big. */
   fontIsBig(fnode) {
     const size = parseInt(getComputedStyle(fnode.element).fontSize, 10);
-    return trapezoid(size, 14, 50) ** this.bigFontCoeff;
+    return linearScale(size, 14, 50) ** this.bigFontCoeff;
   }
 
   /**
@@ -108,7 +108,7 @@ export default class RulesetFactory {
 
     // Stop giving additional bonus for anything closer than 200px to the top
     // of the viewport. Those are probably usually headers.
-    return trapezoid(imageTop, viewportHeight * 2, 200) ** featureCoeff;
+    return linearScale(imageTop, viewportHeight * 2, 200) ** featureCoeff;
   }
 
   /**
@@ -117,7 +117,7 @@ export default class RulesetFactory {
    */
   isNearImage(fnode) {
     const image = this.getHighestScoringImage(fnode);
-    return trapezoid(euclidean(fnode, image), 1000, 0) ** this.isNearImageCoeff;
+    return linearScale(euclidean(fnode, image), 1000, 0) ** this.isNearImageCoeff;
   }
 
   /**
@@ -141,7 +141,7 @@ export default class RulesetFactory {
     const bottomDistance = Math.abs(imageRect.bottom - nodeRect.top);
 
     const shortestDistance = Math.min(topDistance, bottomDistance);
-    return trapezoid(shortestDistance, 200, 0) ** this.isNearbyImageYAxisTitleCoeff;
+    return linearScale(shortestDistance, 200, 0) ** this.isNearbyImageYAxisTitleCoeff;
   }
 
   /**
@@ -268,7 +268,7 @@ export default class RulesetFactory {
       // better score for larger images
       rule(type('imageish'), score(this.isBig.bind(this))),
       // punishment for extreme aspect ratios, to filter out banners or nav elements
-      rule(type('imageish'), score(fnode => trapezoid(this.aspectRatio(fnode.element), 10, 5)
+      rule(type('imageish'), score(fnode => linearScale(this.aspectRatio(fnode.element), 10, 5)
                                             ** this.extremeAspectCoeff)),
       // no background images, even ones that have reasonable aspect ratios
       // TODO: If necessary, also look at parents. I've seen them say
@@ -337,12 +337,12 @@ export default class RulesetFactory {
 /**
  * Scale a number to the range [ZEROISH, ONEISH].
  *
- * For a rising trapezoid, the result is ZEROISH until the input reaches
+ * For a rising line, the result is ZEROISH until the input reaches
  * zeroAt, then increases linearly until oneAt, at which it becomes ONEISH. To
- * make a falling trapezoid, where the result is ONEISH to the left and ZEROISH
+ * make a falling line, where the result is ONEISH to the left and ZEROISH
  * to the right, use a zeroAt greater than oneAt.
  */
-function trapezoid(number, zeroAt, oneAt) {
+function linearScale(number, zeroAt, oneAt) {
   const isRising = zeroAt < oneAt;
   if (isRising) {
     if (number <= zeroAt) {
