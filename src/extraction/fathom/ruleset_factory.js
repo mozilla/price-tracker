@@ -38,9 +38,7 @@ export default class RulesetFactory {
     ] = coefficients;
   }
 
-  /**
-   * Scores fnode in direct proportion to its size
-   */
+  /** Scores fnode in direct proportion to its size */
   isBig(fnode) {
     const domRect = fnode.element.getBoundingClientRect();
     const area = domRect.width * domRect.height;
@@ -59,28 +57,28 @@ export default class RulesetFactory {
     return linearScale(size, 14, 50) ** this.bigFontCoeff;
   }
 
-  /**
-   * Scores fnode with a '$' in its innerText
-   */
+  /** Scores fnode with a '$' in its innerText */
   hasDollarSign(fnode) {
     return (fnode.element.innerText.includes('$') ? ONEISH : ZEROISH) ** this.hasDollarSignCoeff;
   }
 
-  /** Return whether some substring is within a given string, case insensitively. */
+  /**
+   * Return whether some substring is within a given string, case
+   * insensitively.
+   */
   doesContain(haystack, needle) {
     return haystack.toLowerCase().includes(needle);
   }
 
-  /** Return a weighted confidence of whether a substring is within a given
-   *  string, case insensitively.
+  /**
+   * Return a weighted confidence of whether a substring is within a given
+   * string, case insensitively.
    */
   contains(haystack, needle, coeff) {
     return (this.doesContain(haystack, needle) ? ONEISH : ZEROISH) ** coeff;
   }
 
-  /**
-   * Scores fnode with 'price' in its id
-   */
+  /** Scores fnode with 'price' in its id */
   hasPriceInID(fnode) {
     return this.contains(fnode.element.id, 'price', this.hasPriceInIDCoeff);
   }
@@ -99,9 +97,7 @@ export default class RulesetFactory {
     return this.contains(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
   }
 
-  /**
-   * Scores fnode by its vertical location relative to the fold
-   */
+  /** Scores fnode by its vertical location relative to the fold */
   isAboveTheFold(fnode, featureCoeff) {
     const viewportHeight = 950;
     const imageTop = fnode.element.getBoundingClientRect().top;
@@ -158,9 +154,7 @@ export default class RulesetFactory {
     return (regExp.test(text) ? ONEISH : ZEROISH) ** this.hasPriceishPatternCoeff;
   }
 
-  /**
-   * Checks to see if a 'priceish' fnode is eligible for scoring
-   */
+  /** Checks to see if a 'priceish' fnode is eligible for scoring */
   isEligiblePrice(fnode) {
     return (
       this.isVisible(fnode)
@@ -169,9 +163,7 @@ export default class RulesetFactory {
     );
   }
 
-  /**
-   * Checks to see if a 'titleish' fnode is eligible for scoring
-   */
+  /** Checks to see if a 'titleish' fnode is eligible for scoring */
   isEligibleTitle(fnode) {
     return (
       this.isVisible(fnode)
