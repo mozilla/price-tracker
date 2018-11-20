@@ -44,7 +44,7 @@ export async function shouldCollectTelemetry(method) {
  * @return {boolean}
  */
 export async function shouldUpdatePrices() {
-  return !isActiveWindowPrivate();
+  return !(await isActiveWindowPrivate());
 }
 
 async function trackingProtectionEnabled() {
