@@ -5,12 +5,27 @@
       {
         "name": "onWidgetRemoved",
         "type": "function",
-        "description": "Fired when a widget is removed from the browser chrome",
+        "description": "Fired when a widget is removed from the browser chrome.",
         "parameters": [
           {
             "name": "widgetId",
             "description": "The unique identifier for the widget",
             "type": "string"
+          }
+        ]
+      }
+    ],
+    "functions": [
+      {
+        "name": "isWidgetInOverflow",
+        "type": "function",
+        "description": "Determine whether or not a widget is in the overflow menu.",
+        "async": true,
+        "parameters": [
+          {
+            "name": "widgetId",
+            "type": "string",
+            "description": "The id of the widget to check."
           }
         ]
       }

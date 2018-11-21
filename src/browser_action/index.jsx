@@ -20,6 +20,12 @@ if (extractedProductJSON) {
   appProps.extractedProduct = JSON.parse(extractedProductJSON);
 }
 
+(async function checkOverflow() {
+  if (await browser.customizableUI.isWidgetInOverflow('shopping-testpilot_mozilla_org-browser-action')) {
+    document.getElementById('browser-action-app').classList.add('overflow');
+  }
+}());
+
 ReactDOM.render(
   <Provider store={store}>
     <BrowserActionApp {...appProps} />
