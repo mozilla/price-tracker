@@ -31,7 +31,8 @@ this.customizableUI = class extends ExtensionAPI {
           const browserWindow = Services.wm.getMostRecentWindow('navigator:browser');
           // First check is for the non-fixed overflow menu (e.g. widget moved by resizing window)
           // Second is for fixed overflow menu (e.g. widget moved by (un)pinning button to overflow)
-          return (CustomizableUI.getWidget(widgetId).forWindow(browserWindow).overflowed
+          return (
+            CustomizableUI.getWidget(widgetId).forWindow(browserWindow).overflowed
             || area === 'widget-overflow-fixed-list');
         },
       },
