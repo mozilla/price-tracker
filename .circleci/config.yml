@@ -37,7 +37,7 @@ jobs:
           paths:
             - "*.zip"
 
-  deploy:
+  sign:
     docker:
       - image: circleci/python:2.7-node-browsers
     steps:
@@ -60,11 +60,31 @@ jobs:
               -o "web-ext-artifacts/${XPI_NAME}-signed.xpi" \
               -H "Authorization: ${AUTOGRAPH_EDGE_TOKEN}" \
               ${AUTOGRAPH_EDGE_URL}
-      - run:
-          name: Upload XPI to S3
-          command: .circleci/deploy_addon.sh
+      - persist_to_workspace:
+          root: web-ext-artifacts
+          paths:
+            - "*.xpi"
       - store_artifacts:
           path: web-ext-artifacts
+
+  upload:
+    docker:
+      - image: circleci/python:2.7-node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: web-ext-artifacts
+      - run:
+          name: Store XPI name in environment variable
+          command: |
+            echo 'export XPI_NAME=price_wise-${CIRCLE_TAG:1}' >> $BASH_ENV
+      - run:
+          name: Install dependencies
+          command: |
+            pipenv install
+      - run:
+          name: Upload XPI to S3
+          command: echo "hooray!" # .circleci/deploy_addon.sh
 
 workflows:
   version: 2
@@ -74,7 +94,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - deploy: # runs only for tags starting with v
+      - sign: # runs only for tags starting with v
           requires:
             - build
           filters:
@@ -82,3 +102,10 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
+      - hold: # Require manual approval before uploading
+          type: approval
+          requires:
+            - sign
+      - upload:
+          requires:
+            - hold
