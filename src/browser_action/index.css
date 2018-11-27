@@ -101,7 +101,7 @@ a:focus {
 }
 
 .button.ghost .icon {
-  -moz-context-properties: fill;
+  -moz-context-properties: fill, fill-opacity;
   fill: var(--grey-90-a80);
   margin: 0;
 }
