@@ -65,6 +65,7 @@ module.exports = {
       // Static files
       {from: '**/*.svg'},
       {from: '**/*.png'},
+      {from: '**/*.ico'},
       {from: '**/*.html'},
 
       // Experimental APIs, which are not bundled
