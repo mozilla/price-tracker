@@ -205,6 +205,7 @@ Some `extra_keys` are sent with every telemetry event recorded by the extension:
 - `'badge_type'`: Indicates what, if any, badge was present on the browserAction toolbar button. One of 'add', 'price_alert', or 'none'. A value of 'unknown' is possible if the badge text is unrecognized.
 - `'element'`: The extension UI element that the user clicked to open a page in a new tab. Note: All `*_link` elements exist in the Onboarding Popup only. One of...
   - `'amazon_link'`: Sends the user to Amazon.
+  - `'amazon_smile_link'`: Sends the user to AmazonSmile.
   - `'best_buy_link'`: Sends the user to Best Buy.
   - `'ebay_link'`: Sends the user to eBay.
   - `'feedback_button'`: Sends the user to a feedback Survey.

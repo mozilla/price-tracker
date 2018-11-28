@@ -70,13 +70,14 @@ export default class EmptyOnboarding extends React.Component {
           {' '} in the spots where whitespace would otherwise be collapsed.
         */}
         <p className="description">
-          Add products you want to buy from
-          {' '}<a data-telemetry-id="amazon" href="https://www.amazon.com">Amazon</a>,
+          Add products from
+          {' '}<a data-telemetry-id="amazon" href="https://www.amazon.com">Amazon</a>
+          {' '}and <a data-telemetry-id="amazon_smile" href="https://smile.amazon.com">AmazonSmile</a>,
           {' '}<a data-telemetry-id="best_buy" href="https://www.bestbuy.com/">Best Buy</a>,
           {' '}<a data-telemetry-id="ebay" href="https://www.ebay.com/">eBay</a>,
-          {' '}<a data-telemetry-id="home_depot" href="https://www.homedepot.com/">Home Depot</a>, and
+          {' '}<a data-telemetry-id="home_depot" href="https://www.homedepot.com/">Home Depot</a> and
           {' '}<a data-telemetry-id="walmart" href="https://www.walmart.com/">Walmart</a>
-          {' '}to your Price Watcher list, and Firefox will notify you if the price drops.
+          {' '}(U.S. domains only for now). When Price Wise finds a price drop, the add-on gives you a heads-up about the lower price.
         </p>
         <p className="description">
           Price Wise keeps track of your saved products by occasionally loading their webpages in
