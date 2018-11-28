@@ -106,6 +106,16 @@ workflows:
           type: approval
           requires:
             - sign
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - upload:
           requires:
             - hold
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
