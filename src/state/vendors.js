@@ -23,27 +23,27 @@ const VENDORS = [
   {
     name: 'Amazon',
     hostnames: ['amazon.com', 'www.amazon.com', 'smile.amazon.com'],
-    faviconUrl: 'https://www.amazon.com/favicon.ico',
+    faviconUrl: browser.runtime.getURL('/img/favicons/amazon.ico'),
   },
   {
     name: 'Best Buy',
     hostnames: ['bestbuy.com', 'www.bestbuy.com'],
-    faviconUrl: 'https://www.bestbuy.com/favicon.ico',
+    faviconUrl: browser.runtime.getURL('/img/favicons/bestbuy.ico'),
   },
   {
     name: 'eBay',
     hostnames: ['ebay.com', 'www.ebay.com'],
-    faviconUrl: 'https://www.ebay.com/favicon.ico',
+    faviconUrl: browser.runtime.getURL('/img/favicons/ebay.ico'),
   },
   {
     name: 'The Home Depot',
     hostnames: ['homedepot.com', 'www.homedepot.com'],
-    faviconUrl: 'https://www.homedepot.com/favicon.ico',
+    faviconUrl: browser.runtime.getURL('/img/favicons/homedepot.ico'),
   },
   {
     name: 'Walmart',
     hostnames: ['walmart.com', 'www.walmart.com'],
-    faviconUrl: 'https://www.walmart.com/favicon.ico',
+    faviconUrl: browser.runtime.getURL('/img/favicons/walmart.ico'),
   },
   {
     name: 'mkelly Test',
