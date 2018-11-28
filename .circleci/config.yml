@@ -84,7 +84,7 @@ jobs:
             pipenv install
       - run:
           name: Upload XPI to S3
-          command: echo "hooray!" # .circleci/deploy_addon.sh
+          command: .circleci/deploy_addon.sh
 
 workflows:
   version: 2
