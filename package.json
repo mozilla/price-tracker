@@ -1,6 +1,6 @@
 {
   "name": "price-wise",
-  "version": "17.0.0",
+  "version": "18.0.0",
   "description": "Price Wise is a Firefox extension that tracks price changes to help you find the best time to buy.",
   "private": true,
   "author": "Mozilla",
