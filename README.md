@@ -123,7 +123,7 @@ The following preferences can be set to customize the extension's behavior for t
 
 ## Releasing a New Version
 
-Price Wise bumps the major version number for every release, similar to Firefox. Releases are created by tagging a commit that bumps the version number and pushing that tag to the repo. This triggers CircleCI automation that packages, tests, and uploads the new version to the Test Pilot S3 bucket.
+Price Wise bumps the major version number for every release, similar to Firefox. Releases are created by tagging a commit that bumps the version number and pushing that tag to the repo. This triggers CircleCI automation that packages, tests, signs and uploads the new version to the Test Pilot S3 bucket.
 
 It is strongly recommended that developers creating releases [configure Git to
 sign their commits and tags][signing].
@@ -144,7 +144,11 @@ To create a new release of Price Wise:
    git push origin v1.0.0
    ```
 
-You can follow along with the build and upload progress for the new release on the [CircleCI dashboard][]. Once the build finishes, the new version should be available immediately at https://testpilot.firefox.com/files/shopping-testpilot@mozilla.org/latest.
+You can follow along with the build and upload progress for the new release on the [CircleCI dashboard][]. Once the build finishes, a signed copy of the new version will be available in the dashboard under Artifacts. The following upload job, however, is gated on a hold job.
+
+This hold job is intended to provide developers and QA an opportunity for final testing and review of the extension in release channels before uploading. When QA is satisfied, a developer with push access must manually trigger the upload to Test Pilot via the CircleCI dashboard by clicking the hold job and approving the build.
+
+Once the upload is complete, the new version should be available immediately at https://testpilot.firefox.com/files/shopping-testpilot@mozilla.org/latest.
 
 [signing]: https://help.github.com/articles/signing-commits/
 [CircleCI dashboard]: https://circleci.com/dashboard
