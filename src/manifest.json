@@ -8,7 +8,6 @@
   "applications": {
     "gecko": {
       "id": "shopping-testpilot@mozilla.org",
-      "update_url": "https://testpilot.firefox.com/files/shopping-testpilot@mozilla.org/updates.json",
       "strict_min_version": "63.0"
     }
   },
