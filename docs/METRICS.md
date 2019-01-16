@@ -92,19 +92,6 @@ Below is a sample list of events recorded when the user visits a supported page 
 
 ```javascript
 [
-  154572,
-  "extension.price_wise",
-  "visit_supported_site",
-  "supported_site",
-  null,
-  {
-    "tracked_prods": "0",
-    "privacy_dnt": "false",
-    "privacy_tp": "private_browsing",
-    "privacy_cookie": "allow_all"
-  }
-],
-[
   154592,
   "extension.price_wise",
   "attempt_extraction",
@@ -227,18 +214,6 @@ Some `extra_keys` are sent with every telemetry event recorded by the extension:
 
 
 ## Collection (User Events)
-
-### `visit_supported_site`
-
-Fired when the user navigates to a Supported Site.
-
-#### Payload properties
-- `methods`: String
-  - `'visit_supported_site'`
-- `objects`: String
-  - `'supported_site'`
-- `extra_keys`: Object
-  - [Common extra keys](#common-extra-keys)
 
 ### `open_popup`
 
