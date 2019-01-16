@@ -140,11 +140,6 @@ async function attemptExtraction() {
     return;
   }
 
-  // Record visit_supported_site event
-  if (!isBackgroundUpdate) {
-    await recordEvent('visit_supported_site', 'supported_site');
-  }
-
   // Extract immediately, and again if the readyState changes.
   let extractedProduct = await attemptExtraction();
   document.addEventListener('readystatechange', async () => {

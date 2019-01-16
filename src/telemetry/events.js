@@ -167,17 +167,7 @@ const CATEGORY_1_AND_2_EVENTS = {
   },
 };
 
-export const CATEGORY_3_EVENTS = {
-  // User visits a supported site
-  visit_supported_site: {
-    methods: ['visit_supported_site'],
-    objects: ['supported_site'],
-    extra_keys: [
-      ...DEFAULT_EXTRAS,
-    ],
-    record_on_release: true,
-  },
-};
+export const CATEGORY_3_EVENTS = {};
 
 export const EVENTS = {
   ...CATEGORY_1_AND_2_EVENTS,
