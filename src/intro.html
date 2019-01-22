@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Price Wise by Mozilla</title>
+    <style>
+      :root {
+        --blue-50: #0a84ff;
+        --blue-50-a30: rgba(10, 132, 255, 0.3);
+        --blue-60: #0060df;
+        --blue-70: #003eaa;
+
+        --grey-10-a20: rgba(249, 249, 250, 0.2);
+        --grey-30: #d7d7db;
+      }
+
+      html {
+        font-family: "Fira Sans", sans-serif;
+        font-size: 14px;
+        line-height: 19px;
+      }
+
+      body {
+        width: 680px;
+        margin: 1rem auto;
+        background: var(--grey-10-a20);
+      }
+
+      h1, h2 {
+        font-weight: 300;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      a {
+        color: var(--blue-60);
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: var(--blue-60);
+        text-decoration: underline;
+      }
+
+      a:active {
+        color: var(--blue-70);
+        text-decoration: underline;
+      }
+
+      a:focus {
+        box-shadow:
+          0 0 0 1px var(--blue-50) inset,
+          0 0 0 1px var(--blue-50),
+          0 0 0 4px var(--blue-50-a30);
+      }
+
+      .title {
+        display: flex;
+        align-items: center;
+      }
+
+      .icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, rgb(222, 91, 197), rgb(134, 187, 249));
+        border-radius: 50%;
+        height: 64px;
+        flex: 0 0 auto;
+        margin-right: 1rem;
+        width: 64px;
+      }
+
+      .icon img {
+        -moz-context-properties: fill;
+        fill: #fff;
+        filter: drop-shadow(rgba(0, 0, 0, 0.1) 0px 1px 0px);
+        height: 32px;
+        width: 32px;
+      }
+
+      i {
+        background: var(--grey-30);
+        font-style: normal;
+        padding: 2px 4px;
+      }
+
+      .menu-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      li {
+        margin-top: .6rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">
+      <span class="icon"><img src="/img/shopping_list.svg"></span>
+      Price Wise
+    </h1>
+    <section class="privacy">
+      <h2>Your Privacy</h2>
+      <p>We care about your privacy. Price Wise collects some information about your use of the add-on:</p>
+      <ul>
+        <li><b>Product Pages:</b> Price Wise collects how often you visit saved product pages.</li>
+        <li><b>Product Data:</b> Price Wise collects data about the products you choose to track such as prices change frequency, size, and the accuracy of that information.</li>
+        <li><b>Interaction Data:</b> Price Wise collects information about how you use the feature such as how often you add, delete and interact with saved products, number of products you choose to track, and how you engage with messages and push notifications.
+      </ul>
+      <p>If you choose to send data to Mozilla (that’s us), our <a href="https://addons.mozilla.org/en-US/firefox/addon/price-wise/privacy/">privacy policy</a> describes how we handle that data.</p>
+      <h2>How do I opt-out of sending data to Mozilla?</h2>
+      <p>Price Wise uses Firefox's Telemetry system to collect data. You can opt-out of data collection by disabling Firefox Telemetry:</p>
+      <ol>
+        <li>Click the menu button <img class="menu-icon" src="img/menu.svg"> and choose <i>Preferences</i>.</li>
+        <li>Select the <i>Privacy & Security</i> panel.</li>
+        <li>Scroll down to the <i>Firefox Data Collection and Use</i> section.</li>
+        <li>Check or uncheck the box next to <i>Allow Firefox to send technical and interaction data to Mozilla</i>.</li>
+      </ol>
+    </section>
+  </body>
+</html>
