@@ -6,7 +6,7 @@ module.exports = {
       'extensions.shopping-testpilot@mozilla.org.iframeTimeout=10000',
     ],
     startUrl: [
-      'http://www.mkelly.me/fake-product-page/',
+      'http://mozilla.github.io/fake-product-page/',
     ],
   },
 };

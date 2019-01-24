@@ -126,7 +126,7 @@ const fallbackExtractionData = [
     },
   },
   {
-    domains: ['mkelly.me', 'www.mkelly.me'],
+    domains: ['mozilla.github.io'],
     features: {
       title: [
         ['#title', fromProperty('innerText')],
