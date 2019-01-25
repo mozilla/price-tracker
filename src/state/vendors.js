@@ -46,8 +46,8 @@ const VENDORS = [
     faviconUrl: browser.runtime.getURL('/img/favicons/walmart.ico'),
   },
   {
-    name: 'mkelly Test',
-    hostnames: ['mkelly.me', 'www.mkelly.me'],
+    name: 'Fake Test Page',
+    hostnames: ['mozilla.github.io'],
     faviconUrl: '',
   },
 ];

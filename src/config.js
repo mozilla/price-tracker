@@ -91,8 +91,7 @@ const CONFIG = {
     'www.homedepot.com',
     'walmart.com',
     'www.walmart.com',
-    'mkelly.me',
-    'www.mkelly.me',
+    'mozilla.github.io',
   ]),
 
   /** Temporary Cyber Monday study UI feature flag */

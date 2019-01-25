@@ -68,6 +68,15 @@ Reducers, action creators, etc. are organized into [ducks][] inside the `src/sta
 
 ## Testing
 
+### Fake Product Test Page
+
+A [fake product page][] is available for testing the add-on. The price on the page changes upon refresh, and URL parameters can be used to manually set the price.
+
+See the [github repo][fake-page-repo] for more details.
+
+[fake product page]: https://mozilla.github.io/fake-product-page/
+[fake-page-repo]: https://github.com/mozilla/fake-product-page/
+
 ### Running Tests
 
 Automated tests are run in a Firefox browser instance using [Marionette][]. We use the Python client for Marionette since there is no up-to-date JavaScript client.
