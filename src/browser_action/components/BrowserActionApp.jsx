@@ -71,15 +71,6 @@ export default class BrowserActionApp extends React.Component {
   }
 
   /**
-   * Open the support page and close the panel when the help icon is clicked.
-   */
-  async handleClickHelp() {
-    browser.tabs.create({url: await config.get('supportUrl')});
-    await recordEvent('open_nonproduct_page', 'ui_element', null, {element: 'help_button'});
-    window.close();
-  }
-
-  /**
    * Open the feedback page and close the panel when the help icon is clicked.
    */
   async handleClickFeedback() {
@@ -138,14 +129,6 @@ export default class BrowserActionApp extends React.Component {
             />
           </button>
           <h1 className="title">Products</h1>
-          <button
-            className="ghost help button"
-            type="button"
-            onClick={this.handleClickHelp}
-            title="Help"
-          >
-            <img className="icon" src={browser.extension.getURL('img/help.svg')} alt="Help" />
-          </button>
         </div>
         {products.length < 1
           ? (

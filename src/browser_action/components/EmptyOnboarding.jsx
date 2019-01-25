@@ -6,7 +6,6 @@ import autobind from 'autobind-decorator';
 import React from 'react';
 
 import TrackProductButton from 'commerce/browser_action/components/TrackProductButton';
-import config from 'commerce/config';
 import {extractedProductShape} from 'commerce/state/products';
 import {recordEvent} from 'commerce/telemetry/extension';
 
@@ -26,23 +25,6 @@ export default class EmptyOnboarding extends React.Component {
     extractedProduct: null,
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      learnMoreHref: null,
-    };
-  }
-
-  /**
-   * Fetch the link to the support page on mount, since we can't fetch it async
-   * during the render.
-   */
-  async componentDidMount() {
-    this.setState({
-      learnMoreHref: await config.get('supportUrl'),
-    });
-  }
-
   /**
    * Open a new tab and close the popup when links are clicked.
    */
@@ -57,7 +39,6 @@ export default class EmptyOnboarding extends React.Component {
 
   render() {
     const {extractedProduct} = this.props;
-    const {learnMoreHref} = this.state;
     return (
       <div className="empty-onboarding" onClick={this.handleClick}>
         <img className="hero" src={browser.extension.getURL('img/shopping-welcome.svg')} alt="" />
@@ -83,7 +64,6 @@ export default class EmptyOnboarding extends React.Component {
           Price Wise keeps track of your saved products by occasionally loading their webpages in
           the background while Firefox is open.
         </p>
-        <a data-telemetry-id="learn_more" href={learnMoreHref} className="learn-more">Learn More</a>
         <TrackProductButton className="button" extractedProduct={extractedProduct} />
       </div>
     );
