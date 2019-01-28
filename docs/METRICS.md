@@ -196,9 +196,7 @@ Some `extra_keys` are sent with every telemetry event recorded by the extension:
   - `'best_buy_link'`: Sends the user to Best Buy.
   - `'ebay_link'`: Sends the user to eBay.
   - `'feedback_button'`: Sends the user to a feedback Survey.
-  - `'help_button'`: Sends the user to a Price Wise support.mozilla.org page.
   - `'home_depot_link'`: Sends the user to Home Depot.
-  - `'learn_more_link'`: Sends the user to a Price Wise support.mozilla.org page.
   - `'walmart_link'`: Sends the user to Walmart.
 - `'extraction_id'`: A unique identifier to associate an extraction attempt to an extraction completion event for a given page.
 - `'is_bg_update'`: 'true' if the extraction is associated with a background price check; otherwise 'false'.

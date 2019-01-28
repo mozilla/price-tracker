@@ -72,9 +72,6 @@ const CONFIG = {
   /** Color of the toolbar badge when a product on the current page is trackable. */
   badgeDetectBackground: new StringValue('#33F70C'),
 
-  /** URL for the add-on's page on support.mozilla.org */
-  supportUrl: new StringValue('https://support.mozilla.org/kb/new-test-pilot-experiments'),
-
   /** URL for the add-on's feedback form */
   feedbackUrl: new StringValue('https://qsurvey.mozilla.com/s3/price-wise'),
 
