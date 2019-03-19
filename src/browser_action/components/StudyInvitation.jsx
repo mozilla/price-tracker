@@ -40,7 +40,7 @@ export default class StudyInvitation extends React.Component {
         <div className="study-invitation">
           <img className="hero" src={browser.extension.getURL('img/ur_survey.svg')} alt="" />
           <p className="description">
-            {"Help us improve Price Wise by participating in a research study. Take this 5-minute survey to learn more about the study and see if you're a fit."}
+            {"Help us improve Price Tracker by participating in a research study. Take this 5-minute survey to learn more about the study and see if you're a fit."}
           </p>
           <button
             className="button participate"

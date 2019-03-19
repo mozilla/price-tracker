@@ -3,7 +3,7 @@
 
 # Metrics
 
-A summary of the metrics the Price Wise extension will record.
+A summary of the metrics the Price Tracker extension will record.
 
 
 ## Definitions
@@ -14,14 +14,14 @@ A summary of the metrics the Price Wise extension will record.
 * **Price Alert**: An alert that occurs when a tracked product's price _decreases_ below a certain absolute or percentage threshold. For the MVP, the default thresholds are specified in `./src/config.js`.
 * **Product Card**: A product list item in the list of tracked products for which the user has opted to receive Price Alerts displayed on the browserAction popup. Each Product Card displays the product title, image and price among other information.
 * **Product Page**: A webpage displaying a single product that the user could purchase online.
-* **Supported Sites**: For the initial launch (a.k.a. MVP, Minimum Viable Product) of this extension, we are limiting the sites supported by this feature to [five websites](https://github.com/mozilla/price-wise/issues/36#issuecomment-409641491): Amazon, eBay, Walmart, Home Depot and Best Buy.
+* **Supported Sites**: For the initial launch (a.k.a. MVP, Minimum Viable Product) of this extension, we are limiting the sites supported by this feature to [five websites](https://github.com/mozilla/price-tracker/issues/36#issuecomment-409641491): Amazon, eBay, Walmart, Home Depot and Best Buy.
 * **Survey**: a short survey collecting user feedback.
 * **Onboarding Popup**: The popup displayed when the user has zero products tracked, including the first time the popup is opened.
 
 
 ## Analysis
 
-Data collected by the Price Wise extension will be used to answer the following questions:
+Data collected by the Price Tracker extension will be used to answer the following questions:
 
 Note: For any questions related to general user shopping behavior, the data about what sites users visit is limited to the Supported Sites for the MVP.
 
@@ -215,7 +215,7 @@ Some `extra_keys` are sent with every telemetry event recorded by the extension:
 
 ### `open_popup`
 
-Fired when the user clicks the Price Wise browserAction toolbar button to open the popup.
+Fired when the user clicks the Price Tracker browserAction toolbar button to open the popup.
 
 #### Payload properties
 - `methods`: String

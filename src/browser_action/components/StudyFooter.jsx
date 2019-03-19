@@ -25,7 +25,7 @@ export default class StudyFooter extends React.Component {
         className="menu-item study"
         onClick={this.props.onClick}
       >
-      Help us improve Price Wise&hellip;
+      Help us improve Price Tracker&hellip;
       </button>
     );
   }
