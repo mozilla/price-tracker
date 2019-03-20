@@ -1,7 +1,7 @@
 {
-  "name": "price-wise",
+  "name": "price-tracker",
   "version": "21.0.0",
-  "description": "Price Wise is a Firefox extension that tracks price changes to help you find the best time to buy.",
+  "description": "Price Tracker is a Firefox extension that tracks price changes to help you find the best time to buy.",
   "private": true,
   "author": "Mozilla",
   "license": "MPL-2.0",
@@ -65,11 +65,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mozilla/price-wise.git"
+    "url": "https://github.com/mozilla/price-tracker.git"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/mozilla/price-wise/issues"
+    "url": "https://github.com/mozilla/price-tracker/issues"
   },
-  "homepage": "https://github.com/mozilla/price-wise"
+  "homepage": "https://github.com/mozilla/price-tracker"
 }

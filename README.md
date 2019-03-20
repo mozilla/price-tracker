@@ -1,6 +1,6 @@
-# Price Wise
+# Price Tracker
 
-Price Wise is a Firefox extension that tracks price changes to help you find the best time to buy.
+Price Tracker is a Firefox extension that tracks price changes to help you find the best time to buy.
 
 
 ## Data Collection
@@ -17,8 +17,8 @@ Prerequisites:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/mozilla/price-wise.git
-   cd price-wise
+   git clone https://github.com/mozilla/price-tracker.git
+   cd price-tracker
    ```
 2. Install dependencies:
 
@@ -97,7 +97,7 @@ With these installed, you can set up the test suite:
 2. Save the path to your Firefox binary with `npm`:
 
    ```sh
-   npm config set price-wise:firefox_bin <PATH_TO_FIREFOX_BINARY>
+   npm config set price-tracker:firefox_bin <PATH_TO_FIREFOX_BINARY>
    ```
 
 After this, you can run `pipenv run test` to run the automated test suite.
@@ -132,12 +132,12 @@ The following preferences can be set to customize the extension's behavior for t
 
 ## Releasing a New Version
 
-Price Wise bumps the major version number for every release, similar to Firefox. Releases are created by tagging a commit that bumps the version number and pushing that tag to the repo. This triggers CircleCI automation that packages, tests, signs and uploads the new version to the Test Pilot S3 bucket.
+Price Tracker bumps the major version number for every release, similar to Firefox. Releases are created by tagging a commit that bumps the version number and pushing that tag to the repo. This triggers CircleCI automation that packages, tests, signs and uploads the new version to the Test Pilot S3 bucket.
 
 It is strongly recommended that developers creating releases [configure Git to
 sign their commits and tags][signing].
 
-To create a new release of Price Wise:
+To create a new release of Price Tracker:
 
 1. Increment the version number in `package.json`, create a new commit on the `master` branch with this change, and create a new git tag pointing to the commit with a name of the form `v1.0.0`, where `1.0.0` is the new version number.
 
@@ -146,7 +146,7 @@ To create a new release of Price Wise:
    ```sh
    npm version major
    ```
-2. Push the updated `master` branch and the new tag to the remote for the Mozilla Price Wise repository (named `origin` in the example below):
+2. Push the updated `master` branch and the new tag to the remote for the Mozilla Price Tracker repository (named `origin` in the example below):
 
    ```sh
    git push origin master

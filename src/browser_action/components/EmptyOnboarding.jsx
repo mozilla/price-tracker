@@ -58,10 +58,10 @@ export default class EmptyOnboarding extends React.Component {
           {' '}<a data-telemetry-id="ebay" href="https://www.ebay.com/">eBay</a>,
           {' '}<a data-telemetry-id="home_depot" href="https://www.homedepot.com/">Home Depot</a> and
           {' '}<a data-telemetry-id="walmart" href="https://www.walmart.com/">Walmart</a>
-          {' '}(U.S. domains only for now). When Price Wise finds a price drop, the add-on gives you a heads-up about the lower price.
+          {' '}(U.S. domains only for now). When Price Tracker finds a price drop, the add-on gives you a heads-up about the lower price.
         </p>
         <p className="description">
-          Price Wise keeps track of your saved products by occasionally loading their webpages in
+          Price Tracker keeps track of your saved products by occasionally loading their webpages in
           the background while Firefox is open.
         </p>
         <TrackProductButton className="button" extractedProduct={extractedProduct} />
