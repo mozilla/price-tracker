@@ -15,7 +15,6 @@ A summary of the metrics the Price Tracker extension will record.
 * **Product Card**: A product list item in the list of tracked products for which the user has opted to receive Price Alerts displayed on the browserAction popup. Each Product Card displays the product title, image and price among other information.
 * **Product Page**: A webpage displaying a single product that the user could purchase online.
 * **Supported Sites**: For the initial launch (a.k.a. MVP, Minimum Viable Product) of this extension, we are limiting the sites supported by this feature to [five websites](https://github.com/mozilla/price-tracker/issues/36#issuecomment-409641491): Amazon, eBay, Walmart, Home Depot and Best Buy.
-* **Survey**: a short survey collecting user feedback.
 * **Onboarding Popup**: The popup displayed when the user has zero products tracked, including the first time the popup is opened.
 
 
@@ -195,7 +194,6 @@ Some `extra_keys` are sent with every telemetry event recorded by the extension:
   - `'amazon_smile_link'`: Sends the user to AmazonSmile.
   - `'best_buy_link'`: Sends the user to Best Buy.
   - `'ebay_link'`: Sends the user to eBay.
-  - `'feedback_button'`: Sends the user to a feedback Survey.
   - `'home_depot_link'`: Sends the user to Home Depot.
   - `'walmart_link'`: Sends the user to Walmart.
 - `'extraction_id'`: A unique identifier to associate an extraction attempt to an extraction completion event for a given page.

@@ -12,12 +12,6 @@
   padding: 0 8px;
 }
 
-.title-bar .feedback {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-}
-
 .title-bar .title {
   font-size: 13px;
   font-weight: bold;

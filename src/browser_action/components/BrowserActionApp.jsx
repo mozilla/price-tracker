@@ -71,15 +71,6 @@ export default class BrowserActionApp extends React.Component {
   }
 
   /**
-   * Open the feedback page and close the panel when the help icon is clicked.
-   */
-  async handleClickFeedback() {
-    browser.tabs.create({url: await config.get('feedbackUrl')});
-    await recordEvent('open_nonproduct_page', 'ui_element', null, {element: 'feedback_button'});
-    window.close();
-  }
-
-  /**
    * Show the Study popup when the StudyFooter is clicked
    */
   handleClickStudy() {
@@ -116,18 +107,6 @@ export default class BrowserActionApp extends React.Component {
     return (
       <React.Fragment>
         <div className="title-bar">
-          <button
-            className="ghost feedback button"
-            type="button"
-            onClick={this.handleClickFeedback}
-            title="Send Feedback"
-          >
-            <img
-              className="icon"
-              src={browser.extension.getURL('img/feedback.svg')}
-              alt="Send Feedback"
-            />
-          </button>
           <h1 className="title">Products</h1>
         </div>
         {products.length < 1
