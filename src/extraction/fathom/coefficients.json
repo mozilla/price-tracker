@@ -1,16 +1,22 @@
 {
-  "backgroundIdImageCoeff": 4,
-  "bigFontCoeff": 14,
-  "bigImageCoeff": 9,
-  "extremeAspectCoeff": 3,
-  "hasDollarSignCoeff": 3,
-  "hasPriceInClassNameCoeff": 7,
-  "hasPriceInIDCoeff": 8,
-  "hasPriceInParentClassNameCoeff": -1,
-  "hasPriceInParentIDCoeff": -2,
-  "hasPriceishPatternCoeff": 4,
-  "isAboveTheFoldImageCoeff": 5,
-  "isAboveTheFoldPriceCoeff": -19,
-  "isNearbyImageYAxisTitleCoeff": 5,
-  "isNearImageCoeff": 4
+  "image": [
+    ["isAboveTheFoldImage", 5],
+    ["isBig", 9],
+    ["hasSquareAspectRatio", 3],
+    ["hasBackgroundInID", 4]
+  ],
+  "title": [
+    ["isNearImageTopOrBottom", 5]
+  ],
+  "price": [
+    ["hasDollarSign", 3],
+    ["isAboveTheFoldPrice", -19],
+    ["hasPriceInID", 8],
+    ["hasPriceInParentID", -2],
+    ["hasPriceInClassName", 7],
+    ["hasPriceInParentClassName", -1],
+    ["fontIsBig", 14],
+    ["isNearImage", 4],
+    ["hasPriceishPattern", 4]
+  ]
 }
