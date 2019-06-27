@@ -225,6 +225,9 @@ export default class RulesetFactory {
    */
   aspectRatio(element) {
     const rect = element.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) {
+      return Infinity;
+    }
     return (rect.width > rect.height) ? (rect.width / rect.height) : (rect.height / rect.width);
   }
 
