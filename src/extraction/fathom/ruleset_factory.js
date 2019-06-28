@@ -128,7 +128,7 @@ export default class RulesetFactory {
   /**
    * Return whether the fnode's innertext contains a dollars-and-cents number.
    */
-  haspricePattern(fnode) {
+  hasPriceishPattern(fnode) {
     const text = fnode.element.innerText;
     /**
      * With an optional '$' that doesn't necessarily have to be at the beginning
@@ -299,7 +299,7 @@ export default class RulesetFactory {
       // better score based on x-axis proximity to max scoring image element
       rule(type('price'), score(this.isNearImage.bind(this)), {name: 'isNearImage'}),
       // check if innerText has a price pattern
-      rule(type('price'), score(this.haspricePattern.bind(this)), {name: 'haspricePattern'}),
+      rule(type('price'), score(this.hasPriceishPattern.bind(this)), {name: 'hasPriceishPattern'}),
       // return price element(s) with max score
       rule(type('price').max(), out('price')),
     ],
