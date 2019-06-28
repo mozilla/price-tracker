@@ -243,7 +243,7 @@ export default class RulesetFactory {
   * @param {Array[]} An array of [string, number] tuples where the first element
   * describes the rule and the second element is the rule's coefficient
   */
-  makeRuleset(coeffs) {
+  makeRuleset(coeffs, biases) {
     return ruleset([
       /**
        * Image rules
@@ -304,7 +304,7 @@ export default class RulesetFactory {
       rule(type('price').max(), out('price')),
     ],
     coeffs,
-    [['image', 0], ['title', 0], ['price', 0]]);
+    biases);
   }
 
   /**

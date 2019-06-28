@@ -1,9 +1,9 @@
 {
   "image": [
-    ["isAboveTheFoldImage", 5],
-    ["isBig", 9],
-    ["hasSquareAspectRatio", 3],
-    ["hasBackgroundInID", 4]
+    ["isAboveTheFoldImage", 16.600479125976562],
+    ["isBig", 21.346694946289062],
+    ["hasSquareAspectRatio", 1.0820399522781372],
+    ["hasBackgroundInID", -10.098737716674805]
   ],
   "title": [
     ["isNearImageTopOrBottom", 5]

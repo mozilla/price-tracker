@@ -4,6 +4,7 @@
 
 /* eslint-disable import/no-unresolved */
 import coefficients from './coefficients.json';
+import {biases} from './biases.json';
 import RulesetFactory from './ruleset_factory';
 
 // TODO: possibly get rid of RulesetMaker.getCoeffsInOrder
@@ -54,7 +55,8 @@ for (const feature of FEATURES) {
       ...coefficients.image,
       ...coefficients.title,
       ...coefficients.price,
-    ]),
+    ],
+    biases),
   };
   trainees.set(feature, ruleset);
 }
