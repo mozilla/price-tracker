@@ -6,17 +6,17 @@
     ["hasBackgroundInID", -10.098737716674805]
   ],
   "title": [
-    ["isNearImageTopOrBottom", 5]
+    ["isNearImageTopOrBottom", 7.078094482421875]
   ],
   "price": [
-    ["hasDollarSign", 3],
-    ["isAboveTheFoldPrice", -19],
-    ["hasPriceInID", 8],
-    ["hasPriceInParentID", -2],
-    ["hasPriceInClassName", 7],
-    ["hasPriceInParentClassName", -1],
-    ["fontIsBig", 14],
-    ["isNearImage", 4],
-    ["hasPriceishPattern", 4]
+    ["hasDollarSign", 1.0177843570709229],
+    ["isAboveTheFoldPrice", -5.301823616027832],
+    ["hasPriceInID", 5.333859443664551],
+    ["hasPriceInParentID", -7.5635271072387695],
+    ["hasPriceInClassName", 1.155443787574768],
+    ["hasPriceInParentClassName", 3.0024354457855225],
+    ["fontIsBig", 11.338400840759277],
+    ["isNearImage", 0.7539440989494324],
+    ["hasPriceishPattern", 5.222956657409668]
   ]
 }
