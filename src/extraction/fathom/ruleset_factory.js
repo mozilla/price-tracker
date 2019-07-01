@@ -307,20 +307,6 @@ export default class RulesetFactory {
     biases);
   }
 
-  /**
-   * Takes in a coefficients object and returns a coefficients array in the
-   * same order.
-   */
-  static getCoeffsInOrder(coeffsObj) {
-    const coeffsKeys = Object.keys(coeffsObj);
-    coeffsKeys.sort(); // sort keys in string Unicode order
-    const coeffs = [];
-    for (const key of coeffsKeys) {
-      coeffs.push(coeffsObj[key]);
-    }
-    return coeffs;
-  }
-
   getHighestScoringImage(fnode) {
     return fnode._ruleset.get('image')[0]; // eslint-disable-line no-underscore-dangle
   }
