@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import {dom, out, rule, ruleset, score, type} from 'fathom-web';
+import {dom, out, rule, ruleset, score, type, note} from 'fathom-web';
 import {euclidean} from 'fathom-web/clusters';
 
 const TOP_BUFFER = 150;
@@ -87,6 +87,7 @@ export default class RulesetFactory {
 
   /** Scores fnode by its vertical location relative to the fold */
   isAboveTheFold(fnode) {
+    console.log(fnode.noteFor('image'));
     const viewportHeight = 950;
     const imageTop = fnode.element.getBoundingClientRect().top;
 
@@ -199,6 +200,7 @@ export default class RulesetFactory {
   }
 
   isVisible(fnode) {
+    console.log(fnode.noteFor('image'));
     const element = fnode.element;
     const rect = element.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) {
@@ -258,7 +260,7 @@ export default class RulesetFactory {
        * Image rules
        */
       // consider all visible img elements
-      rule(dom('img').when(this.isVisible.bind(this)), type('image')),
+      rule(dom('img').when(this.isVisible.bind(this)), note(() => ({isVisible: true})).type('image')),
       // and divs, which sometimes have CSS background-images
       // TODO: Consider a bonus for <img> tags.
       rule(dom('div').when(fnode => this.isVisible(fnode) && this.hasBackgroundImage(fnode)), type('image')),
