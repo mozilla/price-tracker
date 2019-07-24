@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import {dom, out, rule, ruleset, score, type} from 'fathom-web';
-import {ancestors} from 'fathom-web/utilsForFrontend';
 import {euclidean} from 'fathom-web/clusters';
 
 const TOP_BUFFER = 150;
@@ -16,6 +15,10 @@ const ONEISH = 0.9;
  * easier testing.
  */
 export default class RulesetFactory {
+  getHighestScoringImage(fnode) {
+    return fnode._ruleset.get('image')[0]; // eslint-disable-line no-underscore-dangle
+  }
+
   /** Scores fnode in direct proportion to its size */
   isBig(fnode) {
     const domRect = fnode.element.getBoundingClientRect();
@@ -196,20 +199,26 @@ export default class RulesetFactory {
   }
 
   isVisible(fnode) {
-    for (const ancestor of ancestors(fnode.element)) {
-      const style = getComputedStyle(ancestor);
-      const isElementHidden = (
-        style.visibility === 'hidden'
-        || style.display === 'none'
-        || style.opacity === '0'
-        || style.width === '0'
-        || style.height === '0'
-      );
-      if (isElementHidden) {
-        return false;
-      }
+    const element = fnode.element;
+    const rect = element.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) {
+      return false;
     }
-    return true;
+    const style = getComputedStyle(element);
+    if (style.opacity === '0') {
+      return false;
+    }
+    // workaround for https://github.com/w3c/csswg-drafts/issues/4122
+    const scrollX = window.pageXOffset;
+    const scrollY = window.pageYOffset;
+    const absX = rect.x + scrollX;
+    const absY = rect.y + scrollY;
+    window.scrollTo(absX, absY);
+    const newX = absX - window.pageXOffset;
+    const newY = absY - window.pageYOffset;
+    const eles = document.elementsFromPoint(newX, newY);
+    window.scrollTo(scrollX, scrollY);
+    return eles.includes(element);
   }
 
   hasBackgroundImage(fnode) {
@@ -305,10 +314,6 @@ export default class RulesetFactory {
     ],
     coeffs,
     biases);
-  }
-
-  getHighestScoringImage(fnode) {
-    return fnode._ruleset.get('image')[0]; // eslint-disable-line no-underscore-dangle
   }
 }
 
