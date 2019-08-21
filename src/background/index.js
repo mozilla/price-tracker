@@ -23,8 +23,11 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
   registerEvents();
 
   // Show the browser action on first install so users see the privacy notice.
-  browser.runtime.onInstalled.addListener(() => {
-    browser.tabs.create({url: browser.extension.getURL('intro.html')});
+  browser.runtime.onInstalled.addListener((details) => {
+    const {reason} = details;
+    if (reason === 'install') {
+      browser.tabs.create({url: browser.extension.getURL('intro.html')});
+    }
   });
 
   // Set browser action default badge color, which can't be set via manifest
