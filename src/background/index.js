@@ -27,6 +27,9 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
     const {reason} = details;
     if (reason === 'install') {
       browser.tabs.create({url: browser.extension.getURL('intro.html')});
+    } else if (reason === 'update') {
+      // Show initial retirement notice on update
+      browser.tabs.create({url: browser.extension.getURL('retirement.html')});
     }
   });
 
