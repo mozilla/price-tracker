@@ -50,7 +50,7 @@ export default class RulesetFactory {
    * Return a weighted confidence of whether a substring is within a given
    * string, case insensitively.
    */
-  weightedIncludes(haystack, needle) {
+  stringIncludes(haystack, needle) {
     return (this.caselessIncludes(haystack, needle) ? 1 : 0);
   }
 
@@ -63,21 +63,21 @@ export default class RulesetFactory {
 
   /** Scores fnode with 'price' in its id */
   hasPriceInID(fnode) {
-    return this.weightedIncludes(fnode.element.id, 'price');
+    return this.stringIncludes(fnode.element.id, 'price');
   }
 
   hasPriceInParentID(fnode) {
-    return this.weightedIncludes(fnode.element.parentElement.id, 'price');
+    return this.stringIncludes(fnode.element.parentElement.id, 'price');
   }
 
   /** Scores fnode with 'price' in its class name */
   hasPriceInClassName(fnode) {
-    return this.weightedIncludes(fnode.element.className, 'price');
+    return this.stringIncludes(fnode.element.className, 'price');
   }
 
   /** Scores fnode with 'price' in its parent's class name */
   hasPriceInParentClassName(fnode) {
-    return this.weightedIncludes(fnode.element.parentElement.className, 'price');
+    return this.stringIncludes(fnode.element.parentElement.className, 'price');
   }
 
   /** Scores fnode by its vertical location relative to the fold */
@@ -237,9 +237,6 @@ export default class RulesetFactory {
   /**
   * Using coefficients passed into the constructor method, returns a weighted
   * ruleset used to score elements in an HTML document.
-  *
-  * @param {Array[]} An array of [string, number] tuples where the first element
-  * describes the rule and the second element is the rule's coefficient
   */
   makeRuleset(coeffs, biases) {
     return ruleset([
