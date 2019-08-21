@@ -10,18 +10,22 @@
  * Features: title, image, price
  */
 
-import defaultCoefficients from 'commerce/extraction/fathom/coefficients.json';
 import RulesetFactory from 'commerce/extraction/fathom/ruleset_factory';
 import {parsePrice} from 'commerce/extraction/utils';
+import {biases} from 'commerce/extraction/fathom/biases.json';
+import coefficients from 'commerce/extraction/fathom/coefficients.json';
 
 // Minimum score to be considered the "correct" feature element extracted by Fathom
-const SCORE_THRESHOLD = 4;
-// Array of numbers corresponding to the coefficients in order
-const coefficients = RulesetFactory.getCoeffsInOrder(defaultCoefficients);
+const SCORE_THRESHOLD = 0.5;
 // For production, we don't need to generate a new ruleset factory
 // and ruleset every time we run Fathom, since the coefficients are static.
-const rulesetFactory = new RulesetFactory(coefficients);
-const rules = rulesetFactory.makeRuleset();
+const rulesetFactory = new RulesetFactory();
+const rules = rulesetFactory.makeRuleset([
+  ...coefficients.image,
+  ...coefficients.title,
+  ...coefficients.price,
+],
+biases);
 
 /** How product information is extracted depends on the feature */
 const FEATURE_DEFAULTS = {
@@ -72,7 +76,7 @@ function runRuleset(doc) {
   const results = rules.against(doc);
   for (const feature of Object.keys(PRODUCT_FEATURES)) {
     let fnodesList = results.get(feature);
-    fnodesList = fnodesList.filter(fnode => fnode.scoreFor(`${feature}ish`) >= SCORE_THRESHOLD);
+    fnodesList = fnodesList.filter(fnode => fnode.scoreFor(`${feature}`) >= SCORE_THRESHOLD);
     // It is possible for multiple elements to have the same highest score.
     if (fnodesList.length >= 1) {
       extractedElements[feature] = fnodesList[0].element;

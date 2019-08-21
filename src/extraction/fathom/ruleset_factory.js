@@ -8,36 +8,12 @@ import {euclidean} from 'fathom-web/clusters';
 
 const TOP_BUFFER = 150;
 // From: https://github.com/mozilla/fathom-trainees/blob/master/src/trainees.js
-const ZEROISH = 0.08;
-const ONEISH = 0.9;
 
 /**
  * Creates Fathom ruleset instances, and holds individual rule methods for
  * easier testing.
  */
 export default class RulesetFactory {
-  /**
-   * @param {number[]} coefficients
-   */
-  constructor(coefficients) {
-    [
-      this.backgroundIdImageCoeff,
-      this.bigFontCoeff,
-      this.bigImageCoeff,
-      this.extremeAspectCoeff,
-      this.hasDollarSignCoeff,
-      this.hasPriceInClassNameCoeff,
-      this.hasPriceInIDCoeff,
-      this.hasPriceInParentClassNameCoeff,
-      this.hasPriceInParentIDCoeff,
-      this.hasPriceishPatternCoeff,
-      this.isAboveTheFoldImageCoeff,
-      this.isAboveTheFoldPriceCoeff,
-      this.isNearbyImageYAxisTitleCoeff,
-      this.isNearImageCoeff,
-    ] = coefficients;
-  }
-
   /** Scores fnode in direct proportion to its size */
   isBig(fnode) {
     const domRect = fnode.element.getBoundingClientRect();
@@ -48,18 +24,18 @@ export default class RulesetFactory {
     // (though we should have distinct penalties for that sort of thing if we
     // care). More importantly, clamp the upper bound of the score so we don't
     // overcome other bonuses and penalties.
-    return linearScale(area, 80 ** 2, 1000 ** 2) ** this.bigImageCoeff;
+    return linearScale(area, 80 ** 2, 1000 ** 2);
   }
 
   /** Return whether the computed font size of an element is big. */
   fontIsBig(fnode) {
     const size = parseInt(getComputedStyle(fnode.element).fontSize, 10);
-    return linearScale(size, 14, 50) ** this.bigFontCoeff;
+    return linearScale(size, 14, 50);
   }
 
   /** Scores fnode with a '$' in its innerText */
   hasDollarSign(fnode) {
-    return (fnode.element.innerText.includes('$') ? ONEISH : ZEROISH) ** this.hasDollarSignCoeff;
+    return (fnode.element.innerText.includes('$') ? 1 : 0);
   }
 
   /**
@@ -74,44 +50,44 @@ export default class RulesetFactory {
    * Return a weighted confidence of whether a substring is within a given
    * string, case insensitively.
    */
-  weightedIncludes(haystack, needle, coeff) {
-    return (this.caselessIncludes(haystack, needle) ? ONEISH : ZEROISH) ** coeff;
+  stringIncludes(haystack, needle) {
+    return (this.caselessIncludes(haystack, needle) ? 1 : 0);
   }
 
   /**
    * Punish elements with "background" in their ID. Do nothing to those without.
    */
   hasBackgroundInID(fnode) {
-    return this.caselessIncludes(fnode.element.id, 'background') ? (ZEROISH ** this.backgroundIdImageCoeff) : 1;
+    return this.caselessIncludes(fnode.element.id, 'background') ? 0 : 1;
   }
 
   /** Scores fnode with 'price' in its id */
   hasPriceInID(fnode) {
-    return this.weightedIncludes(fnode.element.id, 'price', this.hasPriceInIDCoeff);
+    return this.stringIncludes(fnode.element.id, 'price');
   }
 
   hasPriceInParentID(fnode) {
-    return this.weightedIncludes(fnode.element.parentElement.id, 'price', this.hasPriceInParentIDCoeff);
+    return this.stringIncludes(fnode.element.parentElement.id, 'price');
   }
 
   /** Scores fnode with 'price' in its class name */
   hasPriceInClassName(fnode) {
-    return this.weightedIncludes(fnode.element.className, 'price', this.hasPriceInClassNameCoeff);
+    return this.stringIncludes(fnode.element.className, 'price');
   }
 
   /** Scores fnode with 'price' in its parent's class name */
   hasPriceInParentClassName(fnode) {
-    return this.weightedIncludes(fnode.element.parentElement.className, 'price', this.hasPriceInParentClassNameCoeff);
+    return this.stringIncludes(fnode.element.parentElement.className, 'price');
   }
 
   /** Scores fnode by its vertical location relative to the fold */
-  isAboveTheFold(fnode, featureCoeff) {
+  isAboveTheFold(fnode) {
     const viewportHeight = 950;
     const imageTop = fnode.element.getBoundingClientRect().top;
 
     // Stop giving additional bonus for anything closer than 200px to the top
     // of the viewport. Those are probably usually headers.
-    return linearScale(imageTop, viewportHeight * 2, 200) ** featureCoeff;
+    return linearScale(imageTop, viewportHeight * 2, 200);
   }
 
   /**
@@ -120,7 +96,7 @@ export default class RulesetFactory {
    */
   isNearImage(fnode) {
     const imageFnode = this.getHighestScoringImage(fnode);
-    return linearScale(euclidean(fnode, imageFnode), 1000, 0) ** this.isNearImageCoeff;
+    return linearScale(euclidean(fnode, imageFnode), 1000, 0);
   }
 
   /**
@@ -144,7 +120,7 @@ export default class RulesetFactory {
     const bottomDistance = Math.abs(imageRect.bottom - nodeRect.top);
 
     const shortestDistance = Math.min(topDistance, bottomDistance);
-    return linearScale(shortestDistance, 200, 0) ** this.isNearbyImageYAxisTitleCoeff;
+    return linearScale(shortestDistance, 200, 0);
   }
 
   /**
@@ -158,10 +134,10 @@ export default class RulesetFactory {
      * a decimal point and exactly two after.
      */
     const regExp = /\$?\d+\.\d{2}(?![0-9])/;
-    return (regExp.test(text) ? ONEISH : ZEROISH) ** this.hasPriceishPatternCoeff;
+    return (regExp.test(text) ? 1 : 0);
   }
 
-  /** Checks to see if a 'priceish' fnode is eligible for scoring */
+  /** Checks to see if a 'price' fnode is eligible for scoring */
   isEligiblePrice(fnode) {
     return (
       this.isVisible(fnode)
@@ -170,7 +146,7 @@ export default class RulesetFactory {
     );
   }
 
-  /** Checks to see if a 'titleish' fnode is eligible for scoring */
+  /** Checks to see if a 'title' fnode is eligible for scoring */
   isEligibleTitle(fnode) {
     return (
       this.isVisible(fnode)
@@ -247,93 +223,83 @@ export default class RulesetFactory {
    */
   aspectRatio(element) {
     const rect = element.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) {
+      return Infinity;
+    }
     return (rect.width > rect.height) ? (rect.width / rect.height) : (rect.height / rect.width);
   }
 
   /** Give a bonus for elements that have a non-extreme aspect ratio. */
   hasSquareAspectRatio(fnode) {
-    return linearScale(this.aspectRatio(fnode.element), 10, 5) ** this.extremeAspectCoeff;
+    return linearScale(this.aspectRatio(fnode.element), 10, 5);
   }
 
   /**
   * Using coefficients passed into the constructor method, returns a weighted
   * ruleset used to score elements in an HTML document.
   */
-  makeRuleset() {
-    return ruleset(
+  makeRuleset(coeffs, biases) {
+    return ruleset([
       /**
        * Image rules
        */
       // consider all visible img elements
-      rule(dom('img').when(this.isVisible.bind(this)), type('imageish')),
+      rule(dom('img').when(this.isVisible.bind(this)), type('image')),
       // and divs, which sometimes have CSS background-images
       // TODO: Consider a bonus for <img> tags.
-      rule(dom('div').when(fnode => this.isVisible(fnode) && this.hasBackgroundImage(fnode)), type('imageish')),
+      rule(dom('div').when(fnode => this.isVisible(fnode) && this.hasBackgroundImage(fnode)), type('image')),
       // better score the closer the element is to the top of the page
-      rule(type('imageish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldImageCoeff))),
+      rule(type('image'), score(this.isAboveTheFold.bind(this)), {name: 'isAboveTheFoldImage'}),
       // better score for larger images
-      rule(type('imageish'), score(this.isBig.bind(this))),
+      rule(type('image'), score(this.isBig.bind(this)), {name: 'isBig'}),
       // bonus for non-extreme aspect ratios, to filter out banners or nav elements
       // TODO: Meant to make this a penalty, but it turns out to work as is.
       // Try as a penalty.
-      rule(type('imageish'), score(this.hasSquareAspectRatio.bind(this))),
+      rule(type('image'), score(this.hasSquareAspectRatio.bind(this)), {name: 'hasSquareAspectRatio'}),
       // no background images, even ones that have reasonable aspect ratios
       // TODO: If necessary, also look at parents. I've seen them say
       // "background" in their IDs as well.
-      rule(type('imageish'), score(this.hasBackgroundInID.bind(this))),
+      rule(type('image'), score(this.hasBackgroundInID.bind(this)), {name: 'hasBackgroundInID'}),
       // return image element(s) with max score
-      rule(type('imageish').max(), out('image')),
+      rule(type('image').max(), out('image')),
 
       /**
        * Title rules
        */
       // consider all eligible h1 elements
-      rule(dom('h1').when(this.isEligibleTitle.bind(this)), type('titleish')),
+      rule(dom('h1').when(this.isEligibleTitle.bind(this)), type('title')),
       // better score based on y-axis proximity to max scoring image element
-      rule(type('titleish'), score(this.isNearImageTopOrBottom.bind(this))),
+      rule(type('title'), score(this.isNearImageTopOrBottom.bind(this)), {name: 'isNearImageTopOrBottom'}),
       // return title element(s) with max score
-      rule(type('titleish').max(), out('title')),
+      rule(type('title').max(), out('title')),
 
       /**
        * Price rules
        */
       // 72% by itself, at [4, 4, 4, 4...]!:
       // consider all eligible span and h2 elements
-      rule(dom('span, h2').when(this.isEligiblePrice.bind(this)), type('priceish')),
+      rule(dom('span, h2').when(this.isEligiblePrice.bind(this)), type('price')),
       // check if the element has a '$' in its innerText
-      rule(type('priceish'), score(this.hasDollarSign.bind(this))),
+      rule(type('price'), score(this.hasDollarSign.bind(this)), {name: 'hasDollarSign'}),
       // better score the closer the element is to the top of the page
-      rule(type('priceish'), score(fnode => this.isAboveTheFold(fnode, this.isAboveTheFoldPriceCoeff))),
-
+      rule(type('price'), score(this.isAboveTheFold.bind(this)), {name: 'isAboveTheFoldPrice'}),
       // check if the id has "price" in it
-      rule(type('priceish'), score(this.hasPriceInID.bind(this))),
-      rule(type('priceish'), score(this.hasPriceInParentID.bind(this))),
+      rule(type('price'), score(this.hasPriceInID.bind(this)), {name: 'hasPriceInID'}),
+      rule(type('price'), score(this.hasPriceInParentID.bind(this)), {name: 'hasPriceInParentID'}),
       // check if any class names have "price" in them
-      rule(type('priceish'), score(this.hasPriceInClassName.bind(this))),
-      rule(type('priceish'), score(this.hasPriceInParentClassName.bind(this))),
+      rule(type('price'), score(this.hasPriceInClassName.bind(this)), {name: 'hasPriceInClassName'}),
+      rule(type('price'), score(this.hasPriceInParentClassName.bind(this)), {name: 'hasPriceInParentClassName'}),
       // better score for larger font size
-      rule(type('priceish'), score(this.fontIsBig.bind(this))),
+      rule(type('price'), score(this.fontIsBig.bind(this)), {name: 'fontIsBig'}),
       // better score based on x-axis proximity to max scoring image element
-      rule(type('priceish'), score(this.isNearImage.bind(this))),
-      // check if innerText has a priceish pattern
-      rule(type('priceish'), score(this.hasPriceishPattern.bind(this))),
+      rule(type('price'), score(this.isNearImage.bind(this)), {name: 'isNearImage'}),
+      // check if innerText has a price pattern
+      rule(type('price'), score(this.hasPriceishPattern.bind(this)), {name: 'hasPriceishPattern'}),
       // return price element(s) with max score
-      rule(type('priceish').max(), out('price')),
-    );
-  }
-
-  /**
-   * Takes in a coefficients object and returns a coefficients array in the
-   * same order.
-   */
-  static getCoeffsInOrder(coeffsObj) {
-    const coeffsKeys = Object.keys(coeffsObj);
-    coeffsKeys.sort(); // sort keys in string Unicode order
-    const coeffs = [];
-    for (const key of coeffsKeys) {
-      coeffs.push(coeffsObj[key]);
-    }
-    return coeffs;
+      rule(type('price').max(), out('price')),
+    ],
+    coeffs,
+    biases);
   }
 
   getHighestScoringImage(fnode) {
@@ -342,30 +308,30 @@ export default class RulesetFactory {
 }
 
 /**
- * Scale a number to the range [ZEROISH, ONEISH].
+ * Scale a number to the range [0, 1].
  *
- * For a rising line, the result is ZEROISH until the input reaches
- * zeroAt, then increases linearly until oneAt, at which it becomes ONEISH. To
- * make a falling line, where the result is ONEISH to the left and ZEROISH
+ * For a rising line, the result is 0 until the input reaches
+ * zeroAt, then increases linearly until oneAt, at which it becomes 1. To
+ * make a falling line, where the result is 1 to the left and 0
  * to the right, use a zeroAt greater than oneAt.
  */
 function linearScale(number, zeroAt, oneAt) {
   const isRising = zeroAt < oneAt;
   if (isRising) {
     if (number <= zeroAt) {
-      return ZEROISH;
+      return 0;
     }
     if (number >= oneAt) {
-      return ONEISH;
+      return 1;
     }
   } else {
     if (number >= zeroAt) {
-      return ZEROISH;
+      return 0;
     }
     if (number <= oneAt) {
-      return ONEISH;
+      return 1;
     }
   }
-  const slope = (ONEISH - ZEROISH) / (oneAt - zeroAt);
-  return slope * (number - zeroAt) + ZEROISH;
+  const slope = (1 - 0) / (oneAt - zeroAt);
+  return slope * (number - zeroAt) + 0;
 }
