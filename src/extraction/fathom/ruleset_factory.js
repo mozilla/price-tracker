@@ -8,8 +8,6 @@ import {euclidean} from 'fathom-web/clusters';
 
 const TOP_BUFFER = 150;
 // From: https://github.com/mozilla/fathom-trainees/blob/master/src/trainees.js
-const ZEROISH = 0.08;
-const ONEISH = 0.9;
 
 /**
  * Creates Fathom ruleset instances, and holds individual rule methods for
@@ -37,7 +35,7 @@ export default class RulesetFactory {
 
   /** Scores fnode with a '$' in its innerText */
   hasDollarSign(fnode) {
-    return (fnode.element.innerText.includes('$') ? ONEISH : ZEROISH);
+    return (fnode.element.innerText.includes('$') ? 1 : 0);
   }
 
   /**
@@ -53,14 +51,14 @@ export default class RulesetFactory {
    * string, case insensitively.
    */
   weightedIncludes(haystack, needle) {
-    return (this.caselessIncludes(haystack, needle) ? ONEISH : ZEROISH);
+    return (this.caselessIncludes(haystack, needle) ? 1 : 0);
   }
 
   /**
    * Punish elements with "background" in their ID. Do nothing to those without.
    */
   hasBackgroundInID(fnode) {
-    return this.caselessIncludes(fnode.element.id, 'background') ? ZEROISH : 1;
+    return this.caselessIncludes(fnode.element.id, 'background') ? 0 : 1;
   }
 
   /** Scores fnode with 'price' in its id */
@@ -136,7 +134,7 @@ export default class RulesetFactory {
      * a decimal point and exactly two after.
      */
     const regExp = /\$?\d+\.\d{2}(?![0-9])/;
-    return (regExp.test(text) ? ONEISH : ZEROISH);
+    return (regExp.test(text) ? 1 : 0);
   }
 
   /** Checks to see if a 'price' fnode is eligible for scoring */
@@ -313,30 +311,30 @@ export default class RulesetFactory {
 }
 
 /**
- * Scale a number to the range [ZEROISH, ONEISH].
+ * Scale a number to the range [0, 1].
  *
- * For a rising line, the result is ZEROISH until the input reaches
- * zeroAt, then increases linearly until oneAt, at which it becomes ONEISH. To
- * make a falling line, where the result is ONEISH to the left and ZEROISH
+ * For a rising line, the result is 0 until the input reaches
+ * zeroAt, then increases linearly until oneAt, at which it becomes 1. To
+ * make a falling line, where the result is 1 to the left and 0
  * to the right, use a zeroAt greater than oneAt.
  */
 function linearScale(number, zeroAt, oneAt) {
   const isRising = zeroAt < oneAt;
   if (isRising) {
     if (number <= zeroAt) {
-      return ZEROISH;
+      return 0;
     }
     if (number >= oneAt) {
-      return ONEISH;
+      return 1;
     }
   } else {
     if (number >= zeroAt) {
-      return ZEROISH;
+      return 0;
     }
     if (number <= oneAt) {
-      return ONEISH;
+      return 1;
     }
   }
-  const slope = (ONEISH - ZEROISH) / (oneAt - zeroAt);
-  return slope * (number - zeroAt) + ZEROISH;
+  const slope = (1 - 0) / (oneAt - zeroAt);
+  return slope * (number - zeroAt) + 0;
 }
