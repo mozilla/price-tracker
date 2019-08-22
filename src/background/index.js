@@ -46,7 +46,9 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
     let {finalNoticeDate} = await browser.storage.local.get('finalNoticeDate');
     if (finalNoticeDate === undefined) {
       finalNoticeDate = currentDate;
-      browser.tabs.create({url: browser.extension.getURL('retirement.html')});
+      const retirementUrl = new URL(browser.extension.getURL('retirement.html'));
+      retirementUrl.searchParams.set('finalNotice', JSON.stringify(true));
+      browser.tabs.create({url: retirementUrl.href});
       await browser.storage.local.set({finalNoticeDate: currentDate});
     } else if (currentDate - finalNoticeDate > finalNoticeDuration) {
       browser.management.uninstallSelf();
