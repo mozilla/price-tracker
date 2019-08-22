@@ -33,6 +33,26 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
     }
   });
 
+  // If 30 days have passed, show final retirement notice, wait one day, and then uninstall
+  const initialNoticeDuration = await config.get('initialNoticeDuration');
+  const currentDate = Math.round(Date.now() / 1000); // convert ms to s
+  let {initialNoticeDate} = await browser.storage.local.get();
+  if (initialNoticeDate === undefined) {
+    initialNoticeDate = currentDate;
+    await browser.storage.local.set({initialNoticeDate});
+  }
+  if (currentDate - initialNoticeDate > initialNoticeDuration) {
+    const finalNoticeDuration = await config.get('finalNoticeDuration');
+    let {finalNoticeDate} = await browser.storage.local.get('finalNoticeDate');
+    if (finalNoticeDate === undefined) {
+      finalNoticeDate = currentDate;
+      browser.tabs.create({url: browser.extension.getURL('retirement.html')});
+      await browser.storage.local.set({finalNoticeDate: currentDate});
+    } else if (currentDate - finalNoticeDate > finalNoticeDuration) {
+      browser.management.uninstallSelf();
+    }
+  }
+
   // Set browser action default badge color, which can't be set via manifest
   browser.browserAction.setBadgeBackgroundColor({
     color: await config.get('badgeAlertBackground'),

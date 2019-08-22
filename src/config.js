@@ -92,6 +92,10 @@ const CONFIG = {
   enableStudyUI: new BoolValue(false),
   /** URL for the study's recruitment survey */
   studyUrl: new StringValue('https://qsurvey.mozilla.com/s3/Price-Wise-Research-Study'),
+
+  // Retirement notices (int pref values are 32 bit longs, so we can't store in units of ms)
+  initialNoticeDuration: new IntValue(86400 * 30), // 30 days in seconds
+  finalNoticeDuration: new IntValue(86400), // 1 day in seconds
 };
 
 export default {
