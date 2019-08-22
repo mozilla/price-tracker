@@ -22,13 +22,13 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
 (async function main() {
   registerEvents();
 
-  // Show the browser action on first install so users see the privacy notice.
+  // Show privacy notice on install. Show initial retirement notice on install and on update.
   browser.runtime.onInstalled.addListener((details) => {
     const {reason} = details;
     if (reason === 'install') {
       browser.tabs.create({url: browser.extension.getURL('intro.html')});
+      browser.tabs.create({url: browser.extension.getURL('retirement.html')});
     } else if (reason === 'update') {
-      // Show initial retirement notice on update
       browser.tabs.create({url: browser.extension.getURL('retirement.html')});
     }
   });
