@@ -2,7 +2,7 @@
 
 Price Tracker is a Firefox extension that tracks price changes to help you find the best time to buy.
 
-**NOTE: Price Tracker is no longer under active development.**
+**IMPORTANT: Price Tracker is no longer under active development. Official support for Price Tracker ends on September 30, 2019.**
 
 ## Data Collection
 
