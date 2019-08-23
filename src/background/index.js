@@ -40,8 +40,7 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
   if (initialNoticeDate === undefined) {
     initialNoticeDate = currentDate;
     await browser.storage.local.set({initialNoticeDate});
-  }
-  if (currentDate - initialNoticeDate > initialNoticeDuration) {
+  } else if (currentDate - initialNoticeDate > initialNoticeDuration) {
     const finalNoticeDuration = await config.get('finalNoticeDuration');
     let {finalNoticeDate} = await browser.storage.local.get('finalNoticeDate');
     if (finalNoticeDate === undefined) {
