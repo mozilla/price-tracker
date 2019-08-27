@@ -43,7 +43,7 @@
     "stylelint-config-standard": "18.2.0",
     "tap-mocha-reporter": "3.0.7",
     "tape": "4.9.1",
-    "web-ext": "3.0.0",
+    "web-ext": "^3.1.1",
     "webpack": "4.15.1",
     "webpack-command": "0.3.1",
     "webpack-merge": "4.1.4"

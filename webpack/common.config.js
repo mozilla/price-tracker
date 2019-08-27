@@ -67,6 +67,8 @@ module.exports = {
       {from: '**/*.png'},
       {from: '**/*.ico'},
       {from: '**/*.html'},
+      {from: '**/*.css'},
+      {from: 'retirement.js'},
 
       // Experimental APIs, which are not bundled
       {from: 'experiment_apis/**/*.json'},

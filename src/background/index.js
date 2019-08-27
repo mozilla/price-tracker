@@ -22,10 +22,37 @@ import {registerEvents, handleWidgetRemoved} from 'commerce/telemetry/extension'
 (async function main() {
   registerEvents();
 
-  // Show the browser action on first install so users see the privacy notice.
-  browser.runtime.onInstalled.addListener(() => {
-    browser.tabs.create({url: browser.extension.getURL('intro.html')});
+  // Show privacy notice on install. Show initial retirement notice on install and on update.
+  browser.runtime.onInstalled.addListener((details) => {
+    const {reason} = details;
+    if (reason === 'install') {
+      browser.tabs.create({url: browser.extension.getURL('intro.html')});
+      browser.tabs.create({url: browser.extension.getURL('retirement.html')});
+    } else if (reason === 'update') {
+      browser.tabs.create({url: browser.extension.getURL('retirement.html')});
+    }
   });
+
+  // If 30 days have passed, show final retirement notice, wait one day, and then uninstall
+  const initialNoticeDuration = await config.get('initialNoticeDuration');
+  const currentDate = Math.round(Date.now() / 1000); // convert ms to s
+  let {initialNoticeDate} = await browser.storage.local.get();
+  if (initialNoticeDate === undefined) {
+    initialNoticeDate = currentDate;
+    await browser.storage.local.set({initialNoticeDate});
+  } else if (currentDate - initialNoticeDate > initialNoticeDuration) {
+    const finalNoticeDuration = await config.get('finalNoticeDuration');
+    let {finalNoticeDate} = await browser.storage.local.get('finalNoticeDate');
+    if (finalNoticeDate === undefined) {
+      finalNoticeDate = currentDate;
+      const retirementUrl = new URL(browser.extension.getURL('retirement.html'));
+      retirementUrl.searchParams.set('finalNotice', JSON.stringify(true));
+      browser.tabs.create({url: retirementUrl.href});
+      await browser.storage.local.set({finalNoticeDate: currentDate});
+    } else if (currentDate - finalNoticeDate > finalNoticeDuration) {
+      browser.management.uninstallSelf();
+    }
+  }
 
   // Set browser action default badge color, which can't be set via manifest
   browser.browserAction.setBadgeBackgroundColor({
