@@ -55,7 +55,7 @@ jobs:
       - run:
           name: Sign XPI
           command: |
-            curl -v \
+            curl \
               -F "input=@web-ext-artifacts/${XPI_NAME}.zip" \
               -o "web-ext-artifacts/${XPI_NAME}-signed.xpi" \
               -H "Authorization: ${AUTOGRAPH_EDGE_TOKEN}" \
