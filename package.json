@@ -1,6 +1,6 @@
 {
   "name": "price-tracker",
-  "version": "22.0.0",
+  "version": "23.0.0",
   "description": "Price Tracker is a Firefox extension that tracks price changes to help you find the best time to buy.",
   "private": true,
   "author": "Mozilla",
